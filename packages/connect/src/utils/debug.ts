@@ -14,63 +14,116 @@ const colors: Record<string, string> = {
     '@trezor/transport': 'color: #bada55; background: #000;',
 };
 
-type LogMessage = {
+export type LogMessage = {
     level: string;
     prefix: string;
     message: any[];
     timestamp: number;
+    css: string;
+};
+
+export type LogWriter = {
+    add: (message: LogMessage) => void;
 };
 
 const MAX_ENTRIES = 100;
+
+const stringify = (obj: Record<string, any>) => {
+    let cache: string[] = [];
+    const str = JSON.stringify(obj, (_key, value) => {
+        if (typeof value === 'object' && value !== null) {
+            if (cache.indexOf(value) !== -1) {
+                // Circular reference found, discard key
+                return;
+            }
+            // Store value in our collection
+            cache.push(value);
+        }
+        return value;
+    });
+    cache = [];
+    return str;
+};
 
 class Log {
     prefix: string;
     enabled: boolean;
     css: string;
     messages: LogMessage[];
+    logWriter: any;
 
-    constructor(prefix: string, enabled: boolean) {
+    constructor(prefix: string, enabled: boolean, logWriter?: LogWriter) {
         this.prefix = prefix;
         this.enabled = enabled;
         this.messages = [];
         this.css = typeof window !== 'undefined' && colors[prefix] ? colors[prefix] : '';
+        if (logWriter) {
+            this.logWriter = logWriter;
+        }
     }
 
-    addMessage(level: string, prefix: string, ...args: any[]) {
+    addMessage(level: string, prefix: string, css: string, ...args: any[]) {
         this.messages.push({
             level,
             prefix,
+            css,
             message: args,
             timestamp: Date.now(),
         });
+        if (this.logWriter) {
+            const { level, prefix, timestamp, css, ...rest } = message;
+
+            // todo: this method calls post postMessage which serializes object passed in ...args.
+            // if there is cyclic dependency, it simply dies.
+            // this is probably not the right place to call stringify.
+            // on the other hand, catching here is probably the right place to do to make sure that
+            // this not-essential mechanism does not break everything when broken.
+            try {
+                this.logWriter.add({
+                    level,
+                    prefix,
+                    timestamp,
+                    message: JSON.parse(stringify(rest)),
+                });
+            } catch (err) {
+                // If this error happens it probably means that we are logging an object with a circular reference.
+                // If there is any `device` logged, do it with `device.toMessageObject()` instead.
+                // TODO: maybe we should shout out this error to make sure we do not pass circular references to the log.
+                console.error('There was an error adding log message', err);
+            }
+        }
         if (this.messages.length > MAX_ENTRIES) {
             this.messages.shift();
         }
     }
 
+    setWriter(logWriter: any) {
+        this.logWriter = logWriter;
+    }
+
     log(...args: any[]) {
-        this.addMessage('log', this.prefix, ...args);
+        this.addMessage('log', this.prefix, this.css, ...args);
         if (this.enabled) {
             console.log(this.prefix, ...args);
         }
     }
 
     error(...args: any[]) {
-        this.addMessage('error', this.prefix, ...args);
+        this.addMessage('error', this.prefix, this.css, ...args);
         if (this.enabled) {
             console.error(this.prefix, ...args);
         }
     }
 
     warn(...args: any[]) {
-        this.addMessage('warn', this.prefix, ...args);
+        this.addMessage('warn', this.prefix, this.css, ...args);
         if (this.enabled) {
             console.warn(this.prefix, ...args);
         }
     }
 
     debug(...args: any[]) {
-        this.addMessage('debug', this.prefix, ...args);
+        this.addMessage('debug', this.prefix, this.css, ...args);
         if (this.enabled) {
             if (this.css) {
                 console.log(`%c${this.prefix}`, this.css, ...args);
@@ -82,11 +135,20 @@ class Log {
 }
 
 const _logs: { [k: string]: Log } = {};
+let writer: any;
 
-export const initLog = (prefix: string, enabled?: boolean) => {
-    const instance = new Log(prefix, !!enabled);
+export const initLog = (prefix: string, enabled?: boolean, logWriter?: LogWriter) => {
+    const finalWriter = logWriter || writer;
+    const instance = new Log(prefix, !!enabled, finalWriter);
     _logs[prefix] = instance;
     return instance;
+};
+
+export const setLogWriter = (logWriter: any) => {
+    Object.keys(_logs).forEach(key => {
+        writer = logWriter();
+        _logs[key].setWriter(writer);
+    });
 };
 
 export const enableLog = (enabled?: boolean) => {
