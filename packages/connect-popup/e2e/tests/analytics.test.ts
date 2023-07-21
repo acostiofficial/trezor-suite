@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-const url = process.env.URL || 'http://localhost:8088/';
+const url = `${process.env.URL || 'http://localhost:8088/'}`;
 
 test.beforeAll(async () => {
     await TrezorUserEnvLink.connect();

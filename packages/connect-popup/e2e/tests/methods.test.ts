@@ -8,7 +8,8 @@ import { fixtures } from './__fixtures__/methods';
 import { buildOverview } from '../support/buildOverview';
 import { ensureDirectoryExists } from '@trezor/node-utils';
 
-const url = process.env.URL || 'http://localhost:8088/';
+const url = `${process.env.URL || 'http://localhost:8088/'}?trust-issues=true`;
+
 const emuScreenshots: Record<string, string> = {};
 
 const log = (...val: string[]) => {
