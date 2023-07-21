@@ -15,16 +15,19 @@ import type {
     VersionArray,
     IntermediaryVersion,
 } from '../types';
+import { DeviceModelInternal } from '../types';
 import { isVersionArray } from '../utils/versionUtils';
 
-const releases: { [key: number]: FirmwareRelease[] } = {};
-releases[1] = [];
-releases[2] = [];
+const releases: Record<keyof typeof DeviceModelInternal, FirmwareRelease[]> = {
+    [DeviceModelInternal.T1B1]: [],
+    [DeviceModelInternal.T2T1]: [],
+    [DeviceModelInternal.T2B1]: [],
+};
 
-export const parseFirmware = (json: any, model: number) => {
+export const parseFirmware = (json: any, deviceModel: DeviceModelInternal) => {
     Object.keys(json).forEach(key => {
         const release = json[key];
-        releases[model].push({
+        releases[deviceModel].push({
             ...release,
         });
     });
@@ -238,7 +241,10 @@ export const getFirmwareStatus = (features: Features) => {
         return 'unknown';
     }
 
-    const info = getInfo({ features, releases: releases[features.major_version] });
+    const info = getInfo({
+        features,
+        releases: releases[features?.internal_model],
+    });
 
     // should not happen, possibly if releases list contains inconsistent data or so
     if (!info) return 'unknown';
@@ -251,6 +257,9 @@ export const getFirmwareStatus = (features: Features) => {
 };
 
 export const getRelease = (features: Features) =>
-    getInfo({ features, releases: releases[features.major_version] });
+    getInfo({
+        features,
+        releases: releases[features?.internal_model],
+    });
 
-export const getReleases = (model: number) => releases[model];
+export const getReleases = (deviceModel: DeviceModelInternal) => releases[deviceModel];

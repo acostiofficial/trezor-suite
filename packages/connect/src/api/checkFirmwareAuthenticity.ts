@@ -15,11 +15,11 @@ export default class CheckFirmwareAuthenticity extends AbstractMethod<'checkFirm
     async run() {
         const { device } = this;
 
-        const deviceVersion = `${device.features.major_version}.${device.features.minor_version}.${device.features.patch_version}`;
+        const firmwareVersion = `${device.features.major_version}.${device.features.minor_version}.${device.features.patch_version}`;
 
-        const releases = getReleases(device.features.major_version);
+        const releases = getReleases(device.features?.internal_model);
 
-        const release = releases.find(release => release.version.join('.') === deviceVersion);
+        const release = releases.find(release => release.version.join('.') === firmwareVersion);
 
         // should never happen
         if (!release) {
@@ -29,8 +29,10 @@ export default class CheckFirmwareAuthenticity extends AbstractMethod<'checkFirm
             );
         }
 
-        const baseUrl = `https://data.trezor.io/firmware/${device.features.major_version}`;
-        const fwUrl = `${baseUrl}/trezor-${deviceVersion}${
+        const deviceModelPath = `${device.features.internal_model}`.toLowerCase();
+
+        const baseUrl = `https://data.trezor.io/firmware/${deviceModelPath}`;
+        const fwUrl = `${baseUrl}/trezor-${deviceModelPath}-${firmwareVersion}${
             device.firmwareType === 'bitcoin-only' ? '-bitcoinonly.bin' : '.bin'
         }`;
 

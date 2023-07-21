@@ -1,0 +1,16 @@
+[
+    {
+        "required": false,
+        "version": [2, 6, 1],
+        "min_bridge_version": [2, 0, 7],
+        "min_firmware_version": [2, 6, 1],
+        "min_bootloader_version": [2, 1, 1],
+        "bootloader_version": [2, 1, 1],
+        "url": "firmware/t2b1/trezor-t2b1-2.6.1.bin",
+        "url_bitcoinonly": "firmware/t2b1/trezor-t2b1-2.6.1-bitcoinonly.bin",
+        "fingerprint": "aa83113a093576ec66dead74ac0b3eeea59254cacb0c0a0bdce2913cca94c3ac",
+        "fingerprint_bitcoinonly": "TODO",
+        "notes": "TODO",
+        "changelog": "* First T2B1 release"
+    }
+]
