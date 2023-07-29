@@ -498,18 +498,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
     _updateFeatures(feat: Features) {
         const capabilities = parseCapabilities(feat);
         feat.capabilities = capabilities;
-        const version = [feat.major_version, feat.minor_version, feat.patch_version];
-        // capabilities could change in case where features was fetched with older version of messages.json which doesn't know this field
-        const capabilitiesDidChange =
-            this.features &&
-            this.features.capabilities &&
-            this.features.capabilities.join('') !== capabilities.join('');
-        // check if FW version or capabilities did change
-        if (versionCompare(version, this.getVersion()) !== 0 || capabilitiesDidChange) {
-            this.unavailableCapabilities = getUnavailableCapabilities(feat, getAllNetworks());
-            this.firmwareStatus = getFirmwareStatus(feat);
-            this.firmwareRelease = getRelease(feat);
-        }
         // GetFeatures doesn't return 'session_id'
         if (this.features && this.features.session_id && !feat.session_id) {
             feat.session_id = this.features.session_id;
@@ -529,15 +517,28 @@ export class Device extends TypedEmitter<DeviceEvents> {
             feat.internal_model = ensureInternalModelFeature(feat.model);
         }
 
-        this.features = feat;
-        this.featuresNeedsReload = false;
-
         this.firmwareType =
             feat.capabilities &&
             feat.capabilities.length > 0 &&
             !feat.capabilities.includes('Capability_Bitcoin_like')
                 ? 'bitcoin-only'
                 : 'regular';
+
+        const version = [feat.major_version, feat.minor_version, feat.patch_version];
+        // capabilities could change in case where features was fetched with older version of messages.json which doesn't know this field
+        const capabilitiesDidChange =
+            this.features &&
+            this.features.capabilities &&
+            this.features.capabilities.join('') !== capabilities.join('');
+        // check if FW version or capabilities did change
+        if (versionCompare(version, this.getVersion()) !== 0 || capabilitiesDidChange) {
+            this.unavailableCapabilities = getUnavailableCapabilities(feat, getAllNetworks());
+            this.firmwareStatus = getFirmwareStatus(feat);
+            this.firmwareRelease = getRelease(feat);
+        }
+
+        this.featuresNeedsReload = false;
+        this.features = feat;
     }
 
     isUnacquired() {
