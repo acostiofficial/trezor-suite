@@ -128,8 +128,8 @@ export const Exception = ({ exception, discovery }: ExceptionProps) => {
         case 'auth-confirm-failed':
             return (
                 <Container
-                    title="TR_AUTH_CONFIRM_FAILED_TITLE"
-                    description="TR_AUTH_CONFIRM_FAILED_DESC"
+                    title="TR_ERROR_INVALID_PASSPHRASE"
+                    description="TR_ERROR_INVALID_PASSPHRASE"
                     cta={{ action: () => dispatch(authConfirm()) }}
                     dataTestBase={exception.type}
                 />

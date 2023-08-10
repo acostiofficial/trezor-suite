@@ -22,7 +22,7 @@ const AuthConfirmFailed = () => {
                 children: <Translation id="TR_AUTH_CONFIRM_FAILED_RETRY" />,
             }}
         >
-            <Translation id="TR_AUTH_CONFIRM_FAILED_TITLE" />
+            <Translation id="TR_ERROR_INVALID_PASSPHRASE" />
         </NotificationCard>
     );
 };

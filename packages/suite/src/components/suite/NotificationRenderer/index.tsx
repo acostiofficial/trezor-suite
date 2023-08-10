@@ -59,7 +59,7 @@ const NotificationRenderer = ({ notification, render }: NotificationRendererProp
             return error(render, notification, 'TOAST_AUTH_FAILED');
         case 'auth-confirm-error':
             return error(render, notification, 'TOAST_AUTH_CONFIRM_ERROR', {
-                error: notification.error || { id: 'TOAST_AUTH_CONFIRM_ERROR_DEFAULT' },
+                error: notification.error || { id: 'TR_ERROR_INVALID_PASSPHRASE' },
             });
         case 'discovery-error':
             return error(render, notification, 'TOAST_DISCOVERY_ERROR');

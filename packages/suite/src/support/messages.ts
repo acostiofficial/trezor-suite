@@ -1985,14 +1985,6 @@ export default defineMessages({
         defaultMessage: 'Retry',
         id: 'TR_AUTH_CONFIRM_FAILED_RETRY',
     },
-    TR_AUTH_CONFIRM_FAILED_TITLE: {
-        defaultMessage: 'Wrong passphrase',
-        id: 'TR_AUTH_CONFIRM_FAILED_TITLE',
-    },
-    TR_AUTH_CONFIRM_FAILED_DESC: {
-        defaultMessage: 'Invalid passphrase confirmation.',
-        id: 'TR_AUTH_CONFIRM_FAILED_DESC',
-    },
     TR_BACK: {
         defaultMessage: 'Back',
         description: 'Back button',
@@ -3753,10 +3745,6 @@ export default defineMessages({
     TOAST_AUTH_CONFIRM_ERROR: {
         id: 'TOAST_AUTH_CONFIRM_ERROR',
         defaultMessage: 'Passphrase confirmation error: {error}',
-    },
-    TOAST_AUTH_CONFIRM_ERROR_DEFAULT: {
-        id: 'TOAST_AUTH_CONFIRM_ERROR_DEFAULT',
-        defaultMessage: 'Invalid passphrase',
     },
     TOAST_DISCOVERY_ERROR: {
         id: 'TOAST_DISCOVERY_ERROR',
@@ -7941,6 +7929,10 @@ export default defineMessages({
     TR_ERROR: {
         id: 'TR_ERROR',
         defaultMessage: 'Error',
+    },
+    TR_ERROR_INVALID_PASSPHRASE: {
+        id: 'TR_ERROR_INVALID_PASSPHRASE',
+        defaultMessage: 'Invalid passphrase',
     },
     TR_COINJOIN_RECEIVE_WARNING_TITLE: {
         id: 'TR_COINJOIN_RECEIVE_WARNING_TITLE',
