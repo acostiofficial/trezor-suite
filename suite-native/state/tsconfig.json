@@ -22,7 +22,6 @@
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../config" },
-        { "path": "../fiat-rates" },
         { "path": "../graph" },
         { "path": "../logger" },
         { "path": "../message-system" },

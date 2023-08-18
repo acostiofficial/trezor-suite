@@ -4,8 +4,8 @@ import {
     prepareAccountsReducer,
     prepareBlockchainReducer,
     prepareTransactionsReducer,
+    prepareFiatRatesReducer,
 } from '@suite-common/wallet-core';
-import { prepareFiatRatesReducer } from '@suite-native/fiat-rates';
 import { devicesReducer } from '@suite-native/module-devices';
 import { appSettingsReducer, appSettingsPersistWhitelist } from '@suite-native/module-settings';
 import { logsSlice } from '@suite-common/logger';

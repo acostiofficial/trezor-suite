@@ -3,12 +3,11 @@ import { isAnyOf } from '@reduxjs/toolkit';
 
 import {
     firmwareActions,
-    discoveryActions,
     selectDiscoveryByDeviceState,
+    discoveryActions,
     accountsActions,
     blockchainActions,
     transactionsActions,
-    fiatRatesActions,
     selectAccountByKey,
 } from '@suite-common/wallet-core';
 import { messageSystemActions } from '@suite-common/message-system';
@@ -62,19 +61,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 if (isDeviceRemembered(device)) {
                     storageActions.saveAccounts([action.payload]);
                 }
-            }
-
-            if (fiatRatesActions.updateFiatRate.match(action)) {
-                api.dispatch(storageActions.saveFiatRates());
-            }
-
-            if (fiatRatesActions.removeFiatRate.match(action)) {
-                api.dispatch(
-                    storageActions.removeFiatRate(
-                        action.payload.symbol,
-                        action.payload.tokenAddress,
-                    ),
-                );
             }
 
             if (walletSettingsActions.changeNetworks.match(action)) {
