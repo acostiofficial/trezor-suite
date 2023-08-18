@@ -2,9 +2,9 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { TextProps, Text } from '@suite-native/atoms';
-import { getFiatRateKey, selectFiatRatesByFiatRateKey } from '@suite-native/fiat-rates';
 import { selectFiatCurrencyCode } from '@suite-native/module-settings';
-import { toFiatCurrency } from '@suite-common/wallet-utils';
+import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
+import { toFiatCurrency, getFiatRateKey } from '@suite-common/wallet-utils';
 import { useFormatters } from '@suite-common/formatters';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { SignValue } from '@suite-common/suite-types';

@@ -4,7 +4,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { CommonActions, useNavigation } from '@react-navigation/core';
 
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountsRootState, selectAccountsByNetworkAndDevice } from '@suite-common/wallet-core';
+import {
+    AccountsRootState,
+    FiatRatesRootState,
+    selectAccountsByNetworkAndDevice,
+} from '@suite-common/wallet-core';
 import { Button, Divider } from '@suite-native/atoms';
 import { useAccountLabelForm, AccountFormValues } from '@suite-native/accounts';
 import { Form } from '@suite-native/forms';
@@ -22,7 +26,6 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { analytics, EventType } from '@suite-native/analytics';
 import { TokenInfoBranded, TokenSymbol } from '@suite-common/wallet-types';
 import { selectAnyOfTokensHasFiatRates } from '@suite-native/ethereum-tokens';
-import { FiatRatesRootState } from '@suite-native/fiat-rates';
 import { SettingsSliceRootState } from '@suite-native/module-settings';
 
 import { importAccountThunk } from '../accountsImportThunks';

@@ -3,15 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { TextProps } from '@suite-native/atoms';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    FiatRatesRootState,
-    getFiatRateKey,
-    selectFiatRatesByFiatRateKey,
-} from '@suite-native/fiat-rates';
+import { FiatRatesRootState, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { convertCryptoToFiatAmount, useFormatters } from '@suite-common/formatters';
 import { selectFiatCurrency, selectFiatCurrencyCode } from '@suite-native/module-settings';
 import { FiatRates } from '@trezor/blockchain-link';
-import { isTestnet } from '@suite-common/wallet-utils';
+import { isTestnet, getFiatRateKey } from '@suite-common/wallet-utils';
 
 import { FormatterProps } from '../types';
 import { EmptyAmountText } from './EmptyAmountText';

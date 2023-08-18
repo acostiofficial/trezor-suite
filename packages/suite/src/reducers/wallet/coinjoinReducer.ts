@@ -45,7 +45,7 @@ import {
     ZKSNACKS_LEGAL_DOCUMENTS_VERSION,
     TREZOR_LEGAL_DOCUMENTS_VERSION,
 } from 'src/services/coinjoin';
-import { accountsActions, AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { AccountsRootState, accountsActions, selectAccountByKey } from '@suite-common/wallet-core';
 import {
     Feature,
     MessageSystemRootState,
