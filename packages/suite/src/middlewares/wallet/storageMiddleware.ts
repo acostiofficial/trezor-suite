@@ -65,7 +65,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
 
             if (walletSettingsActions.changeNetworks.match(action)) {
                 api.dispatch(storageActions.saveWalletSettings());
-                api.dispatch(storageActions.saveFiatRates());
             }
 
             if (transactionsActions.resetTransaction.match(action)) {
