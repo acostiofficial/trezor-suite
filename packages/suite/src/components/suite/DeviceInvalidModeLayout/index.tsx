@@ -1,10 +1,15 @@
 import React from 'react';
+
 import styled, { css } from 'styled-components';
+
 import { Button, Image, ImageType } from '@trezor/components';
+
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
+
 import { Modal } from '../Modal';
+import { selectDevicesCount } from '../../../reducers/suite/deviceReducer';
 
 const StyledImage = styled(Image)<{ image: ImageType }>`
     flex: 1;
@@ -50,7 +55,7 @@ const DeviceInvalidModeLayout = ({
     resolveButton,
     'data-test': dataTest,
 }: DeviceInvalidModeLayoutProps) => {
-    const devices = useSelector(state => state.devices);
+    const devicesCount = useSelector(selectDevicesCount);
     const dispatch = useDispatch();
 
     const handleSwitchDeviceButtonClick = () =>
@@ -64,7 +69,7 @@ const DeviceInvalidModeLayout = ({
             bottomBar={
                 <>
                     {resolveButton && resolveButton}
-                    {allowSwitchDevice && devices.length > 1 && (
+                    {allowSwitchDevice && devicesCount > 1 && (
                         <Button onClick={handleSwitchDeviceButtonClick}>
                             <Translation id="TR_SWITCH_DEVICE" />
                         </Button>
