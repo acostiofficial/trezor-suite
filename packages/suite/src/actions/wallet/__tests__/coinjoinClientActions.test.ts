@@ -1,14 +1,18 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
+
 import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
 import { promiseAllSequence } from '@trezor/utils';
+import { prepareMessageSystemReducer } from '@suite-common/message-system';
 
 import { db } from 'src/storage';
 import { accountsReducer } from 'src/reducers/wallet';
 import { coinjoinReducer } from 'src/reducers/wallet/coinjoinReducer';
 import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
-import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { extraDependencies } from 'src/support/extraDependencies';
 import modalReducer from 'src/reducers/suite/modalReducer';
+import { coinjoinMiddleware } from 'src/middlewares/wallet/coinjoinMiddleware';
+import { CoinjoinService } from 'src/services/coinjoin/coinjoinService';
+
 import {
     initCoinjoinService,
     onCoinjoinRoundChanged,
@@ -18,8 +22,6 @@ import {
     clientEmitException,
 } from '../coinjoinClientActions';
 import * as fixtures from '../__fixtures__/coinjoinClientActions';
-import { coinjoinMiddleware } from 'src/middlewares/wallet/coinjoinMiddleware';
-import { CoinjoinService } from 'src/services/coinjoin/coinjoinService';
 
 jest.mock('@trezor/connect', () => global.JestMocks.getTrezorConnect({}));
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -43,7 +45,7 @@ const rootReducer = combineReducers({
         },
         () => ({}),
     ),
-    devices: createReducer([fixtures.DEVICE], () => ({})),
+    device: createReducer({ devices: [fixtures.DEVICE] }, () => ({})),
     modal: modalReducer,
     messageSystem: messageSystemReducer,
     wallet: combineReducers({
@@ -54,16 +56,16 @@ const rootReducer = combineReducers({
 });
 
 type State = ReturnType<typeof rootReducer>;
-type Wallet = Partial<State['wallet']> & { devices?: State['devices'] };
+type Wallet = Partial<State['wallet']> & { device?: State['device'] };
 
-const initStore = ({ accounts, coinjoin, devices, selectedAccount }: Wallet = {}) => {
+const initStore = ({ accounts, coinjoin, device, selectedAccount }: Wallet = {}) => {
     // State != suite AppState, therefore <any>
     const store = configureMockStore<any>({
         reducer: rootReducer,
         preloadedState: initPreloadedState({
             rootReducer,
             partialState: {
-                devices,
+                device,
                 wallet: {
                     accounts,
                     coinjoin,

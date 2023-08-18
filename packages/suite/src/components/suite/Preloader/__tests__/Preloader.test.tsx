@@ -1,9 +1,9 @@
 import React from 'react';
 
+import * as envUtils from '@trezor/env-utils';
+
 import { configureStore } from 'src/support/tests/configureStore';
 import { renderWithProviders, findByTestId } from 'src/support/tests/hooksHelper';
-
-import * as envUtils from '@trezor/env-utils';
 
 import Preloader from '..';
 
@@ -46,7 +46,9 @@ export const getInitialState = ({ suite, router }: any = {}) => ({
         flags: {},
         ...suite,
     },
-    devices: [],
+    device: {
+        devices: [],
+    },
     resize: {
         size: 'LARGE',
     },
