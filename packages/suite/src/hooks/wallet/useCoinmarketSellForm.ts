@@ -43,6 +43,7 @@ import type { AppState } from 'src/types/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useDidUpdate } from '@trezor/react-utils';
 import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
+import { selectCoinsLegacy } from '@suite-common/wallet-core';
 
 export const SellFormContext = createContext<SellFormContextValues | null>(null);
 SellFormContext.displayName = 'CoinmarketSellContext';
@@ -80,7 +81,7 @@ export const useCoinmarketSellForm = ({
 
     const accounts = useSelector(state => state.wallet.accounts);
     const device = useSelector(state => state.suite.device);
-    const fiat = useSelector(state => state.wallet.fiat);
+    const coins = useSelector(selectCoinsLegacy);
     const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
     const fees = useSelector(state => state.wallet.fees);
     const sellInfo = useSelector(state => state.wallet.coinmarket.sell.sellInfo);
@@ -98,7 +99,7 @@ export const useCoinmarketSellForm = ({
     const levels = getFeeLevels(networkType, coinFees);
     const feeInfo = { ...coinFees, levels };
     const symbolForFiat = mapTestnetSymbol(symbol);
-    const fiatRates = fiat.coins.find(item => item.symbol === symbolForFiat);
+    const fiatRates = coins.find(item => item.symbol === symbolForFiat);
     const localCurrencyOption = { value: localCurrency, label: localCurrency.toUpperCase() };
 
     const [state, setState] = useState<ReturnType<typeof useSellState>>(undefined);

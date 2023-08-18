@@ -41,6 +41,7 @@ import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useDidUpdate } from '@trezor/react-utils';
 import { CryptoAmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
+import { selectCoinsLegacy } from '@suite-common/wallet-core';
 
 export const ExchangeFormContext = createContext<ExchangeFormContextValues | null>(null);
 ExchangeFormContext.displayName = 'CoinmarketExchangeContext';
@@ -76,7 +77,7 @@ export const useCoinmarketExchangeForm = ({
     const { exchangeInfo, quotesRequest, exchangeCoinInfo } = useSelector(
         state => state.wallet.coinmarket.exchange,
     );
-    const fiat = useSelector(state => state.wallet.fiat);
+    const coins = useSelector(selectCoinsLegacy);
     const device = useSelector(state => state.suite.device);
     const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
     const fees = useSelector(state => state.wallet.fees);
@@ -94,7 +95,7 @@ export const useCoinmarketExchangeForm = ({
     const coinFees = fees[symbol];
     const levels = getFeeLevels(networkType, coinFees);
     const feeInfo = { ...coinFees, levels };
-    const fiatRates = fiat.coins.find(item => item.symbol === symbol);
+    const fiatRates = coins.find(item => item.symbol === symbol);
 
     const { getDraft, saveDraft, removeDraft } =
         useFormDraft<ExchangeFormState>('coinmarket-exchange');
