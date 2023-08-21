@@ -12,6 +12,7 @@ import { extraDependencies } from 'src/support/extraDependencies';
 
 import { useDiscovery } from '../useDiscovery';
 import { actions } from '../__fixtures__/useDiscovery';
+import deviceReducer from '../../../reducers/suite/deviceReducer';
 
 const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 
@@ -20,6 +21,7 @@ export const getInitialState = (action: any = { type: 'initial' }) => ({
         discovery: discoveryReducer(undefined, action),
     },
     suite: suiteReducer(undefined, action),
+    device: deviceReducer(undefined, action),
 });
 
 const reducer = combineReducers({
@@ -27,6 +29,7 @@ const reducer = combineReducers({
         discovery: discoveryReducer,
     }),
     suite: suiteReducer,
+    device: deviceReducer,
 });
 
 type State = ReturnType<typeof getInitialState>;

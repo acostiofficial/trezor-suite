@@ -34,7 +34,7 @@ jest.mock('src/components/suite/Translation', () => ({
 //     default: () => ['ref', { height: 0 }],
 // }));
 
-export const getInitialState = ({ suite, router }: any = {}) => ({
+export const getInitialState = ({ suite, router, device }: any = {}) => ({
     suite: {
         lifecycle: {
             status: 'ready',
@@ -48,6 +48,7 @@ export const getInitialState = ({ suite, router }: any = {}) => ({
     },
     device: {
         devices: [],
+        ...device,
     },
     resize: {
         size: 'LARGE',
@@ -185,6 +186,8 @@ describe('Preloader component', () => {
             getInitialState({
                 suite: {
                     transport: { type: 'BridgeTransport' },
+                },
+                device: {
                     device: { type: 'unacquired' },
                 },
             }),
@@ -202,6 +205,8 @@ describe('Preloader component', () => {
             getInitialState({
                 suite: {
                     transport: { type: 'WebUsbTransport' },
+                },
+                device: {
                     device: { type: 'unreadable', error: 'LIBUSB_ERROR_ACCESS' },
                 },
             }),
@@ -221,6 +226,8 @@ describe('Preloader component', () => {
             getInitialState({
                 suite: {
                     transport: { type: 'BridgeTransport' },
+                },
+                device: {
                     device: { type: 'unreadable', error: 'LIBUSB_ERROR_ACCESS' },
                 },
             }),
@@ -240,6 +247,8 @@ describe('Preloader component', () => {
             getInitialState({
                 suite: {
                     transport: { type: 'BridgeTransport' },
+                },
+                device: {
                     device: { type: 'unreadable', error: 'LIBUSB_ERROR_ACCESS' },
                 },
             }),
@@ -257,6 +266,8 @@ describe('Preloader component', () => {
             getInitialState({
                 suite: {
                     transport: { type: 'BridgeTransport' },
+                },
+                device: {
                     device: { type: 'unreadable', error: 'Unexpected error' },
                 },
             }),
@@ -274,6 +285,8 @@ describe('Preloader component', () => {
             getInitialState({
                 suite: {
                     transport: { type: 'BridgeTransport' },
+                },
+                device: {
                     device: { features: null },
                 },
             }),
@@ -291,6 +304,8 @@ describe('Preloader component', () => {
             getInitialState({
                 suite: {
                     transport: { type: 'BridgeTransport' },
+                },
+                device: {
                     device: { mode: 'seedless', features: {} },
                 },
             }),
@@ -309,6 +324,8 @@ describe('Preloader component', () => {
             getInitialState({
                 suite: {
                     transport: { type: 'BridgeTransport' },
+                },
+                device: {
                     device: { features: { recovery_mode: true } },
                 },
             }),
@@ -327,6 +344,8 @@ describe('Preloader component', () => {
             getInitialState({
                 suite: {
                     transport: { type: 'BridgeTransport' },
+                },
+                device: {
                     device: { mode: 'initialize', features: {} },
                 },
             }),
@@ -345,6 +364,8 @@ describe('Preloader component', () => {
             getInitialState({
                 suite: {
                     transport: { type: 'BridgeTransport' },
+                },
+                device: {
                     device: { mode: 'bootloader', features: { firmware_present: true } },
                 },
             }),
@@ -363,6 +384,8 @@ describe('Preloader component', () => {
             getInitialState({
                 suite: {
                     transport: { type: 'BridgeTransport' },
+                },
+                device: {
                     device: { mode: 'bootloader', features: { firmware_present: false } },
                 },
             }),
@@ -381,6 +404,8 @@ describe('Preloader component', () => {
             getInitialState({
                 suite: {
                     transport: { type: 'BridgeTransport' },
+                },
+                device: {
                     device: { firmware: 'required', features: {} },
                 },
             }),
