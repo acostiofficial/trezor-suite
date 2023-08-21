@@ -1,6 +1,11 @@
 import React from 'react';
+
 import styled, { css } from 'styled-components';
 import { darken } from 'polished';
+
+import { formatNetworkAmount, isSameUtxo } from '@suite-common/wallet-utils';
+import { useTheme, Checkbox, Spinner, Tooltip, variables } from '@trezor/components';
+import type { AccountUtxo } from '@trezor/connect';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import {
@@ -9,16 +14,15 @@ import {
     MetadataLabeling,
     Translation,
 } from 'src/components/suite';
-import { formatNetworkAmount, isSameUtxo } from '@suite-common/wallet-utils';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useTheme, Checkbox, Spinner, Tooltip, variables } from '@trezor/components';
-import type { AccountUtxo } from '@trezor/connect';
 import { TransactionTimestamp, UtxoAnonymity } from 'src/components/wallet';
 import { UtxoTag } from 'src/components/wallet/CoinControl/UtxoTag';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useCoinjoinUnavailableUtxos } from 'src/hooks/wallet/form/useCoinjoinUnavailableUtxos';
 import { WalletAccountTransaction } from 'src/types/wallet';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
+
+import { selectDevice } from '../../../reducers/suite/deviceReducer';
 
 const VisibleOnHover = styled.div<{ alwaysVisible?: boolean }>`
     display: ${({ alwaysVisible }) => (alwaysVisible ? 'contents' : 'none')};
@@ -153,7 +157,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
         },
     } = useSendFormContext();
 
-    const device = useSelector(state => state.suite.device);
+    const device = useSelector(selectDevice);
     // selecting metadata from store rather than send form context which does not update on metadata change
     const { outputLabels } = useSelector(selectLabelingDataForSelectedAccount);
 

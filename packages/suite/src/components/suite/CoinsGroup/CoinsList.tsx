@@ -1,16 +1,19 @@
 import React from 'react';
+
 import styled from 'styled-components';
+
 import { Tooltip } from '@trezor/components';
-import { Coin, Translation } from 'src/components/suite';
-import { useDevice, useSelector } from 'src/hooks/suite';
-import type { Network } from 'src/types/wallet';
 import {
     getDeviceDisplayName,
     getFirmwareVersion,
     isDeviceInBootloaderMode,
 } from '@trezor/device-utils';
-import { selectSupportedNetworks } from 'src/reducers/suite/suiteReducer';
 import { versionUtils } from '@trezor/utils';
+
+import { Coin, Translation } from 'src/components/suite';
+import { useDevice, useSelector } from 'src/hooks/suite';
+import type { Network } from 'src/types/wallet';
+import { selectSupportedNetworks } from 'src/reducers/suite/deviceReducer';
 import { getCoinUnavailabilityMessage } from 'src/utils/suite/device';
 
 const Wrapper = styled.div`

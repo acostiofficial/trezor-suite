@@ -1,14 +1,19 @@
 import React from 'react';
+
+import styled from 'styled-components';
+
+import { pickByDeviceModel } from '@trezor/device-utils';
+import { DeviceModelInternal } from '@trezor/connect';
+
 import { OnboardingButtonCta } from 'src/components/onboarding';
 import { SelectWordCount, SelectRecoveryType, SelectRecoveryWord } from 'src/components/recovery';
 import { Translation } from 'src/components/suite';
 import { goToNextStep, updateAnalytics } from 'src/actions/onboarding/onboardingActions';
 import { useDispatch, useRecovery, useSelector } from 'src/hooks/suite';
-import RecoveryStepBox from './RecoveryStepBox';
-import { pickByDeviceModel } from '@trezor/device-utils';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
-import styled from 'styled-components';
-import { DeviceModelInternal } from '@trezor/connect';
+
+import RecoveryStepBox from './RecoveryStepBox';
+import { selectDevice } from '../../../../reducers/suite/deviceReducer';
 
 const InProgressRecoveryStepBox = styled(RecoveryStepBox)<{
     deviceModelInternal: DeviceModelInternal;
@@ -19,7 +24,7 @@ const InProgressRecoveryStepBox = styled(RecoveryStepBox)<{
 
 export const RecoveryStep = () => {
     const isActionAbortable = useSelector(selectIsActionAbortable);
-    const device = useSelector(state => state.suite.device);
+    const device = useSelector(selectDevice);
     const dispatch = useDispatch();
 
     const {
