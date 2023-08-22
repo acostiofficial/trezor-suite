@@ -2,37 +2,37 @@ import { createAction } from '@reduxjs/toolkit';
 
 import { PartialDiscovery } from '@suite-common/wallet-types';
 
-export const DISCOVERY_MODULE_PREFIX = '@common/wallet-core/discovery';
+export const discoveryActionsPrefix = '@common/wallet-core/discovery';
 
-export const createDiscovery = createAction(`${DISCOVERY_MODULE_PREFIX}/create`, payload => ({
+export const createDiscovery = createAction(`${discoveryActionsPrefix}/create`, payload => ({
     payload,
 }));
 
-export const startDiscovery = createAction(`${DISCOVERY_MODULE_PREFIX}/start`, payload => ({
+export const startDiscovery = createAction(`${discoveryActionsPrefix}/start`, payload => ({
     payload,
 }));
 
-export const interruptDiscovery = createAction(`${DISCOVERY_MODULE_PREFIX}/interrupt`, payload => ({
+export const interruptDiscovery = createAction(`${discoveryActionsPrefix}/interrupt`, payload => ({
     payload,
 }));
 
-export const completeDiscovery = createAction(`${DISCOVERY_MODULE_PREFIX}/complete`, payload => ({
+export const completeDiscovery = createAction(`${discoveryActionsPrefix}/complete`, payload => ({
     payload,
 }));
 
-export const stopDiscovery = createAction(`${DISCOVERY_MODULE_PREFIX}/stop`, payload => ({
+export const stopDiscovery = createAction(`${discoveryActionsPrefix}/stop`, payload => ({
     payload,
 }));
 
 export const removeDiscovery = createAction(
-    `${DISCOVERY_MODULE_PREFIX}/remove`,
+    `${discoveryActionsPrefix}/remove`,
     (deviceState: string): { payload: string } => ({
         payload: deviceState,
     }),
 );
 
 export const updateDiscovery = createAction(
-    `${DISCOVERY_MODULE_PREFIX}/update`,
+    `${discoveryActionsPrefix}/update`,
     (payload: PartialDiscovery) => ({ payload }),
 );
 
