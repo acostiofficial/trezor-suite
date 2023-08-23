@@ -77,7 +77,7 @@ export default [
         description: 'Show public key, device not connected',
         initialState: {
             device: {
-                device: getSuiteDevice({ connected: false }),
+                selectedDevice: getSuiteDevice({ connected: false }),
             },
         },
         mocks: {},
@@ -96,7 +96,7 @@ export default [
         description: 'Show public key, device is undefined',
         initialState: {
             device: {
-                device: undefined,
+                selectedDevice: undefined,
             },
         },
         mocks: {},

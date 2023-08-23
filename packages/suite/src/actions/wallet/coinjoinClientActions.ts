@@ -36,9 +36,9 @@ import {
     selectRoundsDurationInHours,
     selectCoinjoinAccounts,
 } from 'src/reducers/wallet/coinjoinReducer';
+import { selectDevices, selectDevice } from 'src/reducers/suite/deviceReducer';
 
 import * as COINJOIN from './constants/coinjoinConstants';
-import { selectDevices, selectDevice } from '../../reducers/suite/deviceReducer';
 
 const clientEnable = (symbol: Account['symbol']) =>
     ({
