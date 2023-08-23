@@ -1,16 +1,20 @@
 import React, { useEffect } from 'react';
+
 import styled from 'styled-components';
 
-import { Translation, Modal } from 'src/components/suite';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { QrCode, QRCODE_PADDING, QRCODE_SIZE } from 'src/components/suite/QrCode';
 import { Button, ConfirmOnDevice, ModalProps, variables } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
-import DeviceDisconnected from './Address/components/DeviceDisconnected';
+
+import { QrCode, QRCODE_PADDING, QRCODE_SIZE } from 'src/components/suite/QrCode';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { Translation, Modal } from 'src/components/suite';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { MODAL } from 'src/actions/suite/constants';
 import { ThunkAction } from 'src/types/suite';
+import { selectDevice } from 'src/reducers/suite/deviceReducer';
+
+import DeviceDisconnected from './Address/components/DeviceDisconnected';
 
 const Wrapper = styled.div`
     display: flex;
@@ -69,7 +73,7 @@ export const ConfirmValueOnDevice = ({
     value,
     valueDataTest,
 }: ConfirmDeviceScreenProps) => {
-    const device = useSelector(state => state.suite.device);
+    const device = useSelector(selectDevice);
     const modalContext = useSelector(state => state.modal.context);
     const dispatch = useDispatch();
     const showCopyButton = isConfirmed || !device?.connected;

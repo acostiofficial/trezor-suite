@@ -188,7 +188,7 @@ describe('Preloader component', () => {
                     transport: { type: 'BridgeTransport' },
                 },
                 device: {
-                    device: { type: 'unacquired' },
+                    selectedDevice: { type: 'unacquired' },
                 },
             }),
         );
@@ -207,7 +207,7 @@ describe('Preloader component', () => {
                     transport: { type: 'WebUsbTransport' },
                 },
                 device: {
-                    device: { type: 'unreadable', error: 'LIBUSB_ERROR_ACCESS' },
+                    selectedDevice: { type: 'unreadable', error: 'LIBUSB_ERROR_ACCESS' },
                 },
             }),
         );
@@ -228,7 +228,7 @@ describe('Preloader component', () => {
                     transport: { type: 'BridgeTransport' },
                 },
                 device: {
-                    device: { type: 'unreadable', error: 'LIBUSB_ERROR_ACCESS' },
+                    selectedDevice: { type: 'unreadable', error: 'LIBUSB_ERROR_ACCESS' },
                 },
             }),
         );
@@ -249,7 +249,7 @@ describe('Preloader component', () => {
                     transport: { type: 'BridgeTransport' },
                 },
                 device: {
-                    device: { type: 'unreadable', error: 'LIBUSB_ERROR_ACCESS' },
+                    selectedDevice: { type: 'unreadable', error: 'LIBUSB_ERROR_ACCESS' },
                 },
             }),
         );
@@ -268,7 +268,7 @@ describe('Preloader component', () => {
                     transport: { type: 'BridgeTransport' },
                 },
                 device: {
-                    device: { type: 'unreadable', error: 'Unexpected error' },
+                    selectedDevice: { type: 'unreadable', error: 'Unexpected error' },
                 },
             }),
         );
@@ -287,7 +287,7 @@ describe('Preloader component', () => {
                     transport: { type: 'BridgeTransport' },
                 },
                 device: {
-                    device: { features: null },
+                    selectedDevice: { features: null },
                 },
             }),
         );
@@ -306,7 +306,7 @@ describe('Preloader component', () => {
                     transport: { type: 'BridgeTransport' },
                 },
                 device: {
-                    device: { mode: 'seedless', features: {} },
+                    selectedDevice: { mode: 'seedless', features: {} },
                 },
             }),
         );
@@ -326,7 +326,7 @@ describe('Preloader component', () => {
                     transport: { type: 'BridgeTransport' },
                 },
                 device: {
-                    device: { features: { recovery_mode: true } },
+                    selectedDevice: { features: { recovery_mode: true } },
                 },
             }),
         );
@@ -346,7 +346,7 @@ describe('Preloader component', () => {
                     transport: { type: 'BridgeTransport' },
                 },
                 device: {
-                    device: { mode: 'initialize', features: {} },
+                    selectedDevice: { mode: 'initialize', features: {} },
                 },
             }),
         );
@@ -366,7 +366,7 @@ describe('Preloader component', () => {
                     transport: { type: 'BridgeTransport' },
                 },
                 device: {
-                    device: { mode: 'bootloader', features: { firmware_present: true } },
+                    selectedDevice: { mode: 'bootloader', features: { firmware_present: true } },
                 },
             }),
         );
@@ -386,7 +386,7 @@ describe('Preloader component', () => {
                     transport: { type: 'BridgeTransport' },
                 },
                 device: {
-                    device: { mode: 'bootloader', features: { firmware_present: false } },
+                    selectedDevice: { mode: 'bootloader', features: { firmware_present: false } },
                 },
             }),
         );
@@ -406,7 +406,7 @@ describe('Preloader component', () => {
                     transport: { type: 'BridgeTransport' },
                 },
                 device: {
-                    device: { firmware: 'required', features: {} },
+                    selectedDevice: { firmware: 'required', features: {} },
                 },
             }),
         );

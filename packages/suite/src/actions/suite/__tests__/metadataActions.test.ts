@@ -69,7 +69,7 @@ export const getInitialState = (state?: InitialState) => {
 
     return {
         metadata: metadataReducer(metadata, initAction),
-        device: { devices: device ? [device] : [], device }, // device is needed for notification/event
+        device: { devices: device ? [device] : [], selectedDevice: device }, // device is needed for notification/event
         suite: {
             ...suite,
             settings: {
