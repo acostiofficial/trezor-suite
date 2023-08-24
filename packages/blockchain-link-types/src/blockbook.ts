@@ -13,6 +13,9 @@ import type {
     Utxo as BlockbookUtxo,
     WsInfoRes,
     WsBlockHashRes,
+    WsBlockFilterReq,
+    WsBlockFiltersBatchReq,
+    MempoolTxidFilterEntries,
     Token as BlockbookToken,
     EthereumParsedInputData as BlockbookEthereumParsedInputData,
     EthereumSpecific as BlockbookEthereumSpecific,
@@ -48,9 +51,7 @@ export interface MempoolFiltersParams {
     fromTimestamp?: number;
 }
 
-export interface MempoolFilters {
-    entries?: { [txid: string]: string };
-}
+type BlockFiltersBatch = `${string}:${string}:${string}`[];
 
 // XPUBAddress, ERC20, ERC721, ERC1155 - blockbook generated type (Token) is not strict enough
 export type XPUBAddress = {
@@ -190,10 +191,15 @@ export interface AvailableCurrencies {
 declare function FSend(method: 'getInfo'): Promise<ServerInfo>;
 declare function FSend(method: 'getBlockHash', params: { height: number }): Promise<BlockHash>;
 declare function FSend(method: 'getBlock', params: { id: string }): Promise<Block>;
+declare function FSend(method: 'getBlockFilter', params: WsBlockFilterReq): Promise<string>;
+declare function FSend(
+    method: 'getBlockFiltersBatch',
+    params: WsBlockFiltersBatchReq,
+): Promise<BlockFiltersBatch>;
 declare function FSend(
     method: 'getMempoolFilters',
     params: MempoolFiltersParams,
-): Promise<MempoolFilters>;
+): Promise<MempoolTxidFilterEntries>;
 declare function FSend(method: 'getAccountInfo', params: AccountInfoParams): Promise<AccountInfo>;
 declare function FSend(method: 'getAccountUtxo', params: AccountUtxoParams): Promise<AccountUtxo>;
 declare function FSend(method: 'getTransaction', params: { txid: string }): Promise<Transaction>;
