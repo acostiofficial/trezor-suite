@@ -75,6 +75,14 @@ export class BlockbookAPI extends BaseWebsocket<BlockbookEvents> {
         return this.send('getBlock', { id: `${block}` });
     }
 
+    getBlockFilter(blockHash: string) {
+        return this.send('getBlockFilter', { blockHash });
+    }
+
+    getBlockFiltersBatch(bestKnownBlockHash: string, pageSize?: number) {
+        return this.send('getBlockFiltersBatch', { bestKnownBlockHash, pageSize });
+    }
+
     getMempoolFilters(fromTimestamp?: number) {
         return this.send('getMempoolFilters', { fromTimestamp, scriptType: 'taproot' });
     }
