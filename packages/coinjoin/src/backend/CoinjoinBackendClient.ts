@@ -80,7 +80,8 @@ export class CoinjoinBackendClient {
                     .getBlockFiltersBatch(bestKnownBlockHash, pageSize)
                     .then<BlockFilterResponse>(response => {
                         if (!response.length) return { status: 'up-to-date' };
-                        const filters = response.map(item => {
+                        // TODO slice can be removed as soon as blockbook bug is fixed
+                        const filters = response.slice(0, pageSize).map(item => {
                             const [blockHeight, blockHash, filter] = item.split(':');
                             return { blockHeight: Number(blockHeight), blockHash, filter };
                         });
