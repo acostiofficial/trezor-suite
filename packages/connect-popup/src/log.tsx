@@ -107,11 +107,38 @@ const Inspector = () => {
             {logs.length > 0 ? (
                 <>
                     <DownloadButton array={logs} filename="trezor-connect-logs.json" />
-                    
                     To see logs, open dev tools.
+                    TODO: some nice copy. warning that logs contain sensitive information and bla bla bla.
+                    <hr />
+                    {/* todo: need to ensure this record is shown only once and is removed when app disconnects */}
+                    <div>
+                        todo: npm version. it would be nice to see information about npm versions of
+                        connected applications
+                    </div>
+                    <div>connected applications:</div>
+                    <ul>
+                        {logs
+                            .filter(log => {
+                                return log.message[0].includes('connect-web initiating');
+                            })
+                            .map((log, index) => {
+                                const { settings } = log.message[1];
+                                return (
+                                    <li key={index}>
+                                        trusted: {JSON.stringify(settings.trustedHost)}, version:{' '}
+                                        {settings.version}, manifest{' '}
+                                        {JSON.stringify(settings.manifest)}
+                                    </li>
+                                );
+                            })}
+                    </ul>
+                    <hr />
+                    <div>todo followup: information about iframe version</div>
+                    <hr />
+                    <div>todo followup: we could show some basic info about connected devices</div>
                 </>
             ) : (
-                <p>No logs yet.</p>
+                <p>Waiting for an app to connect</p>
             )}
         </>
     );
@@ -119,7 +146,7 @@ const Inspector = () => {
 
 const App = () => (
     <ThemeWrapper>
-        <h1>TrezorConnect Logger</h1>
+        <h1>@trezor/connect debug center</h1>
         <Inspector />
     </ThemeWrapper>
 );

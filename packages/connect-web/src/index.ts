@@ -173,6 +173,9 @@ const init = async (settings: Partial<ConnectSettings> = {}): Promise<void> => {
 
     _log.enabled = !!_settings.debug;
 
+    // todo: for QA it would be nice to report npm package version.
+    _log.debug('connect-web initiating', { settings: _settings });
+
     window.addEventListener('message', handleMessage);
     window.addEventListener('unload', dispose);
 
