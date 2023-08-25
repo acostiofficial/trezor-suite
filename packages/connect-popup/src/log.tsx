@@ -1,23 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-
 import { ObjectInspector } from 'react-inspector';
+
+import { Button } from '@trezor/components';
+
+import { ThemeProvider } from 'styled-components';
+
+import { THEME } from '@trezor/components';
+
+interface ReactWrapperProps {
+    children: React.ReactNode;
+}
+
+export const ThemeWrapper = ({ children }: ReactWrapperProps) => (
+    <ThemeProvider theme={THEME.light}>{children}</ThemeProvider>
+);
+
 
 const MAX_ENTRIES = 1000;
 
 const DownloadButton = ({ array, filename }: { array: any[]; filename: string }) => {
-    const buttonStyle = {
-        backgroundColor: '#01b757',
-        color: '#ffffff',
-        fontSize: '14px',
-        padding: '12px',
-        border: 'none',
-        borderRadius: '4px',
-        cursor: 'pointer',
-        width: '200px',
-        margin: '10px 0',
-    };
-
     const downloadArrayAsFile = () => {
         const data = JSON.stringify(array, null, 2);
         const blob = new Blob([data], { type: 'application/json' });
@@ -38,14 +40,9 @@ const DownloadButton = ({ array, filename }: { array: any[]; filename: string })
     };
 
     return (
-        <button
-            data-test="@log-container/download-button"
-            type="button"
-            style={buttonStyle}
-            onClick={downloadArrayAsFile}
-        >
+        <Button data-test="@log-container/download-button" onClick={downloadArrayAsFile}>
             Download Logs
-        </button>
+        </Button>
     );
 };
 
@@ -98,10 +95,10 @@ const Inspector = () => {
 };
 
 const App = () => (
-    <>
+    <ThemeWrapper>
         <h1>TrezorConnect Logger</h1>
         <Inspector />
-    </>
+    </ThemeWrapper>
 );
 
 const renderUI = () => {
