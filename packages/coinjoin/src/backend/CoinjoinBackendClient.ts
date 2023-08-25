@@ -81,6 +81,29 @@ export class CoinjoinBackendClient {
         );
     }
 
+    fetchBlockFilters(bestKnownBlockHash: string, pageSize: number, options?: RequestOptions) {
+        return this.getBlockbookApi(
+            api =>
+                api
+                    .getBlockFiltersBatch(bestKnownBlockHash, pageSize)
+                    .then<BlockFilterResponse>(response => {
+                        if (!response.length) return { status: 'up-to-date' };
+                        const filters = response.map(item => {
+                            const [blockHeight, blockHash, filter] = item.split(':');
+                            return { blockHeight: Number(blockHeight), blockHash, filter };
+                        });
+                        return { status: 'ok', filters };
+                    })
+                    .catch<BlockFilterResponse>(error => {
+                        if (identifyWsError(error) === 'ERROR_BLOCK_NOT_FOUND') {
+                            return { status: 'not-found' };
+                        }
+                        throw error;
+                    }),
+            { ...options, timeout: FILTERS_REQUEST_TIMEOUT },
+        );
+    }
+
     fetchMempoolFilters(timestamp?: number, options?: RequestOptions) {
         return this.getBlockbookApi(api => api.getMempoolFilters(timestamp), {
             ...options,

@@ -31,18 +31,12 @@ export type BlockFilter = {
     blockHeight: number;
     blockHash: string;
     filter: string;
-    prevHash: string;
-    blockTime: number;
 };
 
 export type BlockFilterResponse =
     | { status: 'up-to-date' }
     | { status: 'not-found' }
-    | {
-          status: 'ok';
-          bestHeight: number;
-          filters: BlockFilter[];
-      };
+    | { status: 'ok'; filters: BlockFilter[] };
 
 export type ScanAccountContext = {
     client: CoinjoinBackendClient;
@@ -109,7 +103,7 @@ export type FilterControllerContext = {
     onProgressInfo?: OnProgressInfo;
 };
 
-export type FilterClient = Pick<CoinjoinBackendClient, 'fetchFilters'>;
+export type FilterClient = Pick<CoinjoinBackendClient, 'fetchNetworkInfo' | 'fetchBlockFilters'>;
 
 export type MempoolClient = Pick<
     CoinjoinBackendClient,
