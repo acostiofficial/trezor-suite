@@ -6,7 +6,7 @@ import { arrayDistinct, createCooldown, promiseAllSequence } from '@trezor/utils
 import type { Logger } from '../types';
 import type { BlockbookTransaction, MempoolClient, OnProgressInfo } from '../types/backend';
 import type { AddressController } from './CoinjoinAddressController';
-import { getMempoolAddressScript, getMempoolMultiFilter } from './filters';
+import { getAddressScript, getMultiFilter } from './filters';
 import { getAllTxAddresses, isDoublespend } from './backendUtils';
 import { MEMPOOL_PURGE_CYCLE, PROGRESS_INFO_COOLDOWN } from '../constants';
 
@@ -100,7 +100,7 @@ export class CoinjoinMempoolController {
             .fetchMempoolFilters()
             .then(res =>
                 Object.entries(res).map(
-                    ([txid, filter]) => [txid, getMempoolMultiFilter(filter, txid)] as const,
+                    ([txid, filter]) => [txid, getMultiFilter(filter, txid)] as const,
                 ),
             );
 
@@ -137,7 +137,7 @@ export class CoinjoinMempoolController {
         while (receive.length || change.length) {
             const scripts = receive
                 .concat(change)
-                .map(({ address }) => getMempoolAddressScript(address, this.network));
+                .map(({ address }) => getAddressScript(address, this.network));
 
             // eslint-disable-next-line no-await-in-loop
             await promiseAllSequence(

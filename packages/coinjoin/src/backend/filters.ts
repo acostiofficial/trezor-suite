@@ -19,34 +19,19 @@ const createFilter = (data: Buffer) => {
     return filter;
 };
 
-export const getBlockAddressScript = (address: string, network: Network) => {
-    const script = addressBjs.toOutputScript(address, network);
-    return Buffer.concat([Buffer.from([script.length + 6]), script]);
-};
-
-export const getMempoolAddressScript = (address: string, network: Network) =>
+export const getAddressScript = (address: string, network: Network) =>
     addressBjs.toOutputScript(address, network);
 
-const getFilter = (filterHex: string, keyBuffer: Buffer) => {
+export const getFilter = (filterHex: string, keyHex: string) => {
+    if (!filterHex) return () => false;
     const filter = createFilter(Buffer.from(filterHex, 'hex'));
-    const key = keyBuffer.slice(0, KEY_SIZE);
+    const key = Buffer.from(keyHex, 'hex').slice(0, KEY_SIZE);
     return (script: Buffer) => filter.match(key, script);
 };
 
-export const getBlockFilter = (filterHex: string, blockHash: string) =>
-    getFilter(filterHex, Buffer.from(blockHash, 'hex').reverse());
-
-export const getMempoolFilter = (filterHex: string, txid: string) =>
-    getFilter(filterHex, Buffer.from(txid, 'hex'));
-
-const getMultiFilter = (filterHex: string, keyBuffer: Buffer) => {
+export const getMultiFilter = (filterHex: string, keyHex: string) => {
+    if (!filterHex) return () => false;
     const filter = createFilter(Buffer.from(filterHex, 'hex'));
-    const key = keyBuffer.slice(0, KEY_SIZE);
-    return (scripts: Buffer[]) => filter.matchAny(key, scripts);
+    const key = Buffer.from(keyHex, 'hex').slice(0, KEY_SIZE);
+    return (scripts: Buffer[]) => !!scripts.length && filter.matchAny(key, scripts);
 };
-
-export const getBlockMultiFilter = (filterHex: string, blockHash: string) =>
-    getMultiFilter(filterHex, Buffer.from(blockHash, 'hex').reverse());
-
-export const getMempoolMultiFilter = (filterHex: string, txid: string) =>
-    getMultiFilter(filterHex, Buffer.from(txid, 'hex'));

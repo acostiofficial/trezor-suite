@@ -1,7 +1,7 @@
 import { createCooldown } from '@trezor/utils';
 import { transformTransaction } from '@trezor/blockchain-link-utils/lib/blockbook';
 
-import { getBlockMultiFilter } from './filters';
+import { getMultiFilter } from './filters';
 import { doesTxContainAddress } from './backendUtils';
 import { CoinjoinAddressController } from './CoinjoinAddressController';
 import type {
@@ -45,7 +45,7 @@ export const scanAccount = async (
     const everyFilter = filters.getFilterIterator({ checkpoints }, { abortSignal, onProgressInfo });
     // eslint-disable-next-line no-restricted-syntax
     for await (const { filter, blockHash, blockHeight } of everyFilter) {
-        const isMatch = getBlockMultiFilter(filter, blockHash);
+        const isMatch = getMultiFilter(filter, blockHash);
         const scripts = addresses.receive.concat(addresses.change).map(({ script }) => script);
 
         if (isMatch(scripts)) {
