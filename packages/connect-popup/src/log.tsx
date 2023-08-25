@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { ObjectInspector } from 'react-inspector';
 
 import { Button } from '@trezor/components';
 
 import { ThemeProvider } from 'styled-components';
 
 import { THEME } from '@trezor/components';
-
+import { initLog } from '@trezor/connect/src/utils/debug'
+ 
 interface ReactWrapperProps {
     children: React.ReactNode;
 }
@@ -15,7 +15,6 @@ interface ReactWrapperProps {
 export const ThemeWrapper = ({ children }: ReactWrapperProps) => (
     <ThemeProvider theme={THEME.light}>{children}</ThemeProvider>
 );
-
 
 const MAX_ENTRIES = 1000;
 
@@ -48,6 +47,9 @@ const DownloadButton = ({ array, filename }: { array: any[]; filename: string })
 
 const useLogWorker = (setLogs: React.Dispatch<React.SetStateAction<any[]>>) => {
     const logWorker = new SharedWorker('./workers/shared-logger-worker.js');
+
+    const logger = initLog('', true);
+
     useEffect(() => {
         logWorker.port.onmessage = function (event) {
             const { data } = event;
@@ -62,6 +64,15 @@ const useLogWorker = (setLogs: React.Dispatch<React.SetStateAction<any[]>>) => {
                         }
                         return [...prevLogs, data.payload];
                     });
+
+                    const { level, prefix, css, message } =data.payload
+                    logger.prefix = prefix;
+                    logger.css = css;
+
+                    // TODO: fix types
+                    // @ts-expect-error
+                    logger[level](...message);
+                    
                     break;
                 default:
             }
@@ -85,7 +96,8 @@ const Inspector = () => {
             {logs.length > 0 ? (
                 <>
                     <DownloadButton array={logs} filename="trezor-connect-logs.json" />
-                    <ObjectInspector expandLevel={2} data={logs} />
+                    
+                    To see logs, open dev tools.
                 </>
             ) : (
                 <p>No logs yet.</p>
