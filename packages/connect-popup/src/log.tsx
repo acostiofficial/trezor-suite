@@ -6,8 +6,8 @@ import { Button } from '@trezor/components';
 import { ThemeProvider } from 'styled-components';
 
 import { THEME } from '@trezor/components';
-import { initLog } from '@trezor/connect/src/utils/debug'
- 
+import { initLog } from '@trezor/connect/src/utils/debug';
+
 interface ReactWrapperProps {
     children: React.ReactNode;
 }
@@ -56,6 +56,16 @@ const useLogWorker = (setLogs: React.Dispatch<React.SetStateAction<any[]>>) => {
             switch (data.type) {
                 case 'get-logs':
                     setLogs(data.payload);
+                    data.payload.forEach(log => {
+                        // todo: DRY this
+                        const { level, prefix, css, message } = log;
+                        logger.prefix = prefix;
+                        logger.css = css;
+
+                        // TODO: fix types
+                        // @ts-expect-error
+                        logger[level](...message);
+                    });
                     break;
                 case 'log-entry':
                     setLogs(prevLogs => {
@@ -65,14 +75,15 @@ const useLogWorker = (setLogs: React.Dispatch<React.SetStateAction<any[]>>) => {
                         return [...prevLogs, data.payload];
                     });
 
-                    const { level, prefix, css, message } =data.payload
+                    // todo in one fn
+                    const { level, prefix, css, message } = data.payload;
                     logger.prefix = prefix;
                     logger.css = css;
 
                     // TODO: fix types
                     // @ts-expect-error
                     logger[level](...message);
-                    
+
                     break;
                 default:
             }

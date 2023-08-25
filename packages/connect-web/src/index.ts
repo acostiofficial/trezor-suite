@@ -23,7 +23,7 @@ import {
     CallMethod,
 } from '@trezor/connect/lib/exports';
 import { factory } from '@trezor/connect/lib/factory';
-import { initLog } from '@trezor/connect/lib/utils/debug';
+import { initLog, setLogWriter, LogMessage, LogWriter } from '@trezor/connect/lib/utils/debug';
 import { config } from '@trezor/connect/lib/data/config';
 
 import * as iframe from './iframe';
@@ -32,7 +32,15 @@ import webUSBButton from './webusb/button';
 import { parseConnectSettings } from './connectSettings';
 
 const eventEmitter = new EventEmitter();
-const _log = initLog('@trezor/connect');
+const _log = initLog('@trezor/connect-web', true);
+
+const worker = new SharedWorker('http://localhost:8088/workers/shared-logger-worker.js');
+worker.port.start();
+const logWriterFactory = (): LogWriter => ({
+    add: (message: LogMessage) =>
+        worker.port.postMessage({ type: 'add-log', data: JSON.parse(JSON.stringify(message)) }),
+});
+setLogWriter(logWriterFactory);
 
 let _settings = parseConnectSettings();
 let _popupManager: popup.PopupManager | undefined;
@@ -82,7 +90,7 @@ const handleMessage = (messageEvent: PostMessageEvent) => {
     const message = parseMessage(messageEvent.data);
     const id = message.id || 0;
 
-    _log.log('handleMessage', message);
+    _log.debug('handleMessage', message);
 
     switch (message.event) {
         case RESPONSE_EVENT:
@@ -133,7 +141,7 @@ const handleMessage = (messageEvent: PostMessageEvent) => {
             break;
 
         default:
-            _log.log('Undefined message', message.event, messageEvent);
+            _log.debug('Undefined message', message.event, messageEvent);
     }
 };
 
