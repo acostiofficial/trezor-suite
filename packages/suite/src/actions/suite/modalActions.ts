@@ -5,8 +5,7 @@ import { MODAL, SUITE } from 'src/actions/suite/constants';
 import { Route, Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import { Account, WalletAccountTransaction } from 'src/types/wallet';
 import { RequestEnableTorResponse } from 'src/components/suite/modals/RequestEnableTor';
-
-import { selectDevice } from '../../reducers/suite/deviceReducer';
+import { selectDevice } from 'src/reducers/suite/deviceReducer';
 
 export type UserContextPayload =
     | {

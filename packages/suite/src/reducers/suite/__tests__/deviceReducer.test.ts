@@ -1,9 +1,12 @@
 import { testMocks } from '@suite-common/test-utils';
 
-import deviceReducer, { isUnlocked } from 'src/reducers/suite/deviceReducer';
+import { isUnlocked, prepareDeviceReducer } from 'src/reducers/suite/deviceReducer';
 import { Action } from 'src/types/suite';
+import { extraDependencies } from 'src/support/extraDependencies';
 
 import fixtures from '../__fixtures__/deviceReducer';
+
+const deviceReducer = prepareDeviceReducer(extraDependencies);
 
 type State = ReturnType<typeof deviceReducer>;
 

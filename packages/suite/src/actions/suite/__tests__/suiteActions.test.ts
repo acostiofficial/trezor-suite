@@ -9,10 +9,11 @@ import { DEVICE } from '@trezor/connect';
 
 import { configureStore } from 'src/support/tests/configureStore';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import deviceReducer, {
+import {
     selectDevices,
     selectDevicesCount,
     selectDevice,
+    prepareDeviceReducer,
 } from 'src/reducers/suite/deviceReducer';
 import routerReducer from 'src/reducers/suite/routerReducer';
 import modalReducer from 'src/reducers/suite/modalReducer';
@@ -26,6 +27,7 @@ import fixtures from '../__fixtures__/suiteActions';
 const { getSuiteDevice } = global.JestMocks;
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
+const deviceReducer = prepareDeviceReducer(extraDependencies);
 
 jest.mock('@trezor/connect', () => {
     let fixture: any;
@@ -55,6 +57,7 @@ jest.mock('@trezor/connect', () => {
                 },
         },
         DEVICE: {
+            CHANGED: 'device-changed',
             CONNECT: 'device-connect',
             DISCONNECT: 'device-disconnect',
         },

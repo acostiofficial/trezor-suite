@@ -6,13 +6,15 @@ import routerReducer from 'src/reducers/suite/routerReducer';
 import modalReducer from 'src/reducers/suite/modalReducer';
 import { prepareFirmwareMiddleware } from 'src/middlewares/firmware/firmwareMiddleware';
 import { extraDependencies } from 'src/support/extraDependencies';
-import deviceReducer from 'src/reducers/suite/deviceReducer';
+import { prepareDeviceReducer } from 'src/reducers/suite/deviceReducer';
 
 const { getSuiteDevice } = global.JestMocks;
 
 const firmwareMiddleware = prepareFirmwareMiddleware(extraDependencies);
 
 const middlewares = [firmwareMiddleware];
+
+const deviceReducer = prepareDeviceReducer(extraDependencies);
 
 type FirmwareState = ReturnType<typeof firmwareReducer>;
 type RouterState = ReturnType<typeof routerReducer>;

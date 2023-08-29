@@ -3,11 +3,14 @@
 
 import { configureStore } from 'src/support/tests/configureStore';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import deviceReducer from 'src/reducers/suite/deviceReducer';
+import { prepareDeviceReducer } from 'src/reducers/suite/deviceReducer';
+import { extraDependencies } from 'src/support/extraDependencies';
 
 import fixtures from '../__fixtures__/deviceSettings';
 
 const { getSuiteDevice } = global.JestMocks;
+
+const deviceReducer = prepareDeviceReducer(extraDependencies);
 
 jest.mock('@trezor/connect', () => {
     let fixture: { success: boolean; payload: any };
@@ -42,6 +45,8 @@ jest.mock('@trezor/connect', () => {
         },
         DEVICE: {
             CHANGED: 'device-changed',
+            CONNECT_UNACQUIRED: 'device-connect_unacquired',
+            DISCONNECT: 'device-disconnect',
         },
         TRANSPORT: {},
         BLOCKCHAIN: {},

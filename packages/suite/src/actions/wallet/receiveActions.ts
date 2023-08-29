@@ -11,8 +11,7 @@ import {
     getNetworkId,
     getAddressType,
 } from 'src/utils/wallet/cardanoUtils';
-
-import { selectDevice } from '../../reducers/suite/deviceReducer';
+import { selectDevice } from 'src/reducers/suite/deviceReducer';
 
 export type ReceiveAction =
     | { type: typeof RECEIVE.DISPOSE }
