@@ -56,7 +56,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         }
 
         // consider if discovery should be interrupted
-        let interruptionIntent = action.type === SUITE.SELECT_DEVICE;
+        let interruptionIntent = action.type === deviceActions.selectDevice.type;
         if (action.type === ROUTER.LOCATION_CHANGE) {
             interruptionIntent =
                 getApp(action.payload.url) !== 'wallet' &&
@@ -92,7 +92,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             device.features &&
             !device.state &&
             !locks.includes(SUITE.LOCK_TYPE.DEVICE) &&
-            (action.type === SUITE.SELECT_DEVICE || action.type === SUITE.APP_CHANGED)
+            (deviceActions.selectDevice.match(action) || action.type === SUITE.APP_CHANGED)
         ) {
             authorizationIntent = true;
         }
@@ -151,7 +151,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         if (
             becomesConnected ||
             action.type === SUITE.APP_CHANGED ||
-            action.type === SUITE.SELECT_DEVICE ||
+            deviceActions.selectDevice.match(action) ||
             deviceActions.authDevice.match(action) ||
             walletSettingsActions.changeNetworks.match(action) ||
             accountsActions.changeAccountVisibility.match(action)

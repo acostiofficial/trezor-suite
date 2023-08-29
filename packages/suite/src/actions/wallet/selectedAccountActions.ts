@@ -10,6 +10,8 @@ import * as comparisonUtils from 'src/utils/suite/comparisonUtils';
 import { getSelectedAccount } from 'src/utils/wallet/accountUtils';
 import { Action, Dispatch, GetState, AppState } from 'src/types/suite';
 
+import { deviceActions } from '../suite/deviceActions';
+
 const getAccountState = (state: AppState): SelectedAccountStatus => {
     const device = selectDevice(state);
 
@@ -154,7 +156,7 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
 // other actions will be ignored
 const actions = [
     ROUTER.LOCATION_CHANGE,
-    SUITE.SELECT_DEVICE,
+    deviceActions.selectDevice.type,
     SUITE.UPDATE_SELECTED_DEVICE,
     metadataActions.setAccountAdd.type,
     accountsActions.createAccount.type,

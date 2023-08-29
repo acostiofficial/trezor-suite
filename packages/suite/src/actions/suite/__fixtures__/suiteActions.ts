@@ -353,7 +353,7 @@ const handleDeviceConnect = [
             suite: {},
         },
         device: CONNECT_DEVICE,
-        result: SUITE.SELECT_DEVICE,
+        result: deviceActions.selectDevice.type,
     },
     {
         description: `ignore`,
@@ -373,7 +373,7 @@ const handleDeviceConnect = [
             firmware: { status: 'waiting-for-bootloader' },
         },
         device: getConnectDevice({ path: '3', mode: 'bootloader' }),
-        result: SUITE.SELECT_DEVICE,
+        result: deviceActions.selectDevice.type,
     },
 ];
 
@@ -449,7 +449,7 @@ const handleDeviceDisconnect = [
         },
         device: CONNECT_DEVICE,
         result: {
-            type: SUITE.SELECT_DEVICE,
+            type: deviceActions.selectDevice.type,
             payload: getSuiteDevice({
                 state: 'abc',
                 instance: 1,

@@ -59,6 +59,10 @@ const addButtonRequest = createAction(
 
 const requestDeviceReconnect = createAction(`${MODULE_PREFIX}/requestDeviceReconnect`);
 
+const selectDevice = createAction(`${MODULE_PREFIX}/selectDevice`, (payload?: TrezorDevice) => ({
+    payload,
+}));
+
 export const deviceActions = {
     connectDevice,
     connectUnacquiredDevice,
@@ -73,4 +77,5 @@ export const deviceActions = {
     authDevice,
     addButtonRequest,
     requestDeviceReconnect,
+    selectDevice,
 };

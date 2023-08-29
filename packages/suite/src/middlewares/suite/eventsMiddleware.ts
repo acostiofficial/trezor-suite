@@ -57,7 +57,7 @@ const eventsMiddleware =
             }
         }
 
-        if (action.type === SUITE.SELECT_DEVICE) {
+        if (deviceActions.selectDevice.match(action)) {
             // Find and mark all notification associated (new connected!, update required etc)
             if (!action.payload) return action;
             const notifications = api

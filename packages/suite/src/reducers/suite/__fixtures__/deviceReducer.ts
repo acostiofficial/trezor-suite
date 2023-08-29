@@ -1,6 +1,5 @@
 import { DEVICE } from '@trezor/connect';
 
-import { SUITE } from 'src/actions/suite/constants';
 import { deviceActions } from 'src/actions/suite/deviceActions';
 
 const { getConnectDevice, getSuiteDevice } = global.JestMocks;
@@ -599,7 +598,7 @@ const updateTimestamp = [
         initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
-                type: SUITE.SELECT_DEVICE,
+                type: deviceActions.selectDevice.type,
                 payload: SUITE_DEVICE,
             },
         ],
@@ -624,7 +623,7 @@ const updateTimestamp = [
         },
         actions: [
             {
-                type: SUITE.SELECT_DEVICE,
+                type: deviceActions.selectDevice.type,
                 payload: SUITE_DEVICE,
             },
         ],
@@ -649,7 +648,7 @@ const updateTimestamp = [
         },
         actions: [
             {
-                type: SUITE.SELECT_DEVICE,
+                type: deviceActions.selectDevice.type,
                 payload: getSuiteDevice({ instance: 1 }),
             },
         ],
@@ -676,11 +675,11 @@ const updateTimestamp = [
         },
         actions: [
             {
-                type: SUITE.SELECT_DEVICE,
+                type: deviceActions.selectDevice.type,
                 payload: SUITE_DEVICE,
             },
             {
-                type: SUITE.SELECT_DEVICE,
+                type: deviceActions.selectDevice.type,
                 payload: getSuiteDevice({ instance: 1 }),
             },
         ],
@@ -705,7 +704,7 @@ const updateTimestamp = [
         initialState: { devices: [] },
         actions: [
             {
-                type: SUITE.SELECT_DEVICE,
+                type: deviceActions.selectDevice.type,
             },
         ],
         result: [],
@@ -716,7 +715,7 @@ const updateTimestamp = [
         initialState: { devices: [] },
         actions: [
             {
-                type: SUITE.SELECT_DEVICE,
+                type: deviceActions.selectDevice.type,
                 payload: SUITE_DEVICE,
             },
         ],

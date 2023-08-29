@@ -454,13 +454,10 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, bui
                 state.selectedDevice.reconnectRequested = true;
             }
         })
-        .addMatcher(
-            action => action.type === SUITE.SELECT_DEVICE,
-            (state, action) => {
-                updateTimestamp(state, action.payload);
-                state.selectedDevice = action.payload;
-            },
-        )
+        .addCase(deviceActions.selectDevice, (state, { payload }) => {
+            updateTimestamp(state, payload);
+            state.selectedDevice = payload;
+        })
         .addMatcher(
             action => action.type === SUITE.UPDATE_SELECTED_DEVICE,
             (state, action) => {

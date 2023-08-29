@@ -70,7 +70,7 @@ export const extraDependencies: ExtraDependencies = {
         changeWalletSettingsNetworks: walletSettingsActions.changeNetworks,
         lockDevice: suiteActions.lockDevice,
         appChanged: suiteActions.appChanged,
-        setSelectedDevice: suiteActions.setSelectedDevice,
+        setSelectedDevice: deviceActions.selectDevice,
         updateSelectedDevice: suiteActions.updateSelectedDevice,
         requestAuthConfirm: suiteActions.requestAuthConfirm,
     },

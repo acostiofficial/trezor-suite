@@ -40,7 +40,6 @@ export type SuiteAction =
     | { type: typeof SUITE.READY }
     | { type: typeof SUITE.ERROR; error: string }
     | { type: typeof SUITE.DESKTOP_HANDSHAKE; payload: HandshakeElectron }
-    | { type: typeof SUITE.SELECT_DEVICE; payload?: TrezorDevice }
     | { type: typeof SUITE.UPDATE_SELECTED_DEVICE; payload: TrezorDevice }
     | { type: typeof requestAuthConfirm.type }
     | {
@@ -77,10 +76,6 @@ export const updateSelectedDevice = createAction(
     SUITE.UPDATE_SELECTED_DEVICE,
     (payload: TrezorDevice) => ({ payload }),
 );
-
-export const setSelectedDevice = createAction(SUITE.SELECT_DEVICE, (payload?: TrezorDevice) => ({
-    payload,
-}));
 
 export const appChanged = createAction(
     SUITE.APP_CHANGED,
@@ -353,7 +348,7 @@ export const selectDevice =
         }
 
         // 3. select requested device
-        dispatch(setSelectedDevice(payload));
+        dispatch(deviceActions.selectDevice(payload));
     };
 
 /**
@@ -496,7 +491,7 @@ export const forgetDisconnectedDevices =
 const actions = [
     deviceActions.authDevice.type,
     deviceActions.authFailed.type,
-    setSelectedDevice.type,
+    deviceActions.selectDevice.type,
     deviceActions.receiveAuthConfirm.type,
     deviceActions.updatePassphraseMode.type,
     deviceActions.addButtonRequest.type,

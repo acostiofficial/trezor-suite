@@ -11,7 +11,7 @@ import {
 } from '@suite-common/wallet-core';
 import { settingsCommonConfig } from '@suite-common/suite-config';
 
-import { ROUTER, SUITE } from 'src/actions/suite/constants';
+import { ROUTER } from 'src/actions/suite/constants';
 import { WALLET_SETTINGS } from 'src/actions/settings/constants';
 import * as selectedAccountActions from 'src/actions/wallet/selectedAccountActions';
 import * as sendFormActions from 'src/actions/wallet/sendFormActions';
@@ -78,7 +78,7 @@ const walletMiddleware =
 
         const prevRouter = prevState.router;
         const nextRouter = api.getState().router;
-        let resetReducers = action.type === SUITE.SELECT_DEVICE;
+        let resetReducers = action.type === deviceActions.selectDevice.type;
 
         // show modal when leaving the spend tab in active trade
         if (action.type === ROUTER.LOCATION_CHANGE) {

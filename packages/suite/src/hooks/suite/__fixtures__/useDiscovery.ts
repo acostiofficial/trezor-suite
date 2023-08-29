@@ -2,6 +2,7 @@ import { discoveryActions } from '@suite-common/wallet-core';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 
 import { SUITE } from 'src/actions/suite/constants';
+import { deviceActions } from 'src/actions/suite/deviceActions';
 
 const { getSuiteDevice } = global.JestMocks;
 const DEV = getSuiteDevice();
@@ -9,7 +10,7 @@ const DEV = getSuiteDevice();
 export const actions = [
     {
         action: {
-            type: SUITE.SELECT_DEVICE,
+            type: deviceActions.selectDevice.type,
             payload: undefined,
         },
         renders: 1,
@@ -20,7 +21,7 @@ export const actions = [
     },
     {
         action: {
-            type: SUITE.SELECT_DEVICE,
+            type: deviceActions.selectDevice.type,
             payload: DEV,
         },
         renders: 2,

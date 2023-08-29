@@ -7,6 +7,7 @@ import modalReducer from 'src/reducers/suite/modalReducer';
 import { prepareFirmwareMiddleware } from 'src/middlewares/firmware/firmwareMiddleware';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { prepareDeviceReducer } from 'src/reducers/suite/deviceReducer';
+import { deviceActions } from 'src/actions/suite/deviceActions';
 
 const { getSuiteDevice } = global.JestMocks;
 
@@ -120,7 +121,7 @@ describe('firmware middleware', () => {
         );
 
         await store.dispatch({
-            type: SUITE.SELECT_DEVICE,
+            type: deviceActions.selectDevice.type,
             payload: getSuiteDevice({
                 mode: 'bootloader',
                 connected: true,
@@ -130,7 +131,7 @@ describe('firmware middleware', () => {
         const result = filterThunkActionTypes(store.getActions());
         expect(result).toEqual([
             {
-                type: SUITE.SELECT_DEVICE,
+                type: deviceActions.selectDevice.type,
                 payload: getSuiteDevice({ connected: true, mode: 'bootloader' }),
             },
             { type: firmwareActions.setStatus.type, payload: 'started' },
@@ -148,7 +149,7 @@ describe('firmware middleware', () => {
         );
 
         await store.dispatch({
-            type: SUITE.SELECT_DEVICE,
+            type: deviceActions.selectDevice.type,
             payload: getSuiteDevice({ firmware: 'valid', connected: true }),
         });
 
@@ -156,7 +157,7 @@ describe('firmware middleware', () => {
 
         expect(result).toEqual([
             {
-                type: SUITE.SELECT_DEVICE,
+                type: deviceActions.selectDevice.type,
                 payload: getSuiteDevice({ firmware: 'valid', connected: true }),
             },
             { type: firmwareActions.setStatus.type, payload: 'validation' },
@@ -174,7 +175,7 @@ describe('firmware middleware', () => {
         );
 
         await store.dispatch({
-            type: SUITE.SELECT_DEVICE,
+            type: deviceActions.selectDevice.type,
             payload: getSuiteDevice({ firmware: 'none' }),
         });
     });
