@@ -89,7 +89,7 @@ export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) =
         const newDevices = selectDevices(getState());
         deviceInstances.push(...deviceUtils.getDeviceInstances(newDevice!, newDevices));
         deviceInstances.forEach(d => {
-            dispatch(suiteActions.forgetDevice(d));
+            dispatch(deviceActions.forgetDevice(d));
         });
         dispatch(notificationsActions.addToast({ type: 'device-wiped' }));
         analytics.report({

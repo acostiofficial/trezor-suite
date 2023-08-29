@@ -965,7 +965,7 @@ const authConfirm = [
             },
         },
         result: {
-            type: SUITE.FORGET_DEVICE,
+            type: deviceActions.forgetDevice.type,
         },
     },
     {

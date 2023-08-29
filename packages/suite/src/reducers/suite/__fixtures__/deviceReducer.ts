@@ -1088,15 +1088,15 @@ const forget = [
         },
         actions: [
             {
-                type: SUITE.FORGET_DEVICE,
+                type: deviceActions.forgetDevice.type,
                 payload: getSuiteDevice({ instance: 1 }),
             },
             {
-                type: SUITE.FORGET_DEVICE,
+                type: deviceActions.forgetDevice.type,
                 payload: SUITE_DEVICE,
             },
             {
-                type: SUITE.FORGET_DEVICE,
+                type: deviceActions.forgetDevice.type,
                 payload: getSuiteDevice({ connected: true, instance: 3 }),
             },
         ],
@@ -1140,17 +1140,17 @@ const forget = [
         },
         actions: [
             {
-                type: SUITE.FORGET_DEVICE,
+                type: deviceActions.forgetDevice.type,
                 payload: getSuiteDevice({ instance: 3 }),
             },
             {
-                type: SUITE.FORGET_DEVICE,
+                type: deviceActions.forgetDevice.type,
                 payload: getSuiteDevice(undefined, {
                     device_id: 'ignored-device-id',
                 }),
             },
             {
-                type: SUITE.FORGET_DEVICE,
+                type: deviceActions.forgetDevice.type,
                 payload: SUITE_DEVICE,
             },
         ],
@@ -1174,7 +1174,7 @@ const forget = [
         initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
-                type: SUITE.FORGET_DEVICE,
+                type: deviceActions.forgetDevice.type,
                 payload: getSuiteDevice({
                     type: 'unacquired',
                 }),
@@ -1191,7 +1191,7 @@ const forget = [
         initialState: { devices: [] },
         actions: [
             {
-                type: SUITE.FORGET_DEVICE,
+                type: deviceActions.forgetDevice.type,
                 payload: SUITE_DEVICE,
             },
         ],

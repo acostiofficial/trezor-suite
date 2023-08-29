@@ -45,7 +45,6 @@ export type SuiteAction =
     | { type: typeof SUITE.UPDATE_SELECTED_DEVICE; payload: TrezorDevice }
     | { type: typeof SUITE.AUTH_DEVICE; payload: TrezorDevice; state: string }
     | { type: typeof requestAuthConfirm.type }
-    | { type: typeof SUITE.FORGET_DEVICE; payload: TrezorDevice }
     | {
           type: typeof SUITE.SET_LANGUAGE;
           locale: Locale;
@@ -395,11 +394,6 @@ export const toggleRememberDevice =
         );
     };
 
-export const forgetDevice = (payload: TrezorDevice): SuiteAction => ({
-    type: SUITE.FORGET_DEVICE,
-    payload,
-});
-
 /**
  * Triggered by `@trezor/connect DEVICE_EVENT`
  * @param {Device} device
@@ -506,7 +500,7 @@ export const forgetDisconnectedDevices =
         const deviceInstances = devices.filter(d => d.id === device.id);
         deviceInstances.forEach(d => {
             if (d.features && !d.remember) {
-                dispatch(forgetDevice(d));
+                dispatch(deviceActions.forgetDevice(d));
             }
         });
     };
@@ -523,7 +517,7 @@ const actions = [
     deviceActions.updatePassphraseMode.type,
     SUITE.ADD_BUTTON_REQUEST,
     deviceActions.rememberDevice.type,
-    SUITE.FORGET_DEVICE,
+    deviceActions.forgetDevice.type,
     METADATA.SET_DEVICE_METADATA,
     ...Object.values(DEVICE).filter(v => typeof v === 'string'),
 ];
@@ -673,7 +667,7 @@ export const authConfirm = () => async (dispatch: Dispatch, getState: GetState) 
             // needs await to propagate all actions
             await dispatch(createDeviceInstance(device));
             // forget previous empty wallet
-            dispatch(forgetDevice(device));
+            dispatch(deviceActions.forgetDevice(device));
             return;
         }
         dispatch(
@@ -713,7 +707,7 @@ export const switchDuplicatedDevice =
         // forgetDevice > suiteMiddleware > handleDeviceDisconnect > selectDevice (first available)
         await dispatch(selectDevice(duplicate));
         // remove stateless instance
-        dispatch(forgetDevice(device));
+        dispatch(deviceActions.forgetDevice(device));
     };
 
 export const requestDeviceReconnect = () => ({

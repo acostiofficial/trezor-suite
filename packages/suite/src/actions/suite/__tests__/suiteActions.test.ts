@@ -23,6 +23,7 @@ import { extraDependencies } from 'src/support/extraDependencies';
 import { SUITE } from '../constants';
 import * as suiteActions from '../suiteActions';
 import fixtures from '../__fixtures__/suiteActions';
+import { deviceActions } from '../deviceActions';
 
 const { getSuiteDevice } = global.JestMocks;
 
@@ -319,8 +320,8 @@ describe('Suite Actions', () => {
     // just for coverage
     it('misc', () => {
         const SUITE_DEVICE = getSuiteDevice({ path: '1' });
-        expect(suiteActions.forgetDevice(SUITE_DEVICE)).toMatchObject({
-            type: SUITE.FORGET_DEVICE,
+        expect(deviceActions.forgetDevice(SUITE_DEVICE)).toMatchObject({
+            type: deviceActions.forgetDevice.type,
         });
         expect(suiteActions.setDebugMode({ showDebugMenu: true })).toMatchObject({
             type: SUITE.SET_DEBUG_MODE,

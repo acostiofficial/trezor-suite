@@ -9,6 +9,8 @@ import * as deviceUtils from 'src/utils/suite/device';
 import { AppState, Action, Dispatch } from 'src/types/suite';
 import { selectDevices, selectDevice } from 'src/reducers/suite/deviceReducer';
 
+import { deviceActions } from '../../actions/suite/deviceActions';
+
 /*
  * Middleware for event notifications.
  * Catch certain actions and store them in notifications reducer
@@ -71,19 +73,16 @@ const eventsMiddleware =
             }
         }
 
-        if (action.type === DEVICE.DISCONNECT || action.type === SUITE.FORGET_DEVICE) {
+        if (action.type === DEVICE.DISCONNECT || deviceActions.forgetDevice.match(action)) {
             // remove notifications associated with disconnected device
             // api.dispatch(addEvent({ type: 'disconnected-device' }));
             const { notifications } = api.getState();
             const devices = selectDevices(prevState);
-            const affectedDevices =
-                action.type === SUITE.FORGET_DEVICE
-                    ? devices.filter(
-                          d =>
-                              d.path === action.payload.path &&
-                              d.instance === action.payload.instance,
-                      )
-                    : devices.filter(d => d.path === action.payload.path);
+            const affectedDevices = deviceActions.forgetDevice.match(action)
+                ? devices.filter(
+                      d => d.path === action.payload.path && d.instance === action.payload.instance,
+                  )
+                : devices.filter(d => d.path === action.payload.path);
             affectedDevices.forEach(d => {
                 if (!d.remember) {
                     const toRemove = notifications.filter(n =>

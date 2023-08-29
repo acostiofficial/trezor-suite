@@ -3,6 +3,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { SUITE } from 'src/actions/suite/constants';
 
 import * as deviceSettingsActions from '../deviceSettingsActions';
+import { deviceActions } from '../../suite/deviceActions';
 
 const { getSuiteDevice } = global.JestMocks;
 
@@ -16,9 +17,12 @@ export default [
             actions: [
                 { type: 'device-changed' },
                 { type: '@suite/update-selected-device' },
-                { type: SUITE.FORGET_DEVICE, payload: { features: { device_id: 'device-id' } } },
                 {
-                    type: SUITE.FORGET_DEVICE,
+                    type: deviceActions.forgetDevice.type,
+                    payload: { features: { device_id: 'device-id' } },
+                },
+                {
+                    type: deviceActions.forgetDevice.type,
                     payload: { features: { device_id: 'new-device-id' } },
                 },
                 { type: notificationsActions.addToast.type, payload: { type: 'device-wiped' } },
@@ -57,25 +61,28 @@ export default [
             actions: [
                 { type: 'device-changed' },
                 { type: '@suite/update-selected-device' },
-                { type: SUITE.FORGET_DEVICE, payload: { features: { device_id: 'device-id' } } },
                 {
-                    type: SUITE.FORGET_DEVICE,
+                    type: deviceActions.forgetDevice.type,
+                    payload: { features: { device_id: 'device-id' } },
+                },
+                {
+                    type: deviceActions.forgetDevice.type,
                     payload: { instance: 1, features: { device_id: 'device-id' } },
                 },
                 {
-                    type: SUITE.FORGET_DEVICE,
+                    type: deviceActions.forgetDevice.type,
                     payload: { instance: 2, features: { device_id: 'device-id' } },
                 },
                 {
-                    type: SUITE.FORGET_DEVICE,
+                    type: deviceActions.forgetDevice.type,
                     payload: { features: { device_id: 'new-device-id' } },
                 },
                 {
-                    type: SUITE.FORGET_DEVICE,
+                    type: deviceActions.forgetDevice.type,
                     payload: { instance: 1, features: { device_id: 'new-device-id' } },
                 },
                 {
-                    type: SUITE.FORGET_DEVICE,
+                    type: deviceActions.forgetDevice.type,
                     payload: { instance: 2, features: { device_id: 'new-device-id' } },
                 },
                 { type: notificationsActions.addToast.type, payload: { type: 'device-wiped' } },

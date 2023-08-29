@@ -6,7 +6,6 @@ export const SELECT_DEVICE = '@suite/select-device';
 export const UPDATE_SELECTED_DEVICE = '@suite/update-selected-device';
 export const AUTH_DEVICE = '@suite/auth-device';
 export const REQUEST_AUTH_CONFIRM = '@suite/request-auth-confirm';
-export const FORGET_DEVICE = '@suite/forget-device';
 export const SET_LANGUAGE = '@suite/set-language';
 export const SET_DEBUG_MODE = '@suite/set-debug-mode';
 export const SET_FLAG = '@suite/set-flag';

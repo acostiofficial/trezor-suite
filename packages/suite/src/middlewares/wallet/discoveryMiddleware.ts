@@ -27,7 +27,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             prevDiscovery.status > DiscoveryStatus.IDLE &&
             prevDiscovery.status < DiscoveryStatus.STOPPING;
 
-        if (action.type === SUITE.FORGET_DEVICE && action.payload.state) {
+        if (deviceActions.forgetDevice.match(action) && action.payload.state) {
             dispatch(discoveryActions.removeDiscovery(action.payload.state));
         }
 

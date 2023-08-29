@@ -32,6 +32,10 @@ const suite =
             api.dispatch(suiteActions.selectDevice(action.payload));
         }
 
+        if (deviceActions.forgetDevice.match(action)) {
+            api.dispatch(suiteActions.handleDeviceDisconnect(action.payload));
+        }
+
         switch (action.type) {
             case SUITE.DESKTOP_HANDSHAKE:
                 if (action.payload.protocol) {
@@ -51,9 +55,6 @@ const suite =
                 api.dispatch(suiteActions.handleDeviceConnect(action.payload));
                 break;
             case DEVICE.DISCONNECT:
-                api.dispatch(suiteActions.handleDeviceDisconnect(action.payload));
-                break;
-            case SUITE.FORGET_DEVICE:
                 api.dispatch(suiteActions.handleDeviceDisconnect(action.payload));
                 break;
             case SUITE.REQUEST_AUTH_CONFIRM:

@@ -157,11 +157,11 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 );
             }
 
-            switch (action.type) {
-                case SUITE.FORGET_DEVICE:
-                    api.dispatch(storageActions.forgetDevice(action.payload));
-                    break;
+            if (deviceActions.forgetDevice.match(action)) {
+                api.dispatch(storageActions.forgetDevice(action.payload));
+            }
 
+            switch (action.type) {
                 case SUITE.UPDATE_SELECTED_DEVICE:
                     if (isDeviceRemembered(action.payload) && action.payload.mode === 'normal') {
                         storageActions.saveDevice(action.payload);
