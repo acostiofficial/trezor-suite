@@ -44,7 +44,7 @@ const breadcrumbActions = [
     DESKTOP_UPDATE.NOT_AVAILABLE,
     DESKTOP_UPDATE.READY,
     MODAL.CLOSE,
-    SUITE.AUTH_DEVICE,
+    deviceActions.authDevice.type,
     DEVICE.CONNECT,
     DEVICE.DISCONNECT,
     accountsActions.createAccount.type,

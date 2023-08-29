@@ -443,6 +443,9 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, bui
         .addCase(deviceActions.forgetDevice, (state, { payload }) => {
             forget(state, payload);
         })
+        .addCase(deviceActions.authDevice, (state, { payload }) => {
+            authDevice(state, payload.device, payload.state);
+        })
 
         .addMatcher(
             action => action.type === SUITE.ADD_BUTTON_REQUEST,
@@ -481,12 +484,6 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, bui
             action => action.type === STORAGE.LOAD,
             (state, action) => {
                 state.devices = action.payload.devices;
-            },
-        )
-        .addMatcher(
-            action => action.type === SUITE.AUTH_DEVICE,
-            (state, action) => {
-                authDevice(state, action.payload, action.state);
             },
         );
 });

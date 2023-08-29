@@ -47,6 +47,11 @@ const forgetDevice = createAction(`${MODULE_PREFIX}/forgetDevice`, (payload: Tre
     payload,
 }));
 
+const authDevice = createAction(
+    `${MODULE_PREFIX}/authDevice`,
+    (payload: { device: TrezorDevice; state: string }) => ({ payload }),
+);
+
 export const deviceActions = {
     connectDevice,
     connectUnacquiredDevice,
@@ -58,4 +63,5 @@ export const deviceActions = {
     createDeviceInstance,
     rememberDevice,
     forgetDevice,
+    authDevice,
 };

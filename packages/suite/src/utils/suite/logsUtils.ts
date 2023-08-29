@@ -107,24 +107,26 @@ export const redactDevice = (device: DeepPartial<TrezorDevice> | undefined) => {
 export const redactAction = (action: LogEntry) => {
     let payload;
 
+    if (accountsActions.updateSelectedAccount.match(action)) {
+        payload = {
+            ...action.payload,
+            account: redactAccount(action.payload?.account),
+            network: undefined,
+            discovery: undefined,
+        };
+    }
+
+    if (deviceActions.authDevice.match(action)) {
+        payload = {
+            state: REDACTED_REPLACEMENT,
+            ...redactDevice(action.payload.device),
+        };
+    }
+
     switch (action.type) {
-        case accountsActions.updateSelectedAccount.type:
-            payload = {
-                ...action.payload,
-                account: redactAccount(action.payload?.account),
-                network: undefined,
-                discovery: undefined,
-            };
-            break;
         case accountsActions.createAccount.type:
         case accountsActions.updateAccount.type:
             payload = redactAccount(action.payload);
-            break;
-        case SUITE.AUTH_DEVICE:
-            payload = {
-                state: REDACTED_REPLACEMENT,
-                ...redactDevice(action.payload),
-            };
             break;
         case DEVICE.CONNECT:
         case DEVICE.DISCONNECT:

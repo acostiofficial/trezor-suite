@@ -851,9 +851,11 @@ const authDevice = [
         initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
-                type: SUITE.AUTH_DEVICE,
-                payload: SUITE_DEVICE,
-                state: 'A',
+                type: deviceActions.authDevice.type,
+                payload: {
+                    device: SUITE_DEVICE,
+                    state: 'A',
+                },
             },
         ],
         result: [
@@ -874,9 +876,11 @@ const authDevice = [
         },
         actions: [
             {
-                type: SUITE.AUTH_DEVICE,
-                payload: SUITE_DEVICE,
-                state: 'A',
+                type: deviceActions.authDevice.type,
+                payload: {
+                    device: SUITE_DEVICE,
+                    state: 'A',
+                },
             },
         ],
         result: [
@@ -901,9 +905,11 @@ const authDevice = [
         },
         actions: [
             {
-                type: SUITE.AUTH_DEVICE,
-                payload: getSuiteDevice({ instance: 1 }),
-                state: 'A',
+                type: deviceActions.authDevice.type,
+                payload: {
+                    device: getSuiteDevice({ instance: 1 }),
+                    state: 'A',
+                },
             },
         ],
         result: [
@@ -928,11 +934,13 @@ const authDevice = [
         initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
-                type: SUITE.AUTH_DEVICE,
-                payload: getConnectDevice({
-                    type: 'unacquired',
-                }),
-                state: 'A',
+                type: deviceActions.authDevice.type,
+                payload: {
+                    device: getConnectDevice({
+                        type: 'unacquired',
+                    }),
+                    state: 'A',
+                },
             },
         ],
         result: [
@@ -946,9 +954,11 @@ const authDevice = [
         initialState: { devices: [] },
         actions: [
             {
-                type: SUITE.AUTH_DEVICE,
-                payload: SUITE_DEVICE,
-                state: 'A',
+                type: deviceActions.authDevice.type,
+                payload: {
+                    device: SUITE_DEVICE,
+                    state: 'A',
+                },
             },
         ],
         result: [],

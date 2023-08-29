@@ -829,7 +829,7 @@ const authorizeDevice = [
                 connected: true,
             }),
         },
-        result: SUITE.AUTH_DEVICE,
+        result: deviceActions.authDevice.type,
     },
     {
         description: `duplicate detected`,

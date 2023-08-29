@@ -76,7 +76,7 @@ const log =
                     }),
                 );
                 break;
-            case SUITE.AUTH_DEVICE:
+            case deviceActions.authDevice.type:
             case DEVICE.CONNECT:
             case DEVICE.DISCONNECT:
             case discoveryActions.completeDiscovery.type:

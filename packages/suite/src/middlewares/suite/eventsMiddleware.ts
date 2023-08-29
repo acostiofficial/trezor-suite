@@ -101,13 +101,10 @@ const eventsMiddleware =
             });
         }
 
-        switch (action.type) {
-            // Example event: wallet creation
-            case SUITE.AUTH_DEVICE:
-                api.dispatch(notificationsActions.addEvent({ type: action.type, seen: true }));
-                break;
-            // no default
+        if (deviceActions.authDevice.match(action)) {
+            api.dispatch(notificationsActions.addEvent({ type: action.type, seen: true }));
         }
+
         return action;
     };
 

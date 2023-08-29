@@ -43,7 +43,6 @@ export type SuiteAction =
     | { type: typeof SUITE.DESKTOP_HANDSHAKE; payload: HandshakeElectron }
     | { type: typeof SUITE.SELECT_DEVICE; payload?: TrezorDevice }
     | { type: typeof SUITE.UPDATE_SELECTED_DEVICE; payload: TrezorDevice }
-    | { type: typeof SUITE.AUTH_DEVICE; payload: TrezorDevice; state: string }
     | { type: typeof requestAuthConfirm.type }
     | {
           type: typeof SUITE.SET_LANGUAGE;
@@ -510,7 +509,7 @@ export const forgetDisconnectedDevices =
  * all other actions should be ignored
  */
 const actions = [
-    SUITE.AUTH_DEVICE,
+    deviceActions.authDevice.type,
     deviceActions.authFailed.type,
     setSelectedDevice.type,
     deviceActions.receiveAuthConfirm.type,
@@ -630,11 +629,8 @@ export const authorizeDevice =
                 return false;
             }
 
-            dispatch({
-                type: SUITE.AUTH_DEVICE,
-                payload: freshDeviceData,
-                state,
-            });
+            dispatch(deviceActions.authDevice({ device: freshDeviceData as TrezorDevice, state }));
+
             return true;
         }
 

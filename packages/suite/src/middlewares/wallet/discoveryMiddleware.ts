@@ -124,13 +124,13 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         }
 
         // 4. device state received
-        if (action.type === SUITE.AUTH_DEVICE) {
+        if (deviceActions.authDevice.match(action)) {
             // `device` is always present here
             // to avoid typescript conditioning use device from action as a fallback (never used)
             dispatch(
                 createDiscoveryThunk({
-                    deviceState: action.state,
-                    device: device || action.payload,
+                    deviceState: action.payload.state,
+                    device: device || action.payload.device,
                 }),
             );
         }
@@ -152,7 +152,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             becomesConnected ||
             action.type === SUITE.APP_CHANGED ||
             action.type === SUITE.SELECT_DEVICE ||
-            action.type === SUITE.AUTH_DEVICE ||
+            deviceActions.authDevice.match(action) ||
             walletSettingsActions.changeNetworks.match(action) ||
             accountsActions.changeAccountVisibility.match(action)
         ) {
