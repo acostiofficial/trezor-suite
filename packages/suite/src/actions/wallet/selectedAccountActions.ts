@@ -3,7 +3,7 @@ import { getAccountNetwork } from '@suite-common/wallet-utils';
 import { SelectedAccountStatus } from '@suite-common/wallet-types';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 
-import { ROUTER, SUITE } from 'src/actions/suite/constants';
+import { ROUTER } from 'src/actions/suite/constants';
 import { selectDiscoveryForDevice, selectDevice } from 'src/reducers/suite/deviceReducer';
 import * as metadataActions from 'src/actions/suite/metadataActions';
 import * as comparisonUtils from 'src/utils/suite/comparisonUtils';
@@ -157,7 +157,7 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
 const actions = [
     ROUTER.LOCATION_CHANGE,
     deviceActions.selectDevice.type,
-    SUITE.UPDATE_SELECTED_DEVICE,
+    deviceActions.updateSelectedDevice.type,
     metadataActions.setAccountAdd.type,
     accountsActions.createAccount.type,
     accountsActions.removeAccount.type,

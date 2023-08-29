@@ -69,7 +69,7 @@ export type ExtraDependencies = {
         lockDevice: ActionCreatorWithPreparedPayload<[payload: boolean], boolean>;
         appChanged: ActionCreatorWithPayload<unknown>;
         setSelectedDevice: ActionCreatorWithPayload<TrezorDevice | undefined>;
-        updateSelectedDevice: ActionCreatorWithPayload<TrezorDevice>;
+        updateSelectedDevice: ActionCreatorWithPayload<TrezorDevice | undefined>;
         requestAuthConfirm: ActionCreatorWithoutPayload;
     };
     // Use action types + reducers as last resort if you can't use actions creators. For example for storageLoad it is used because

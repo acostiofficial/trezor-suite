@@ -92,7 +92,7 @@ const log =
             case DEVICE.CONNECT:
             case DEVICE.DISCONNECT:
             case discoveryActions.completeDiscovery.type:
-            case SUITE.UPDATE_SELECTED_DEVICE:
+            case deviceActions.updateSelectedDevice.type:
             case deviceActions.rememberDevice.type:
                 api.dispatch(
                     addLog({

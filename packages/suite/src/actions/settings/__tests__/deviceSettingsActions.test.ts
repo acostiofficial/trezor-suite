@@ -7,6 +7,7 @@ import { prepareDeviceReducer } from 'src/reducers/suite/deviceReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
 
 import fixtures from '../__fixtures__/deviceSettings';
+import { deviceActions } from '../../suite/deviceActions';
 
 const { getSuiteDevice } = global.JestMocks;
 
@@ -100,15 +101,13 @@ describe('DeviceSettings Actions', () => {
             // this action have influence on reducers and forget device process
             if (f.deviceChange) {
                 require('@trezor/connect').setDeviceChangeEvent(() => {
-                    store.dispatch({ type: 'device-changed', payload: f.deviceChange });
-                    store.dispatch({
-                        type: '@suite/update-selected-device',
-                        payload: f.deviceChange,
-                    });
+                    store.dispatch(deviceActions.deviceChanged(f.deviceChange));
+                    store.dispatch(deviceActions.updateSelectedDevice(f.deviceChange));
                 });
             }
 
             await store.dispatch(f.action());
+
             if (f.result) {
                 if (f.result.actions) {
                     expect(store.getActions()).toMatchObject(f.result.actions);

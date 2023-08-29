@@ -40,7 +40,6 @@ export type SuiteAction =
     | { type: typeof SUITE.READY }
     | { type: typeof SUITE.ERROR; error: string }
     | { type: typeof SUITE.DESKTOP_HANDSHAKE; payload: HandshakeElectron }
-    | { type: typeof SUITE.UPDATE_SELECTED_DEVICE; payload: TrezorDevice }
     | { type: typeof requestAuthConfirm.type }
     | {
           type: typeof SUITE.SET_LANGUAGE;
@@ -71,11 +70,6 @@ export type SuiteAction =
           payload: Partial<AutodetectSettings>;
       }
     | { type: typeof deviceActions.requestDeviceReconnect.type };
-
-export const updateSelectedDevice = createAction(
-    SUITE.UPDATE_SELECTED_DEVICE,
-    (payload: TrezorDevice) => ({ payload }),
-);
 
 export const appChanged = createAction(
     SUITE.APP_CHANGED,
@@ -520,7 +514,7 @@ export const observeSelectedDevice =
 
         const changed = comparisonUtils.isChanged(selectedDevice, deviceFromReducer);
         if (changed) {
-            dispatch(updateSelectedDevice(deviceFromReducer));
+            dispatch(deviceActions.updateSelectedDevice(deviceFromReducer));
         }
 
         return changed;

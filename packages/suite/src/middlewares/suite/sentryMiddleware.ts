@@ -50,7 +50,7 @@ const breadcrumbActions = [
     accountsActions.createAccount.type,
     accountsActions.updateAccount.type,
     discoveryActions.completeDiscovery.type,
-    SUITE.UPDATE_SELECTED_DEVICE,
+    deviceActions.updateSelectedDevice.type,
     deviceActions.rememberDevice.type,
     METADATA.ADD_PROVIDER,
     walletSettingsActions.changeNetworks.type,

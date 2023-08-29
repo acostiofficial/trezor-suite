@@ -63,6 +63,11 @@ const selectDevice = createAction(`${MODULE_PREFIX}/selectDevice`, (payload?: Tr
     payload,
 }));
 
+const updateSelectedDevice = createAction(
+    `${MODULE_PREFIX}/updateSelectedDevice`,
+    (payload?: TrezorDevice) => ({ payload }),
+);
+
 export const deviceActions = {
     connectDevice,
     connectUnacquiredDevice,
@@ -78,4 +83,5 @@ export const deviceActions = {
     addButtonRequest,
     requestDeviceReconnect,
     selectDevice,
+    updateSelectedDevice,
 };

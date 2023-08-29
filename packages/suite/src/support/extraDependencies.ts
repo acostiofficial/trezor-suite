@@ -71,7 +71,7 @@ export const extraDependencies: ExtraDependencies = {
         lockDevice: suiteActions.lockDevice,
         appChanged: suiteActions.appChanged,
         setSelectedDevice: deviceActions.selectDevice,
-        updateSelectedDevice: suiteActions.updateSelectedDevice,
+        updateSelectedDevice: deviceActions.updateSelectedDevice,
         requestAuthConfirm: suiteActions.requestAuthConfirm,
     },
     actionTypes: {

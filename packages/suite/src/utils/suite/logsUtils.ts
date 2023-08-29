@@ -27,7 +27,6 @@ import { Discovery } from '@suite-common/wallet-types';
 
 import { getIsTorEnabled } from 'src/utils/suite/tor';
 import { AppState, TrezorDevice } from 'src/types/suite';
-import { SUITE } from 'src/actions/suite/constants';
 import { Account } from 'src/types/wallet';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
 import { deviceActions } from 'src/actions/suite/deviceActions';
@@ -130,7 +129,7 @@ export const redactAction = (action: LogEntry) => {
             break;
         case DEVICE.CONNECT:
         case DEVICE.DISCONNECT:
-        case SUITE.UPDATE_SELECTED_DEVICE:
+        case deviceActions.updateSelectedDevice.type:
         case deviceActions.rememberDevice.type:
             payload = redactDevice(action.payload);
             break;

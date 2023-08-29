@@ -711,7 +711,7 @@ const observeSelectedDevice = [
                 ],
             },
         },
-        result: SUITE.UPDATE_SELECTED_DEVICE,
+        result: deviceActions.updateSelectedDevice.type,
         changed: true,
     },
     {

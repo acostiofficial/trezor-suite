@@ -161,13 +161,13 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 api.dispatch(storageActions.forgetDevice(action.payload));
             }
 
-            switch (action.type) {
-                case SUITE.UPDATE_SELECTED_DEVICE:
-                    if (isDeviceRemembered(action.payload) && action.payload.mode === 'normal') {
-                        storageActions.saveDevice(action.payload);
-                    }
-                    break;
+            if (deviceActions.updateSelectedDevice.match(action)) {
+                if (isDeviceRemembered(action.payload) && action.payload?.mode === 'normal') {
+                    storageActions.saveDevice(action.payload);
+                }
+            }
 
+            switch (action.type) {
                 case WALLET_SETTINGS.SET_HIDE_BALANCE:
                 case walletSettingsActions.setLocalCurrency.type:
                 case WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS:

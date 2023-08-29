@@ -2,7 +2,6 @@ export const INIT = '@suite/init';
 export const READY = '@suite/ready';
 export const ERROR = '@suite/error';
 export const DESKTOP_HANDSHAKE = '@suite/desktop-handshake';
-export const UPDATE_SELECTED_DEVICE = '@suite/update-selected-device';
 export const REQUEST_AUTH_CONFIRM = '@suite/request-auth-confirm';
 export const SET_LANGUAGE = '@suite/set-language';
 export const SET_DEBUG_MODE = '@suite/set-debug-mode';

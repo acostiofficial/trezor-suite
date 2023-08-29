@@ -13,8 +13,8 @@ export default [
         deviceChange: getSuiteDevice({ path: '1' }, { device_id: 'new-device-id' }),
         result: {
             actions: [
-                { type: 'device-changed' },
-                { type: '@suite/update-selected-device' },
+                { type: deviceActions.deviceChanged.type },
+                { type: deviceActions.updateSelectedDevice.type },
                 {
                     type: deviceActions.forgetDevice.type,
                     payload: { features: { device_id: 'device-id' } },
@@ -57,8 +57,8 @@ export default [
         deviceChange: getSuiteDevice({ path: '1' }, { device_id: 'new-device-id' }),
         result: {
             actions: [
-                { type: 'device-changed' },
-                { type: '@suite/update-selected-device' },
+                { type: deviceActions.deviceChanged.type },
+                { type: deviceActions.updateSelectedDevice.type },
                 {
                     type: deviceActions.forgetDevice.type,
                     payload: { features: { device_id: 'device-id' } },

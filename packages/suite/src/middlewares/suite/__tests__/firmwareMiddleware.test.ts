@@ -1,7 +1,6 @@
 import { prepareFirmwareReducer, firmwareActions } from '@suite-common/wallet-core/src';
 
 import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
-import { SUITE } from 'src/actions/suite/constants';
 import routerReducer from 'src/reducers/suite/routerReducer';
 import modalReducer from 'src/reducers/suite/modalReducer';
 import { prepareFirmwareMiddleware } from 'src/middlewares/firmware/firmwareMiddleware';
@@ -79,11 +78,11 @@ describe('firmware middleware', () => {
                 firmwareHash: '345',
             }),
         );
-        await store.dispatch({ type: SUITE.UPDATE_SELECTED_DEVICE, payload: undefined });
+        await store.dispatch(deviceActions.updateSelectedDevice(undefined));
 
         const result = filterThunkActionTypes(store.getActions());
         expect(result).toEqual([
-            { type: SUITE.UPDATE_SELECTED_DEVICE, payload: undefined },
+            { type: deviceActions.updateSelectedDevice.type, payload: undefined },
             { type: firmwareActions.setStatus.type, payload: 'reconnect-in-normal' },
         ]);
     });
@@ -98,13 +97,16 @@ describe('firmware middleware', () => {
             }),
         );
         await store.dispatch({
-            type: SUITE.UPDATE_SELECTED_DEVICE,
+            type: deviceActions.updateSelectedDevice.type,
             payload: getSuiteDevice({ connected: false }),
         });
 
         const result = store.getActions();
         expect(result).toEqual([
-            { type: SUITE.UPDATE_SELECTED_DEVICE, payload: getSuiteDevice({ connected: false }) },
+            {
+                type: deviceActions.updateSelectedDevice.type,
+                payload: getSuiteDevice({ connected: false }),
+            },
             { type: firmwareActions.setStatus.type, payload: 'reconnect-in-normal' },
         ]);
     });
