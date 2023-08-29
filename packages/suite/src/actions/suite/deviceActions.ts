@@ -1,7 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import { Device, DEVICE } from '@trezor/connect';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { ButtonRequest, TrezorDevice } from '@suite-common/suite-types';
 
 const MODULE_PREFIX = '@suite/device';
 
@@ -52,6 +52,11 @@ const authDevice = createAction(
     (payload: { device: TrezorDevice; state: string }) => ({ payload }),
 );
 
+const addButtonRequest = createAction(
+    `${MODULE_PREFIX}/addButtonRequest`,
+    (payload: { device?: TrezorDevice; buttonRequest?: ButtonRequest }) => ({ payload }),
+);
+
 export const deviceActions = {
     connectDevice,
     connectUnacquiredDevice,
@@ -64,4 +69,5 @@ export const deviceActions = {
     rememberDevice,
     forgetDevice,
     authDevice,
+    addButtonRequest,
 };

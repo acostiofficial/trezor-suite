@@ -13,7 +13,6 @@ export const TOR_STATUS = '@suite/tor-status';
 export const TOR_BOOTSTRAP = '@suite/tor-bootstrap';
 export const ONION_LINKS = '@suite/onion-links';
 export const APP_CHANGED = '@suite/app-changed';
-export const ADD_BUTTON_REQUEST = '@suite/add-button-request';
 export const SET_THEME = '@suite/set-theme';
 export const SET_AUTODETECT = '@suite/set-autodetect';
 export const COINJOIN_RECEIVE_WARNING = '@suite/coinjoin-receive-warning';

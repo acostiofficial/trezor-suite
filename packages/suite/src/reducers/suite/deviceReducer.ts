@@ -446,13 +446,9 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, bui
         .addCase(deviceActions.authDevice, (state, { payload }) => {
             authDevice(state, payload.device, payload.state);
         })
-
-        .addMatcher(
-            action => action.type === SUITE.ADD_BUTTON_REQUEST,
-            (state, action) => {
-                addButtonRequest(state, action.payload.device, action.payload.buttonRequest);
-            },
-        )
+        .addCase(deviceActions.addButtonRequest, (state, { payload }) => {
+            addButtonRequest(state, payload.device, payload.buttonRequest);
+        })
         .addMatcher(
             action => action.type === SUITE.SELECT_DEVICE,
             (state, action) => {

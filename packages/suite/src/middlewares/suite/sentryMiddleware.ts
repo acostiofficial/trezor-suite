@@ -62,7 +62,7 @@ const breadcrumbActions = [
     DESKTOP_UPDATE.ALLOW_PRERELEASE,
     SUITE.TOR_STATUS,
     SUITE.ONLINE_STATUS,
-    SUITE.ADD_BUTTON_REQUEST,
+    deviceActions.addButtonRequest.type,
     PROTOCOL.SAVE_COIN_PROTOCOL,
     MODAL.OPEN_USER_CONTEXT,
 ];

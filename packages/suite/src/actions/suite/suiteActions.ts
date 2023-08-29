@@ -19,7 +19,6 @@ import type {
     Dispatch,
     GetState,
     TrezorDevice,
-    ButtonRequest,
     AppState,
     TorBootstrap,
 } from 'src/types/suite';
@@ -65,13 +64,6 @@ export type SuiteAction =
       }
     | { type: typeof SUITE.APP_CHANGED; payload: AppState['router']['app'] }
     | {
-          type: typeof SUITE.ADD_BUTTON_REQUEST;
-          payload: {
-              device: TrezorDevice | undefined;
-              buttonRequest?: ButtonRequest;
-          };
-      }
-    | {
           type: typeof SUITE.SET_THEME;
           variant: AppState['suite']['settings']['theme']['variant'];
       }
@@ -105,18 +97,11 @@ export const desktopHandshake = (payload: HandshakeElectron): SuiteAction => ({
 export const requestAuthConfirm = createAction(SUITE.REQUEST_AUTH_CONFIRM);
 
 export const removeButtonRequests = createAction(
-    SUITE.ADD_BUTTON_REQUEST,
+    deviceActions.addButtonRequest.type,
     ({ device }: { device: TrezorDevice | null }) => ({
         payload: {
             device,
         },
-    }),
-);
-
-export const addButtonRequest = createAction(
-    SUITE.ADD_BUTTON_REQUEST,
-    (payload: { device: TrezorDevice | undefined; buttonRequest: ButtonRequest }) => ({
-        payload,
     }),
 );
 
@@ -514,7 +499,7 @@ const actions = [
     setSelectedDevice.type,
     deviceActions.receiveAuthConfirm.type,
     deviceActions.updatePassphraseMode.type,
-    SUITE.ADD_BUTTON_REQUEST,
+    deviceActions.addButtonRequest.type,
     deviceActions.rememberDevice.type,
     deviceActions.forgetDevice.type,
     METADATA.SET_DEVICE_METADATA,

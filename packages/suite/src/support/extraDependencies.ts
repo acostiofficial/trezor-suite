@@ -22,7 +22,8 @@ import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 
 import * as suiteActions from '../actions/suite/suiteActions';
 import { AppState, ButtonRequest, TrezorDevice } from '../types/suite';
-import { STORAGE, SUITE } from '../actions/suite/constants';
+import { STORAGE } from '../actions/suite/constants';
+import { deviceActions } from '../actions/suite/deviceActions';
 
 const connectSrc = resolveStaticPath('connect/');
 // 'https://localhost:8088/';
@@ -75,7 +76,7 @@ export const extraDependencies: ExtraDependencies = {
     },
     actionTypes: {
         storageLoad: STORAGE.LOAD,
-        addButtonRequest: SUITE.ADD_BUTTON_REQUEST,
+        addButtonRequest: deviceActions.addButtonRequest.type,
     },
     reducers: {
         storageLoadBlockchain: (state: BlockchainState, { payload }: StorageLoadAction) => {
