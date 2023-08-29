@@ -425,12 +425,9 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, bui
         .addCase(deviceActions.deviceDisconnect, (state, { payload }) => {
             disconnectDevice(state, payload);
         })
-        .addMatcher(
-            action => action.type === SUITE.UPDATE_PASSPHRASE_MODE,
-            (state, action) => {
-                changePassphraseMode(state, action.payload, action.hidden, action.alwaysOnDevice);
-            },
-        )
+        .addCase(deviceActions.updatePassphraseMode, (state, { payload }) => {
+            changePassphraseMode(state, payload.device, payload.hidden, payload.alwaysOnDevice);
+        })
         .addMatcher(
             action => action.type === SUITE.AUTH_FAILED,
             (state, action) => {

@@ -1,6 +1,7 @@
 import { DEVICE } from '@trezor/connect';
 
 import { SUITE } from 'src/actions/suite/constants';
+import { deviceActions } from 'src/actions/suite/deviceActions';
 
 const { getConnectDevice, getSuiteDevice } = global.JestMocks;
 
@@ -730,9 +731,11 @@ const changePassphraseMode = [
         initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
-                type: SUITE.UPDATE_PASSPHRASE_MODE,
-                payload: SUITE_DEVICE,
-                hidden: true,
+                type: deviceActions.updatePassphraseMode.type,
+                payload: {
+                    hidden: true,
+                    device: SUITE_DEVICE,
+                },
             },
         ],
         result: [
@@ -753,9 +756,11 @@ const changePassphraseMode = [
         },
         actions: [
             {
-                type: SUITE.UPDATE_PASSPHRASE_MODE,
-                payload: SUITE_DEVICE,
-                hidden: true,
+                type: deviceActions.updatePassphraseMode.type,
+                payload: {
+                    device: SUITE_DEVICE,
+                    hidden: true,
+                },
             },
         ],
         result: [
@@ -780,9 +785,11 @@ const changePassphraseMode = [
         },
         actions: [
             {
-                type: SUITE.UPDATE_PASSPHRASE_MODE,
-                payload: getSuiteDevice({ instance: 1 }),
-                hidden: true,
+                type: deviceActions.updatePassphraseMode.type,
+                payload: {
+                    device: getSuiteDevice({ instance: 1 }),
+                    hidden: true,
+                },
             },
         ],
         result: [
@@ -807,11 +814,13 @@ const changePassphraseMode = [
         initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
-                type: SUITE.UPDATE_PASSPHRASE_MODE,
-                payload: getConnectDevice({
-                    type: 'unacquired',
-                }),
-                hidden: false,
+                type: deviceActions.updatePassphraseMode.type,
+                payload: {
+                    device: getConnectDevice({
+                        type: 'unacquired',
+                    }),
+                    hidden: false,
+                },
             },
         ],
         result: [
@@ -825,9 +834,11 @@ const changePassphraseMode = [
         initialState: { devices: [] },
         actions: [
             {
-                type: SUITE.UPDATE_PASSPHRASE_MODE,
-                payload: SUITE_DEVICE,
-                hidden: false,
+                type: deviceActions.updatePassphraseMode.type,
+                payload: {
+                    hidden: false,
+                    device: SUITE_DEVICE,
+                },
             },
         ],
         result: [],

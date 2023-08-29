@@ -34,6 +34,7 @@ import type { TranslationKey } from 'src/components/suite/Translation/components
 import { SUITE, METADATA } from './constants';
 import { selectDevices } from '../../reducers/suite/deviceReducer';
 import { selectRouter } from '../../reducers/suite/routerReducer';
+import { deviceActions } from './deviceActions';
 
 export type SuiteAction =
     | { type: typeof SUITE.INIT }
@@ -42,12 +43,6 @@ export type SuiteAction =
     | { type: typeof SUITE.DESKTOP_HANDSHAKE; payload: HandshakeElectron }
     | { type: typeof SUITE.SELECT_DEVICE; payload?: TrezorDevice }
     | { type: typeof SUITE.UPDATE_SELECTED_DEVICE; payload: TrezorDevice }
-    | {
-          type: typeof SUITE.UPDATE_PASSPHRASE_MODE;
-          payload: TrezorDevice;
-          hidden: boolean;
-          alwaysOnDevice?: boolean;
-      }
     | { type: typeof SUITE.AUTH_DEVICE; payload: TrezorDevice; state: string }
     | { type: typeof SUITE.AUTH_FAILED; payload: TrezorDevice }
     | { type: typeof requestAuthConfirm.type }
@@ -534,7 +529,7 @@ const actions = [
     SUITE.AUTH_FAILED,
     setSelectedDevice.type,
     SUITE.RECEIVE_AUTH_CONFIRM,
-    SUITE.UPDATE_PASSPHRASE_MODE,
+    deviceActions.updatePassphraseMode.type,
     SUITE.ADD_BUTTON_REQUEST,
     SUITE.REMEMBER_DEVICE,
     SUITE.FORGET_DEVICE,
@@ -595,15 +590,6 @@ export const acquireDevice =
     };
 
 /**
- * Inner action used in `authorizeDevice`
- */
-const updatePassphraseMode = (device: TrezorDevice, hidden: boolean): SuiteAction => ({
-    type: SUITE.UPDATE_PASSPHRASE_MODE,
-    payload: device,
-    hidden,
-});
-
-/**
  * Called from `discoveryMiddleware`
  * Fetch device state, update `devices` reducer as result of SUITE.AUTH_DEVICE
  */
@@ -647,9 +633,11 @@ export const authorizeDevice =
                 if (freshDeviceData!.useEmptyPassphrase) {
                     // if currently selected device uses empty passphrase
                     // make sure that founded duplicate will also use empty passphrase
-                    dispatch(updatePassphraseMode(duplicate, false));
+                    dispatch(
+                        deviceActions.updatePassphraseMode({ device: duplicate, hidden: false }),
+                    );
                     // reset useEmptyPassphrase field for selected device to allow future PassphraseRequests
-                    dispatch(updatePassphraseMode(device, true));
+                    dispatch(deviceActions.updatePassphraseMode({ device, hidden: true }));
                 }
                 dispatch(
                     modalActions.openModal({ type: 'passphrase-duplicate', device, duplicate }),
