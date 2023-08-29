@@ -2,7 +2,6 @@ import TrezorConnect from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
-import * as suiteActions from 'src/actions/suite/suiteActions';
 import * as deviceUtils from 'src/utils/suite/device';
 import * as modalActions from 'src/actions/suite/modalActions';
 import * as routerActions from 'src/actions/suite/routerActions';
@@ -103,7 +102,7 @@ export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) =
         //
         // edit 1: disconnecting the device wiped from bootloader mode is also necessary
         // edit 2: encountered libusb error with bridge 2.0.27. so let's enforce disconnecting for all devices
-        dispatch(suiteActions.requestDeviceReconnect());
+        dispatch(deviceActions.requestDeviceReconnect());
         if (state.router.app === 'settings') {
             // redirect to index to close the settings and show initial device setup
             dispatch(routerActions.goto('suite-index'));

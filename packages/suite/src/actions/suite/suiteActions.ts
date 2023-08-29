@@ -71,7 +71,7 @@ export type SuiteAction =
           type: typeof SUITE.SET_AUTODETECT;
           payload: Partial<AutodetectSettings>;
       }
-    | { type: typeof SUITE.REQUEST_DEVICE_RECONNECT };
+    | { type: typeof deviceActions.requestDeviceReconnect.type };
 
 export const updateSelectedDevice = createAction(
     SUITE.UPDATE_SELECTED_DEVICE,
@@ -690,10 +690,6 @@ export const switchDuplicatedDevice =
         // remove stateless instance
         dispatch(deviceActions.forgetDevice(device));
     };
-
-export const requestDeviceReconnect = () => ({
-    type: SUITE.REQUEST_DEVICE_RECONNECT,
-});
 
 export const initDevices = () => (dispatch: Dispatch, getState: GetState) => {
     const devices = selectDevices(getState());

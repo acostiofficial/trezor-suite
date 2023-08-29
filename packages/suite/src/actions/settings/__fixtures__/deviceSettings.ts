@@ -1,7 +1,5 @@
 import { notificationsActions } from '@suite-common/toast-notifications';
 
-import { SUITE } from 'src/actions/suite/constants';
-
 import * as deviceSettingsActions from '../deviceSettingsActions';
 import { deviceActions } from '../../suite/deviceActions';
 
@@ -26,7 +24,7 @@ export default [
                     payload: { features: { device_id: 'new-device-id' } },
                 },
                 { type: notificationsActions.addToast.type, payload: { type: 'device-wiped' } },
-                { type: SUITE.REQUEST_DEVICE_RECONNECT },
+                { type: deviceActions.requestDeviceReconnect.type },
             ],
         },
     },
@@ -86,7 +84,7 @@ export default [
                     payload: { instance: 2, features: { device_id: 'new-device-id' } },
                 },
                 { type: notificationsActions.addToast.type, payload: { type: 'device-wiped' } },
-                { type: SUITE.REQUEST_DEVICE_RECONNECT },
+                { type: deviceActions.requestDeviceReconnect.type },
             ],
         },
     },

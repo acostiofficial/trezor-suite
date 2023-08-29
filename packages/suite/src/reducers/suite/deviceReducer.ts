@@ -449,6 +449,11 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, bui
         .addCase(deviceActions.addButtonRequest, (state, { payload }) => {
             addButtonRequest(state, payload.device, payload.buttonRequest);
         })
+        .addCase(deviceActions.requestDeviceReconnect, state => {
+            if (state.selectedDevice) {
+                state.selectedDevice.reconnectRequested = true;
+            }
+        })
         .addMatcher(
             action => action.type === SUITE.SELECT_DEVICE,
             (state, action) => {
@@ -460,14 +465,6 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, bui
             action => action.type === SUITE.UPDATE_SELECTED_DEVICE,
             (state, action) => {
                 state.selectedDevice = action.payload;
-            },
-        )
-        .addMatcher(
-            action => action.type === SUITE.REQUEST_DEVICE_RECONNECT,
-            state => {
-                if (state.selectedDevice) {
-                    state.selectedDevice.reconnectRequested = true;
-                }
             },
         )
         .addMatcher(
