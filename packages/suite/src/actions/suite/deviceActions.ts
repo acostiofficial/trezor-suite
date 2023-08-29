@@ -26,6 +26,11 @@ const authFailed = createAction(`${MODULE_PREFIX}/authFailed`, (payload: TrezorD
     payload,
 }));
 
+const receiveAuthConfirm = createAction(
+    `${MODULE_PREFIX}/receiveAuthConfirm`,
+    (payload: { device: TrezorDevice; success: boolean }) => ({ payload }),
+);
+
 export const deviceActions = {
     connectDevice,
     connectUnacquiredDevice,
@@ -33,4 +38,5 @@ export const deviceActions = {
     deviceDisconnect,
     updatePassphraseMode,
     authFailed,
+    receiveAuthConfirm,
 };

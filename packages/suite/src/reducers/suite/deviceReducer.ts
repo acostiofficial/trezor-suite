@@ -431,12 +431,9 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, bui
         .addCase(deviceActions.authFailed, (state, { payload }) => {
             authFailed(state, payload);
         })
-        .addMatcher(
-            action => action.type === SUITE.RECEIVE_AUTH_CONFIRM,
-            (state, action) => {
-                authConfirm(state, action.payload, action.success);
-            },
-        )
+        .addCase(deviceActions.receiveAuthConfirm, (state, { payload }) => {
+            authConfirm(state, payload.device, payload.success);
+        })
         .addMatcher(
             action => action.type === SUITE.CREATE_DEVICE_INSTANCE,
             (state, action) => {

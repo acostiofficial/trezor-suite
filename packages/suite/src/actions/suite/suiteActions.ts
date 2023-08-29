@@ -45,7 +45,6 @@ export type SuiteAction =
     | { type: typeof SUITE.UPDATE_SELECTED_DEVICE; payload: TrezorDevice }
     | { type: typeof SUITE.AUTH_DEVICE; payload: TrezorDevice; state: string }
     | { type: typeof requestAuthConfirm.type }
-    | { type: typeof SUITE.RECEIVE_AUTH_CONFIRM; payload: TrezorDevice; success: boolean }
     | { type: typeof SUITE.CREATE_DEVICE_INSTANCE; payload: TrezorDevice }
     | { type: typeof SUITE.FORGET_DEVICE; payload: TrezorDevice }
     | {
@@ -527,7 +526,7 @@ const actions = [
     SUITE.AUTH_DEVICE,
     deviceActions.authFailed.type,
     setSelectedDevice.type,
-    SUITE.RECEIVE_AUTH_CONFIRM,
+    deviceActions.receiveAuthConfirm.type,
     deviceActions.updatePassphraseMode.type,
     SUITE.ADD_BUTTON_REQUEST,
     SUITE.REMEMBER_DEVICE,
@@ -660,15 +659,6 @@ export const authorizeDevice =
     };
 
 /**
- * Inner action used in `authConfirm`
- */
-const receiveAuthConfirm = (device: TrezorDevice, success: boolean): SuiteAction => ({
-    type: SUITE.RECEIVE_AUTH_CONFIRM,
-    payload: device,
-    success,
-});
-
-/**
  * Called from `suiteMiddleware`
  */
 export const authConfirm = () => async (dispatch: Dispatch, getState: GetState) => {
@@ -699,17 +689,17 @@ export const authConfirm = () => async (dispatch: Dispatch, getState: GetState) 
                 error: response.payload.error,
             }),
         );
-        dispatch(receiveAuthConfirm(device, false));
+        dispatch(deviceActions.receiveAuthConfirm({ device, success: false }));
         return;
     }
 
     if (response.payload.state !== device.state) {
         dispatch(notificationsActions.addToast({ type: 'auth-confirm-error' }));
-        dispatch(receiveAuthConfirm(device, false));
+        dispatch(deviceActions.receiveAuthConfirm({ device, success: false }));
         return;
     }
 
-    dispatch(receiveAuthConfirm(device, true));
+    dispatch(deviceActions.receiveAuthConfirm({ device, success: true }));
 };
 
 /**

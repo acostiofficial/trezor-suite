@@ -16,6 +16,7 @@ import * as walletSettingsActions from 'src/actions/settings/walletSettingsActio
 import * as suiteActions from 'src/actions/suite/suiteActions';
 import { selectDevice, selectDiscoveryForDevice } from 'src/reducers/suite/deviceReducer';
 import { getApp } from 'src/utils/suite/router';
+import { deviceActions } from 'src/actions/suite/deviceActions';
 
 export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
     async (action, { dispatch, next, getState }) => {
@@ -135,12 +136,12 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         }
 
         // 5. device state confirmation received
-        if (action.type === SUITE.RECEIVE_AUTH_CONFIRM && action.payload.state) {
+        if (deviceActions.receiveAuthConfirm.match(action) && action.payload.device.state) {
             // from discovery point of view it's irrelevant if authConfirm fails
             // it's a device matter now
             dispatch(
                 discoveryActions.updateDiscovery({
-                    deviceState: action.payload.state,
+                    deviceState: action.payload.device.state,
                     authConfirm: false,
                 }),
             );

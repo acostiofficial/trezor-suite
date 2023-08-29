@@ -6,6 +6,7 @@ import { SUITE, MODAL } from 'src/actions/suite/constants';
 import { TorStatus } from 'src/types/suite';
 
 import * as suiteActions from '../suiteActions';
+import { deviceActions } from '../deviceActions';
 
 const { getSuiteDevice, getConnectDevice } = global.JestMocks;
 
@@ -946,8 +947,10 @@ const authConfirm = [
             },
         },
         result: {
-            type: SUITE.RECEIVE_AUTH_CONFIRM,
-            success: false,
+            type: deviceActions.receiveAuthConfirm.type,
+            payload: {
+                success: false,
+            },
         },
     },
     {
@@ -971,8 +974,10 @@ const authConfirm = [
             selectedDevice: getSuiteDevice({ state: 'ABCD' }),
         },
         result: {
-            type: SUITE.RECEIVE_AUTH_CONFIRM,
-            success: false,
+            type: deviceActions.receiveAuthConfirm.type,
+            payload: {
+                success: false,
+            },
         },
     },
     {
@@ -981,8 +986,10 @@ const authConfirm = [
             selectedDevice: getSuiteDevice({ instance: 1, state: 'state@device-id:1' }),
         },
         result: {
-            type: SUITE.RECEIVE_AUTH_CONFIRM,
-            success: true,
+            type: deviceActions.receiveAuthConfirm.type,
+            payload: {
+                success: true,
+            },
         },
     },
 ];
