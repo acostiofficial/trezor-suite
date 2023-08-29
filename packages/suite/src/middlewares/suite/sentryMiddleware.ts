@@ -24,6 +24,7 @@ import { addSentryBreadcrumb, setSentryContext, setSentryTag } from 'src/utils/s
 import { AppState, Action, Dispatch } from 'src/types/suite';
 
 import { selectDevice } from '../../reducers/suite/deviceReducer';
+import { deviceActions } from '../../actions/suite/deviceActions';
 
 const deviceContextName = 'trezor-device';
 
@@ -50,7 +51,7 @@ const breadcrumbActions = [
     accountsActions.updateAccount.type,
     discoveryActions.completeDiscovery.type,
     SUITE.UPDATE_SELECTED_DEVICE,
-    SUITE.REMEMBER_DEVICE,
+    deviceActions.rememberDevice.type,
     METADATA.ADD_PROVIDER,
     walletSettingsActions.changeNetworks.type,
     TRANSPORT.START,

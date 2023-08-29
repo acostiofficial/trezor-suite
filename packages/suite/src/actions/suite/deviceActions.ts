@@ -36,6 +36,12 @@ const createDeviceInstance = createAction(
     (payload: TrezorDevice) => ({ payload }),
 );
 
+const rememberDevice = createAction(
+    `${MODULE_PREFIX}/rememberDevice`,
+    (payload: { device: TrezorDevice; remember: boolean; forceRemember: undefined | true }) => ({
+        payload,
+    }),
+);
 export const deviceActions = {
     connectDevice,
     connectUnacquiredDevice,
@@ -45,4 +51,5 @@ export const deviceActions = {
     authFailed,
     receiveAuthConfirm,
     createDeviceInstance,
+    rememberDevice,
 };

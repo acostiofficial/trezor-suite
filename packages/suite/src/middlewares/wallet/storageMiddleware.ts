@@ -29,6 +29,8 @@ import type { AppState, Action as SuiteAction, Dispatch } from 'src/types/suite'
 import type { WalletAction } from 'src/types/wallet';
 import { selectDevices, selectDevice } from 'src/reducers/suite/deviceReducer';
 
+import { deviceActions } from '../../actions/suite/deviceActions';
+
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
     db.onBlocking = () => api.dispatch({ type: STORAGE.ERROR, payload: 'blocking' });
     db.onBlocked = () => api.dispatch({ type: STORAGE.ERROR, payload: 'blocked' });
@@ -145,17 +147,17 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 api.dispatch(storageActions.saveAnalytics());
             }
 
-            switch (action.type) {
-                case SUITE.REMEMBER_DEVICE:
-                    api.dispatch(
-                        storageActions.rememberDevice(
-                            action.payload,
-                            action.remember,
-                            action.forceRemember,
-                        ),
-                    );
-                    break;
+            if (deviceActions.rememberDevice.match(action)) {
+                api.dispatch(
+                    storageActions.rememberDevice(
+                        action.payload.device,
+                        action.payload.remember,
+                        action.payload.forceRemember,
+                    ),
+                );
+            }
 
+            switch (action.type) {
                 case SUITE.FORGET_DEVICE:
                     api.dispatch(storageActions.forgetDevice(action.payload));
                     break;

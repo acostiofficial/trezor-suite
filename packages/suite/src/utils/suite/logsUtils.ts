@@ -30,6 +30,7 @@ import { AppState, TrezorDevice } from 'src/types/suite';
 import { SUITE } from 'src/actions/suite/constants';
 import { Account } from 'src/types/wallet';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
+import { deviceActions } from 'src/actions/suite/deviceActions';
 
 import { getPhysicalDeviceUniqueIds } from './device';
 import { selectDevices } from '../../reducers/suite/deviceReducer';
@@ -128,7 +129,7 @@ export const redactAction = (action: LogEntry) => {
         case DEVICE.CONNECT:
         case DEVICE.DISCONNECT:
         case SUITE.UPDATE_SELECTED_DEVICE:
-        case SUITE.REMEMBER_DEVICE:
+        case deviceActions.rememberDevice.type:
             payload = redactDevice(action.payload);
             break;
         case discoveryActions.completeDiscovery.type:

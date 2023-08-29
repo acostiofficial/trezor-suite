@@ -47,12 +47,6 @@ export type SuiteAction =
     | { type: typeof requestAuthConfirm.type }
     | { type: typeof SUITE.FORGET_DEVICE; payload: TrezorDevice }
     | {
-          type: typeof SUITE.REMEMBER_DEVICE;
-          payload: TrezorDevice;
-          remember: boolean;
-          forceRemember?: true;
-      }
-    | {
           type: typeof SUITE.SET_LANGUAGE;
           locale: Locale;
       }
@@ -391,13 +385,14 @@ export const toggleRememberDevice =
         analytics.report({
             type: payload.remember ? EventType.SwitchDeviceForget : EventType.SwitchDeviceRemember,
         });
-        return dispatch({
-            type: SUITE.REMEMBER_DEVICE,
-            payload,
-            remember: !payload.remember || !!forceRemember,
-            // if device is already remembered, do not force it, it would remove the remember on return to suite
-            forceRemember: payload.remember ? undefined : forceRemember,
-        });
+        return dispatch(
+            deviceActions.rememberDevice({
+                device: payload,
+                remember: !payload.remember || !!forceRemember,
+                // if device is already remembered, do not force it, it would remove the remember on return to suite
+                forceRemember: payload.remember ? undefined : forceRemember,
+            }),
+        );
     };
 
 export const forgetDevice = (payload: TrezorDevice): SuiteAction => ({
@@ -527,7 +522,7 @@ const actions = [
     deviceActions.receiveAuthConfirm.type,
     deviceActions.updatePassphraseMode.type,
     SUITE.ADD_BUTTON_REQUEST,
-    SUITE.REMEMBER_DEVICE,
+    deviceActions.rememberDevice.type,
     SUITE.FORGET_DEVICE,
     METADATA.SET_DEVICE_METADATA,
     ...Object.values(DEVICE).filter(v => typeof v === 'string'),

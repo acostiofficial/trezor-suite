@@ -437,12 +437,10 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, bui
         .addCase(deviceActions.createDeviceInstance, (state, { payload }) => {
             createInstance(state, payload);
         })
-        .addMatcher(
-            action => action.type === SUITE.REMEMBER_DEVICE,
-            (state, action) => {
-                remember(state, action.payload, action.remember, action.forceRemember);
-            },
-        )
+        .addCase(deviceActions.rememberDevice, (state, { payload }) => {
+            remember(state, payload.device, payload.remember, payload.forceRemember);
+        })
+
         .addMatcher(
             action => action.type === SUITE.FORGET_DEVICE,
             (state, action) => {

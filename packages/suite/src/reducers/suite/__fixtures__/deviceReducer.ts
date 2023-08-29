@@ -1205,7 +1205,8 @@ const remember = [
         initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
-                type: SUITE.REMEMBER_DEVICE,
+                type: deviceActions.rememberDevice.type,
+                payload: {},
             },
         ],
         result: [SUITE_DEVICE],
@@ -1215,8 +1216,10 @@ const remember = [
         initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
-                type: SUITE.REMEMBER_DEVICE,
-                payload: getSuiteDevice({ type: 'unacquired' }),
+                type: deviceActions.rememberDevice.type,
+                payload: {
+                    device: getSuiteDevice({ type: 'unacquired' }),
+                },
             },
         ],
         result: [SUITE_DEVICE],
@@ -1226,9 +1229,11 @@ const remember = [
         initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
-                type: SUITE.REMEMBER_DEVICE,
-                payload: SUITE_DEVICE,
-                remember: true,
+                type: deviceActions.rememberDevice.type,
+                payload: {
+                    device: SUITE_DEVICE,
+                    remember: true,
+                },
             },
         ],
         result: [{ ...SUITE_DEVICE, remember: true }],
@@ -1238,10 +1243,12 @@ const remember = [
         initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
-                type: SUITE.REMEMBER_DEVICE,
-                payload: SUITE_DEVICE,
-                remember: true,
-                forceRemember: true,
+                type: deviceActions.rememberDevice.type,
+                payload: {
+                    device: SUITE_DEVICE,
+                    remember: true,
+                    forceRemember: true,
+                },
             },
         ],
         result: [getSuiteDevice({ remember: true, forceRemember: true })],
@@ -1257,11 +1264,13 @@ const remember = [
         },
         actions: [
             {
-                type: SUITE.REMEMBER_DEVICE,
-                payload: getSuiteDevice({
-                    state: 'abc',
-                }),
-                remember: true,
+                type: deviceActions.rememberDevice.type,
+                payload: {
+                    device: getSuiteDevice({
+                        state: 'abc',
+                    }),
+                    remember: true,
+                },
             },
         ],
         result: [
@@ -1302,19 +1311,23 @@ const remember = [
         },
         actions: [
             {
-                type: SUITE.REMEMBER_DEVICE,
-                payload: getSuiteDevice({
-                    state: 'abc',
-                }),
-                remember: true,
+                type: deviceActions.rememberDevice.type,
+                payload: {
+                    device: getSuiteDevice({
+                        state: 'abc',
+                    }),
+                    remember: true,
+                },
             },
             {
-                type: SUITE.REMEMBER_DEVICE,
-                payload: getSuiteDevice({
-                    state: 'abc',
-                    instance: 3,
-                }),
-                remember: true,
+                type: deviceActions.rememberDevice.type,
+                payload: {
+                    device: getSuiteDevice({
+                        state: 'abc',
+                        instance: 3,
+                    }),
+                    remember: true,
+                },
             },
         ],
         result: [

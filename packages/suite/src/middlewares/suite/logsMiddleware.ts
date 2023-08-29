@@ -19,6 +19,8 @@ import { WALLET_SETTINGS } from 'src/actions/settings/constants';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import { redactTransactionIdFromAnchor } from 'src/utils/suite/analytics';
 
+import { deviceActions } from '../../actions/suite/deviceActions';
+
 const log =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
     (next: Dispatch) =>
@@ -79,7 +81,7 @@ const log =
             case DEVICE.DISCONNECT:
             case discoveryActions.completeDiscovery.type:
             case SUITE.UPDATE_SELECTED_DEVICE:
-            case SUITE.REMEMBER_DEVICE:
+            case deviceActions.rememberDevice.type:
                 api.dispatch(
                     addLog({
                         type: action.type,
