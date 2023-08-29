@@ -470,7 +470,7 @@ export const fetchAndSaveMetadata =
 export const setAccountMetadataKey =
     (account: Account, encryptionVersion = METADATA.ENCRYPTION_VERSION) =>
     (dispatch: Dispatch, getState: GetState) => {
-      const devices = selectDevices(getState());
+        const devices = selectDevices(getState());
         const device = devices.find(d => d.state === account.deviceState);
         if (
             !device ||
@@ -782,7 +782,7 @@ const encryptAndSaveMetadata =
 export const setDeviceMetadataKey =
     (encryptionVersion = METADATA.ENCRYPTION_VERSION) =>
     async (dispatch: Dispatch, getState: GetState) => {
-      const device = selectDevice(getState());
+        const device = selectDevice(getState());
         if (!device || !device.state || !device.connected) return;
 
         if (device.metadata.status === 'enabled') return;
