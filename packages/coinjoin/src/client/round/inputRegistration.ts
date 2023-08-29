@@ -6,7 +6,7 @@ import { confirmationInterval } from './connectionConfirmation';
 import { ROUND_SELECTION_REGISTRATION_OFFSET } from '../../constants';
 import type { Alice } from '../Alice';
 import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
-import { SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
+import { sessionPhases, WabiSabiProtocolErrorCode } from '../../enums';
 
 /**
  * RoundPhase: 0, InputRegistration
@@ -190,7 +190,7 @@ export const inputRegistration = async (round: CoinjoinRound, options: CoinjoinR
     // try to register each input
     // failed inputs will be excluded from this round, successful will continue to phase: 1 (connectionConfirmation)
     options.logger.info(`inputRegistration: ~~${round.id}~~`);
-    round.setSessionPhase(SessionPhase.CoinRegistration);
+    round.setSessionPhase(sessionPhases.CoinRegistration);
 
     const { inputs } = round;
     await Promise.allSettled(inputs.map(input => registerInput(round, input, options))).then(

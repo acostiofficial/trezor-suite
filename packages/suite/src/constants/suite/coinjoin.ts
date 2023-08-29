@@ -1,35 +1,36 @@
 import { TranslationKey } from '@suite-common/intl-types';
+import { roundPhases, sessionPhases } from '@trezor/coinjoin';
 import { RoundPhase, SessionPhase } from 'src/types/wallet/coinjoin';
 
 export const ROUND_PHASE_MESSAGES: Record<RoundPhase, TranslationKey> = {
-    [RoundPhase.InputRegistration]: 'TR_COINJOIN_PHASE_0_MESSAGE',
-    [RoundPhase.ConnectionConfirmation]: 'TR_COINJOIN_PHASE_1_MESSAGE',
-    [RoundPhase.OutputRegistration]: 'TR_COINJOIN_PHASE_2_MESSAGE',
-    [RoundPhase.TransactionSigning]: 'TR_COINJOIN_PHASE_3_MESSAGE',
-    [RoundPhase.Ended]: 'TR_COINJOIN_PHASE_4_MESSAGE',
+    [roundPhases.InputRegistration]: 'TR_COINJOIN_PHASE_0_MESSAGE',
+    [roundPhases.ConnectionConfirmation]: 'TR_COINJOIN_PHASE_1_MESSAGE',
+    [roundPhases.OutputRegistration]: 'TR_COINJOIN_PHASE_2_MESSAGE',
+    [roundPhases.TransactionSigning]: 'TR_COINJOIN_PHASE_3_MESSAGE',
+    [roundPhases.Ended]: 'TR_COINJOIN_PHASE_4_MESSAGE',
 };
 
 export const SESSION_PHASE_MESSAGES: Record<SessionPhase, TranslationKey> = {
-    [SessionPhase.RoundSearch]: 'TR_SESSION_PHASE_ROUND_SEARCH',
-    [SessionPhase.CoinSelection]: 'TR_SESSION_PHASE_COIN_SELECTION',
-    [SessionPhase.RoundPairing]: 'TR_SESSION_PHASE_ROUND_PAIRING',
-    [SessionPhase.CoinRegistration]: 'TR_SESSION_PHASE_COIN_REGISTRATION',
-    [SessionPhase.AccountMissingUtxos]: 'TR_SESSION_ERROR_PHASE_MISSING_UTXOS',
-    [SessionPhase.SkippingRound]: 'TR_SESSION_ERROR_PHASE_SKIPPING_ROUND',
-    [SessionPhase.RetryingRoundPairing]: 'TR_SESSION_ERROR_PHASE_RETRYING_PAIRING',
-    [SessionPhase.AffiliateServerOffline]: 'TR_SESSION_ERROR_PHASE_AFFILIATE_SERVERS_OFFLINE',
-    [SessionPhase.CriticalError]: 'TR_SESSION_ERROR_PHASE_CRITICAL_ERROR',
-    [SessionPhase.BlockedUtxos]: 'TR_SESSION_ERROR_PHASE_BLOCKED_UTXOS',
-    [SessionPhase.AwaitingConfirmation]: 'TR_SESSION_PHASE_AWAITING_CONFIRMATION',
-    [SessionPhase.AwaitingOthersConfirmation]: 'TR_SESSION_PHASE_WAITING_FOR_OTHERS',
-    [SessionPhase.RegisteringOutputs]: 'TR_SESSION_PHASE_REGISTERING_OUTPUTS',
-    [SessionPhase.AwaitingOthersOutputs]: 'TR_SESSION_PHASE_WAITING_FOR_COORDINATOR',
-    [SessionPhase.OutputRegistrationFailed]: 'TR_SESSION_ERROR_PHASE_REGISTRATION_FAILED',
-    [SessionPhase.AwaitingCoinjoinTransaction]: 'TR_SESSION_PHASE_AWAITING_TRANSACTION',
-    [SessionPhase.TransactionSigning]: 'TR_SESSION_PHASE_TRANSACTION_SIGNING',
-    [SessionPhase.SendingSignature]: 'TR_SESSION_PHASE_SENDING_SIGNATURE',
-    [SessionPhase.AwaitingOtherSignatures]: 'TR_SESSION_PHASE_AWAITING_SIGNATURES',
-    [SessionPhase.SignatureFailed]: 'TR_SESSION_PHASE_SIGNING_FAILED',
+    [sessionPhases.RoundSearch]: 'TR_SESSION_PHASE_ROUND_SEARCH',
+    [sessionPhases.CoinSelection]: 'TR_SESSION_PHASE_COIN_SELECTION',
+    [sessionPhases.RoundPairing]: 'TR_SESSION_PHASE_ROUND_PAIRING',
+    [sessionPhases.CoinRegistration]: 'TR_SESSION_PHASE_COIN_REGISTRATION',
+    [sessionPhases.AccountMissingUtxos]: 'TR_SESSION_ERROR_PHASE_MISSING_UTXOS',
+    [sessionPhases.SkippingRound]: 'TR_SESSION_ERROR_PHASE_SKIPPING_ROUND',
+    [sessionPhases.RetryingRoundPairing]: 'TR_SESSION_ERROR_PHASE_RETRYING_PAIRING',
+    [sessionPhases.AffiliateServerOffline]: 'TR_SESSION_ERROR_PHASE_AFFILIATE_SERVERS_OFFLINE',
+    [sessionPhases.CriticalError]: 'TR_SESSION_ERROR_PHASE_CRITICAL_ERROR',
+    [sessionPhases.BlockedUtxos]: 'TR_SESSION_ERROR_PHASE_BLOCKED_UTXOS',
+    [sessionPhases.AwaitingConfirmation]: 'TR_SESSION_PHASE_AWAITING_CONFIRMATION',
+    [sessionPhases.AwaitingOthersConfirmation]: 'TR_SESSION_PHASE_WAITING_FOR_OTHERS',
+    [sessionPhases.RegisteringOutputs]: 'TR_SESSION_PHASE_REGISTERING_OUTPUTS',
+    [sessionPhases.AwaitingOthersOutputs]: 'TR_SESSION_PHASE_WAITING_FOR_COORDINATOR',
+    [sessionPhases.OutputRegistrationFailed]: 'TR_SESSION_ERROR_PHASE_REGISTRATION_FAILED',
+    [sessionPhases.AwaitingCoinjoinTransaction]: 'TR_SESSION_PHASE_AWAITING_TRANSACTION',
+    [sessionPhases.TransactionSigning]: 'TR_SESSION_PHASE_TRANSACTION_SIGNING',
+    [sessionPhases.SendingSignature]: 'TR_SESSION_PHASE_SENDING_SIGNATURE',
+    [sessionPhases.AwaitingOtherSignatures]: 'TR_SESSION_PHASE_AWAITING_SIGNATURES',
+    [sessionPhases.SignatureFailed]: 'TR_SESSION_PHASE_SIGNING_FAILED',
 };
 
 export const SESSION_PHASE_TRANSITION_DELAY = 3000;

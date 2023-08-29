@@ -1,6 +1,6 @@
 import { Alice } from '../../src/client/Alice';
 import { ROUND_SELECTION_MAX_OUTPUTS } from '../../src/constants';
-import { SessionPhase, WabiSabiProtocolErrorCode } from '../../src/enums';
+import { sessionPhases, WabiSabiProtocolErrorCode } from '../../src/enums';
 import { CoinjoinRound } from '../../src/client/CoinjoinRound';
 import { CoinjoinPrison } from '../../src/client/CoinjoinPrison';
 import {
@@ -602,7 +602,7 @@ describe('selectRound', () => {
         expect(result).toBeUndefined();
         expect(setSessionPhaseMock).toHaveBeenLastCalledWith({
             accountKeys: ['account-A'],
-            phase: SessionPhase.BlockedUtxos,
+            phase: sessionPhases.BlockedUtxos,
         });
 
         // most of amount is banned
@@ -630,7 +630,7 @@ describe('selectRound', () => {
         expect(result2).toBeUndefined();
         expect(setSessionPhaseMock).toHaveBeenLastCalledWith({
             accountKeys: ['account-B'],
-            phase: SessionPhase.BlockedUtxos,
+            phase: sessionPhases.BlockedUtxos,
         });
     });
 

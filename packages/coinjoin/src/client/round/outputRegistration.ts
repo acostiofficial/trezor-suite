@@ -8,7 +8,7 @@ import type { Alice } from '../Alice';
 import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
 import { AccountAddress } from '../../types';
 import { scheduleDelay } from '../../utils/roundUtils';
-import { SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
+import { sessionPhases, WabiSabiProtocolErrorCode } from '../../enums';
 
 /**
  * RoundPhase: 2, OutputRegistration
@@ -144,7 +144,7 @@ export const outputRegistration = async (
     // - decide if there is only 1 account registered should i abaddon this round and blame it on some "youngest" input?
     // - maybe if there is only 1 account inputs are so "far away" from each other that it is wort to mix anyway?
     try {
-        round.setSessionPhase(SessionPhase.RegisteringOutputs);
+        round.setSessionPhase(sessionPhases.RegisteringOutputs);
         // decompose output amounts for all registered inputs grouped by Account
         const decomposedGroup = await outputDecomposition(round, accounts, options);
 
@@ -165,7 +165,7 @@ export const outputRegistration = async (
             }),
         );
 
-        round.setSessionPhase(SessionPhase.AwaitingOthersOutputs);
+        round.setSessionPhase(sessionPhases.AwaitingOthersOutputs);
         // inform coordinator that each registered input is ready to sign
         await Promise.all(
             arrayShuffle(round.inputs).map(input => readyToSign(round, input, options)),
@@ -176,7 +176,7 @@ export const outputRegistration = async (
         // registered inputs will probably be banned
         const message = `Output registration in ~~${round.id}~~ failed: ${error.message}`;
         logger.error(`Output registration failed: (${phaseStep}) ${error.message}`);
-        round.setSessionPhase(SessionPhase.OutputRegistrationFailed);
+        round.setSessionPhase(sessionPhases.OutputRegistrationFailed);
 
         round.inputs.forEach(input => input.setError(new Error(message)));
     }

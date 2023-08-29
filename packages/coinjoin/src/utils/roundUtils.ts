@@ -9,7 +9,7 @@ import {
     ROUND_REGISTRATION_END_OFFSET,
     ROUND_MAXIMUM_REQUEST_DELAY,
 } from '../constants';
-import { RoundPhase } from '../enums';
+import { roundPhases, RoundPhase } from '../enums';
 import { CoinjoinTransactionData } from '../types';
 import {
     Round,
@@ -89,7 +89,7 @@ type PartialCoinjoinRound = {
 export const getCoinjoinRoundDeadlines = (round: PartialCoinjoinRound) => {
     const now = Date.now();
     switch (round.Phase) {
-        case RoundPhase.InputRegistration: {
+        case roundPhases.InputRegistration: {
             const deadline =
                 new Date(round.InputRegistrationEnd).getTime() + ROUND_REGISTRATION_END_OFFSET;
             return {
@@ -101,7 +101,7 @@ export const getCoinjoinRoundDeadlines = (round: PartialCoinjoinRound) => {
                     readTimeSpan(round.RoundParameters.TransactionSigningTimeout),
             };
         }
-        case RoundPhase.ConnectionConfirmation: {
+        case roundPhases.ConnectionConfirmation: {
             const deadline =
                 now + readTimeSpan(round.RoundParameters.ConnectionConfirmationTimeout);
             return {
@@ -112,7 +112,7 @@ export const getCoinjoinRoundDeadlines = (round: PartialCoinjoinRound) => {
                     readTimeSpan(round.RoundParameters.TransactionSigningTimeout),
             };
         }
-        case RoundPhase.OutputRegistration: {
+        case roundPhases.OutputRegistration: {
             const deadline = now + readTimeSpan(round.RoundParameters.OutputRegistrationTimeout);
             return {
                 phaseDeadline: deadline,
@@ -120,8 +120,8 @@ export const getCoinjoinRoundDeadlines = (round: PartialCoinjoinRound) => {
                     deadline + readTimeSpan(round.RoundParameters.TransactionSigningTimeout),
             };
         }
-        case RoundPhase.TransactionSigning:
-        case RoundPhase.Ended: {
+        case roundPhases.TransactionSigning:
+        case roundPhases.Ended: {
             const deadline = now + readTimeSpan(round.RoundParameters.TransactionSigningTimeout);
             return {
                 phaseDeadline: deadline,

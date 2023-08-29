@@ -149,7 +149,7 @@ describe(`CoinjoinRound`, () => {
 
         await round.process([]);
 
-        expect(round.phase).toBe(4); // RoundPhase.Ended
+        expect(round.phase).toBe(4); // roundPhases.Ended
         expect(round.inputs.length).toBe(0); // all inputs are removed
     });
 

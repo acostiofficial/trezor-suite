@@ -1,6 +1,6 @@
 import { networks } from '@trezor/utxo-lib';
 
-import { RoundPhase, EndRoundState, WabiSabiProtocolErrorCode } from '../../src/enums';
+import { roundPhases, EndRoundState, WabiSabiProtocolErrorCode } from '../../src/enums';
 import { ended } from '../../src/client/round/endedRound';
 import { createInput } from '../fixtures/input.fixture';
 import { createCoinjoinRound } from '../fixtures/round.fixture';
@@ -42,7 +42,7 @@ describe('ended', () => {
             {
                 ...options,
                 round: {
-                    phase: RoundPhase.Ended,
+                    phase: roundPhases.Ended,
                     endRoundState: EndRoundState.NotAllAlicesSign,
                 },
             },
@@ -73,7 +73,7 @@ describe('ended', () => {
             {
                 ...options,
                 round: {
-                    phase: RoundPhase.Ended,
+                    phase: roundPhases.Ended,
                     endRoundState: EndRoundState.NotAllAlicesSign,
                 },
             },
@@ -105,7 +105,7 @@ describe('ended', () => {
                 ...options,
                 logger,
                 round: {
-                    phase: RoundPhase.Ended,
+                    phase: roundPhases.Ended,
                     endRoundState: EndRoundState.NotAllAlicesSign,
                     addresses: [
                         {
@@ -145,7 +145,7 @@ describe('ended', () => {
             {
                 ...options,
                 round: {
-                    phase: RoundPhase.Ended,
+                    phase: roundPhases.Ended,
                     endRoundState: EndRoundState.NotAllAlicesSign,
                     addresses: [
                         {
@@ -186,7 +186,7 @@ describe('ended', () => {
             {
                 ...options,
                 round: {
-                    phase: RoundPhase.Ended,
+                    phase: roundPhases.Ended,
                     endRoundState: EndRoundState.NotAllAlicesSign,
                     addresses: [
                         {
@@ -227,7 +227,7 @@ describe('ended', () => {
             {
                 ...options,
                 round: {
-                    phase: RoundPhase.Ended,
+                    phase: roundPhases.Ended,
                     signed: true,
                     endRoundState: EndRoundState.AbortedNotEnoughAlicesSigned,
                     addresses: [
@@ -268,7 +268,7 @@ describe('ended', () => {
             {
                 ...options,
                 round: {
-                    phase: RoundPhase.Ended,
+                    phase: roundPhases.Ended,
                     signed: true,
                     endRoundState: EndRoundState.NotAllAlicesSign,
                     addresses: [
@@ -305,7 +305,7 @@ describe('ended', () => {
             {
                 ...options,
                 round: {
-                    phase: RoundPhase.Ended,
+                    phase: roundPhases.Ended,
                     endRoundState: EndRoundState.AbortedNotEnoughAlices,
                 },
             },
@@ -341,7 +341,7 @@ describe('ended', () => {
             {
                 ...options,
                 round: {
-                    phase: RoundPhase.Ended,
+                    phase: roundPhases.Ended,
                     endRoundState: EndRoundState.TransactionBroadcasted,
                     addresses: [
                         {

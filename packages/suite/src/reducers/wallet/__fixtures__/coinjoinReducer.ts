@@ -1,6 +1,6 @@
+import { sessionPhases } from '@trezor/coinjoin';
 import { COINJOIN } from 'src/actions/wallet/constants';
 import { initialState } from 'src/reducers/wallet/coinjoinReducer';
-import { SessionPhase } from 'src/types/wallet/coinjoin';
 
 const account = {
     key: 'A',
@@ -32,7 +32,7 @@ export const actionFixtures = [
             {
                 type: COINJOIN.CLIENT_SESSION_PHASE,
                 payload: {
-                    phase: SessionPhase.RoundSearch,
+                    phase: sessionPhases.RoundSearch,
                     accountKeys: ['A'],
                 },
             },
@@ -44,7 +44,7 @@ export const actionFixtures = [
                     ...account,
                     session: {
                         ...account.session,
-                        sessionPhaseQueue: [SessionPhase.RoundSearch],
+                        sessionPhaseQueue: [sessionPhases.RoundSearch],
                     },
                 },
             ],
@@ -59,7 +59,7 @@ export const actionFixtures = [
                     ...account,
                     session: {
                         ...account.session,
-                        sessionPhaseQueue: [SessionPhase.RoundSearch],
+                        sessionPhaseQueue: [sessionPhases.RoundSearch],
                     },
                 },
             ],
@@ -68,7 +68,7 @@ export const actionFixtures = [
             {
                 type: COINJOIN.CLIENT_SESSION_PHASE,
                 payload: {
-                    phase: SessionPhase.RoundSearch,
+                    phase: sessionPhases.RoundSearch,
                     accountKeys: ['A'],
                 },
             },
@@ -80,7 +80,7 @@ export const actionFixtures = [
                     ...account,
                     session: {
                         ...account.session,
-                        sessionPhaseQueue: [SessionPhase.RoundSearch],
+                        sessionPhaseQueue: [sessionPhases.RoundSearch],
                     },
                 },
             ],
@@ -95,7 +95,7 @@ export const actionFixtures = [
                     ...account,
                     session: {
                         ...account.session,
-                        sessionPhaseQueue: [SessionPhase.AwaitingOthersConfirmation],
+                        sessionPhaseQueue: [sessionPhases.AwaitingOthersConfirmation],
                     },
                 },
             ],
@@ -104,7 +104,7 @@ export const actionFixtures = [
             {
                 type: COINJOIN.CLIENT_SESSION_PHASE,
                 payload: {
-                    phase: SessionPhase.AwaitingConfirmation,
+                    phase: sessionPhases.AwaitingConfirmation,
                     accountKeys: ['A'],
                 },
             },
@@ -116,7 +116,7 @@ export const actionFixtures = [
                     ...account,
                     session: {
                         ...account.session,
-                        sessionPhaseQueue: [SessionPhase.AwaitingOthersConfirmation],
+                        sessionPhaseQueue: [sessionPhases.AwaitingOthersConfirmation],
                     },
                 },
             ],
@@ -131,7 +131,7 @@ export const actionFixtures = [
                     ...account,
                     session: {
                         ...account.session,
-                        sessionPhaseQueue: [SessionPhase.AwaitingOthersConfirmation],
+                        sessionPhaseQueue: [sessionPhases.AwaitingOthersConfirmation],
                     },
                 },
             ],
@@ -140,7 +140,7 @@ export const actionFixtures = [
             {
                 type: COINJOIN.CLIENT_SESSION_PHASE,
                 payload: {
-                    phase: SessionPhase.RoundSearch,
+                    phase: sessionPhases.RoundSearch,
                     accountKeys: ['A'],
                 },
             },
@@ -153,8 +153,8 @@ export const actionFixtures = [
                     session: {
                         ...account.session,
                         sessionPhaseQueue: [
-                            SessionPhase.AwaitingOthersConfirmation,
-                            SessionPhase.RoundSearch,
+                            sessionPhases.AwaitingOthersConfirmation,
+                            sessionPhases.RoundSearch,
                         ],
                     },
                 },

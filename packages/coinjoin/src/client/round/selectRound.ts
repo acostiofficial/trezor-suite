@@ -7,7 +7,7 @@ import { CoinjoinPrison } from '../CoinjoinPrison';
 import * as middleware from '../middleware';
 import { Round } from '../coordinator';
 import { ROUND_SELECTION_REGISTRATION_OFFSET, ROUND_SELECTION_MAX_OUTPUTS } from '../../constants';
-import { RoundPhase, SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
+import { sessionPhases, roundPhases, SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
 import { getInputSize, getOutputSize } from '../../utils/coordinatorUtils';
 
 export type CoinjoinRoundGenerator = (
@@ -40,7 +40,7 @@ export const getRoundCandidates = ({
     return statusRounds
         .filter(
             round =>
-                round.Phase === RoundPhase.InputRegistration &&
+                round.Phase === roundPhases.InputRegistration &&
                 new Date(round.InputRegistrationEnd).getTime() - now >
                     ROUND_SELECTION_REGISTRATION_OFFSET,
         )
@@ -65,7 +65,7 @@ export const getUnregisteredAccounts = ({
     accounts.filter(({ accountKey }) => {
         const isAlreadyRegistered = coinjoinRounds.find(
             round =>
-                round.phase !== RoundPhase.Ended &&
+                round.phase !== roundPhases.Ended &&
                 round.inputs.find(input => input.accountKey === accountKey),
         );
 
@@ -128,7 +128,7 @@ export const getAccountCandidates = ({
             logger.info(`Skip candidate ~~${accountKey}~~. Not enough change addresses`);
             skippedAccounts.push({
                 key: account.accountKey,
-                reason: SessionPhase.SkippingRound,
+                reason: sessionPhases.SkippingRound,
             });
             return [];
         }
@@ -165,7 +165,7 @@ export const getAccountCandidates = ({
                 logger.error(`Skip candidate. Too many unavailable utxos`);
                 skippedAccounts.push({
                     key: account.accountKey,
-                    reason: SessionPhase.BlockedUtxos,
+                    reason: sessionPhases.BlockedUtxos,
                 });
                 return [];
             }
@@ -186,7 +186,7 @@ export const getAccountCandidates = ({
                     logger.info(`Random skip candidate ~~${accountKey}~~`);
                     skippedAccounts.push({
                         key: account.accountKey,
-                        reason: SessionPhase.SkippingRound,
+                        reason: sessionPhases.SkippingRound,
                     });
 
                     return [];
@@ -200,7 +200,7 @@ export const getAccountCandidates = ({
                 );
                 skippedAccounts.push({
                     key: account.accountKey,
-                    reason: SessionPhase.CriticalError,
+                    reason: sessionPhases.CriticalError,
                 });
             }
 
@@ -217,7 +217,7 @@ export const getAccountCandidates = ({
         );
         skippedAccounts.push({
             key: account.accountKey,
-            reason: SessionPhase.AccountMissingUtxos,
+            reason: sessionPhases.AccountMissingUtxos,
         });
 
         return [];
@@ -444,13 +444,13 @@ export const selectRound = async ({
     if (!runningAffiliateServer) {
         logger.warn('Affiliate server is not running. Round selection ignored');
         setSessionPhase({
-            phase: SessionPhase.AffiliateServerOffline,
+            phase: sessionPhases.AffiliateServerOffline,
             accountKeys: unregisteredAccountKeys,
         });
         return;
     }
 
-    setSessionPhase({ phase: SessionPhase.RoundSearch, accountKeys: unregisteredAccountKeys });
+    setSessionPhase({ phase: sessionPhases.RoundSearch, accountKeys: unregisteredAccountKeys });
     const roundCandidates = getRoundCandidates({
         roundGenerator,
         statusRounds,
@@ -464,7 +464,7 @@ export const selectRound = async ({
     }
 
     logger.info('Looking for accounts');
-    setSessionPhase({ phase: SessionPhase.CoinSelection, accountKeys: unregisteredAccountKeys });
+    setSessionPhase({ phase: sessionPhases.CoinSelection, accountKeys: unregisteredAccountKeys });
     const accountCandidates = getAccountCandidates({
         accounts: unregisteredAccounts,
         coinjoinRounds,
@@ -478,7 +478,7 @@ export const selectRound = async ({
     }
 
     logger.info(`Looking for utxos`);
-    setSessionPhase({ phase: SessionPhase.RoundPairing, accountKeys: unregisteredAccountKeys });
+    setSessionPhase({ phase: sessionPhases.RoundPairing, accountKeys: unregisteredAccountKeys });
     const newRound = await selectInputsForRound({
         aliceGenerator,
         roundCandidates,
@@ -488,7 +488,7 @@ export const selectRound = async ({
     if (!newRound) {
         logger.info('No suitable utxos');
         setSessionPhase({
-            phase: SessionPhase.RetryingRoundPairing,
+            phase: sessionPhases.RetryingRoundPairing,
             accountKeys: unregisteredAccountKeys,
         });
         return;

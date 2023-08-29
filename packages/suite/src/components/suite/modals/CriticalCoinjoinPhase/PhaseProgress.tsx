@@ -5,6 +5,7 @@ import { Spinner, Icon, useTheme, variables } from '@trezor/components';
 import { SESSION_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
 import { Translation } from 'src/components/suite/Translation';
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';
+import { roundPhases } from '@trezor/coinjoin';
 
 const Container = styled.div`
     padding: 32px 38px 0;
@@ -86,11 +87,11 @@ interface PhaseProgressProps {
 export const PhaseProgress = ({ roundPhase, phaseDeadline, sessionPhase }: PhaseProgressProps) => (
     <Container>
         <Steps>
-            <Step phase={RoundPhase.ConnectionConfirmation} currentPhase={roundPhase} />
+            <Step phase={roundPhases.ConnectionConfirmation} currentPhase={roundPhase} />
             <Separator />
-            <Step phase={RoundPhase.OutputRegistration} currentPhase={roundPhase} />
+            <Step phase={roundPhases.OutputRegistration} currentPhase={roundPhase} />
             <Separator />
-            <Step phase={RoundPhase.TransactionSigning} currentPhase={roundPhase} />
+            <Step phase={roundPhases.TransactionSigning} currentPhase={roundPhase} />
         </Steps>
 
         <Message>

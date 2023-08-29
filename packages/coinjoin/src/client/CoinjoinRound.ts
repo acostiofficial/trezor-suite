@@ -8,7 +8,7 @@ import {
     getCoinjoinRoundDeadlines,
 } from '../utils/roundUtils';
 import { ROUND_PHASE_PROCESS_TIMEOUT, ACCOUNT_BUSY_TIMEOUT } from '../constants';
-import { RoundPhase, EndRoundState, SessionPhase } from '../enums';
+import { RoundPhase, EndRoundState, SessionPhase, roundPhases, sessionPhases } from '../enums';
 import { AccountAddress, RegisterAccountParams } from '../types/account';
 import {
     SerializedCoinjoinRound,
@@ -202,7 +202,7 @@ export class CoinjoinRound extends TypedEmitter<Events> {
             }
         }
 
-        if (this.phase === RoundPhase.Ended) return this;
+        if (this.phase === roundPhases.Ended) return this;
 
         // update data from status
         if (this.phase !== changed.Phase) {
@@ -225,7 +225,7 @@ export class CoinjoinRound extends TypedEmitter<Events> {
         }
 
         // NOTE: emit changed event before each async phase
-        if (changed.Phase !== RoundPhase.Ended) {
+        if (changed.Phase !== roundPhases.Ended) {
             this.emit('changed', { round: this.toSerialized() });
         }
 
@@ -243,7 +243,7 @@ export class CoinjoinRound extends TypedEmitter<Events> {
         const [inputs, failed] = arrayPartition(this.inputs, input => !input.error);
         this.inputs = inputs;
 
-        if (this.phase === RoundPhase.InputRegistration && failed.length > 0) {
+        if (this.phase === roundPhases.InputRegistration && failed.length > 0) {
             // strictly follow the result of `middleware.selectInputsForRound` algorithm
             // if **any** input registration fails for **any** reason exclude all inputs related to this account
             const failedAccounts = failed.map(input => input.accountKey).filter(arrayDistinct);
@@ -254,7 +254,7 @@ export class CoinjoinRound extends TypedEmitter<Events> {
                 }
                 return !shouldBeExcluded;
             });
-        } else if (this.phase > RoundPhase.InputRegistration) {
+        } else if (this.phase > roundPhases.InputRegistration) {
             failed.forEach(input =>
                 this.prison.detain(input, {
                     roundId: this.id,
@@ -264,17 +264,17 @@ export class CoinjoinRound extends TypedEmitter<Events> {
             this.failed = this.failed.concat(...failed);
         }
 
-        if (this.phase > RoundPhase.ConnectionConfirmation) {
+        if (this.phase > roundPhases.ConnectionConfirmation) {
             inputs.forEach(i => i.clearConfirmationInterval());
         }
 
         if (this.inputs.length === 0) {
             // CoinjoinRound ends because there is no inputs left
             // if this happens in critical phase then this instance will break the Round for everyone
-            this.phase = RoundPhase.Ended;
+            this.phase = roundPhases.Ended;
         }
 
-        if (this.phase === RoundPhase.Ended) {
+        if (this.phase === roundPhases.Ended) {
             this.emit('ended', { round: this.toSerialized() });
         }
 
@@ -291,15 +291,15 @@ export class CoinjoinRound extends TypedEmitter<Events> {
         const processOptions = { ...this.options, signal: this.lock.signal };
         // try to run process on CoinjoinRound
         switch (this.phase) {
-            case RoundPhase.InputRegistration:
+            case roundPhases.InputRegistration:
                 return inputRegistration(this, processOptions);
-            case RoundPhase.ConnectionConfirmation:
+            case roundPhases.ConnectionConfirmation:
                 return connectionConfirmation(this, processOptions);
-            case RoundPhase.OutputRegistration:
+            case roundPhases.OutputRegistration:
                 return outputRegistration(this, accounts, processOptions);
-            case RoundPhase.TransactionSigning:
+            case roundPhases.TransactionSigning:
                 return transactionSigning(this, accounts, processOptions);
-            case RoundPhase.Ended:
+            case roundPhases.Ended:
                 return ended(this, processOptions);
             default:
                 return Promise.resolve(this);
@@ -315,7 +315,7 @@ export class CoinjoinRound extends TypedEmitter<Events> {
     }
 
     getRequest(): CoinjoinRequestEvent | void {
-        if (this.phase === RoundPhase.InputRegistration) {
+        if (this.phase === roundPhases.InputRegistration) {
             const inputs = this.inputs.filter(input => !input.ownershipProof && !input.requested);
             if (inputs.length > 0) {
                 inputs.forEach(input => {
@@ -330,10 +330,10 @@ export class CoinjoinRound extends TypedEmitter<Events> {
                 };
             }
         }
-        if (this.phase === RoundPhase.TransactionSigning) {
+        if (this.phase === roundPhases.TransactionSigning) {
             const inputs = this.inputs.filter(i => !i.witness && !i.requested);
             if (inputs.length > 0 && this.transactionData && this.liquidityClues) {
-                this.setSessionPhase(SessionPhase.TransactionSigning);
+                this.setSessionPhase(sessionPhases.TransactionSigning);
                 inputs.forEach(input => {
                     this.logger.info(`Requesting witness for ~~${input.outpoint}~~`);
                     input.setRequest('signature');
@@ -412,7 +412,7 @@ export class CoinjoinRound extends TypedEmitter<Events> {
         if (inputs.length < 1) return;
 
         let breaking = false;
-        if (this.phase > RoundPhase.InputRegistration) {
+        if (this.phase > roundPhases.InputRegistration) {
             // unregistered in critical phase, breaking the round
             breaking = true;
         }
@@ -427,7 +427,7 @@ export class CoinjoinRound extends TypedEmitter<Events> {
                 this.lock.abort();
             } else {
                 // emit events if not locked
-                this.phase = RoundPhase.Ended;
+                this.phase = roundPhases.Ended;
                 this.emit('ended', { round: this.toSerialized() });
                 this.emit('changed', { round: this.toSerialized() });
             }
@@ -439,7 +439,7 @@ export class CoinjoinRound extends TypedEmitter<Events> {
             // if affiliate server goes offline try to abort round if it's not in critical phase.
             // if round is in critical phase, there is noting much we can do, just log it...
             // ...we need to continue and hope that server will become online before transaction signing phase
-            if (this.phase <= RoundPhase.OutputRegistration) {
+            if (this.phase <= roundPhases.OutputRegistration) {
                 this.logger.warn(`Affiliate server offline. Aborting round ${this.id}`);
                 this.lock?.abort();
                 this.inputs.forEach(i => i.clearConfirmationInterval());
@@ -456,7 +456,7 @@ export class CoinjoinRound extends TypedEmitter<Events> {
 
         this.inputs.forEach(i => i.clearConfirmationInterval());
 
-        this.phase = RoundPhase.Ended;
+        this.phase = roundPhases.Ended;
         this.inputs = [];
         this.failed = [];
         this.addresses = [];
@@ -480,6 +480,6 @@ export class CoinjoinRound extends TypedEmitter<Events> {
     }
 
     isInCriticalPhase() {
-        return this.phase > RoundPhase.InputRegistration && this.phase < RoundPhase.Ended;
+        return this.phase > roundPhases.InputRegistration && this.phase < roundPhases.Ended;
     }
 }

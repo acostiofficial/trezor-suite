@@ -5,7 +5,7 @@ import { transformStatus } from '../utils/roundUtils';
 import { patchResponse } from '../utils/http';
 import { coordinatorRequest } from './coordinatorRequest';
 import { STATUS_TIMEOUT } from '../constants';
-import { RoundPhase } from '../enums';
+import { roundPhases } from '../enums';
 import {
     CoinjoinClientSettings,
     CoinjoinStatusEvent,
@@ -59,16 +59,16 @@ export class Status extends TypedEmitter<StatusEvents> {
                 const known = this.rounds.find(prevRound => prevRound.Id === nextRound.Id);
                 if (!known) return true; // new phase
                 if (nextRound.Phase === known.Phase + 1) return true; // expected update
-                if (nextRound.Phase === RoundPhase.TransactionSigning && !known.AffiliateRequest) {
+                if (nextRound.Phase === roundPhases.TransactionSigning && !known.AffiliateRequest) {
                     return true; // affiliateRequest is propagated asynchronously, might be added after phase change
                 }
 
                 if (
-                    known.Phase === RoundPhase.Ended &&
+                    known.Phase === roundPhases.Ended &&
                     known.EndRoundState !== nextRound.EndRoundState
                 )
                     return true;
-                if (nextRound.Phase === RoundPhase.Ended && known.Phase !== RoundPhase.Ended)
+                if (nextRound.Phase === roundPhases.Ended && known.Phase !== roundPhases.Ended)
                     return true; // round ended
                 if (nextRound.Phase !== known.Phase) {
                     this.log(
@@ -89,10 +89,10 @@ export class Status extends TypedEmitter<StatusEvents> {
                 this.rounds
                     .filter(
                         prevRound =>
-                            prevRound.Phase < RoundPhase.Ended &&
+                            prevRound.Phase < roundPhases.Ended &&
                             !next.find(nextRound => prevRound.Id === nextRound.Id),
                     )
-                    .map(r => ({ ...r, phase: RoundPhase.Ended })),
+                    .map(r => ({ ...r, phase: roundPhases.Ended })),
             );
     }
 

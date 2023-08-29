@@ -1,13 +1,12 @@
 import produce from 'immer';
 import BigNumber from 'bignumber.js';
 
-import { getInputSize, getOutputSize } from '@trezor/coinjoin';
+import { getInputSize, getOutputSize, roundPhases } from '@trezor/coinjoin';
 import { PartialRecord } from '@trezor/type-utils';
 import { STORAGE } from 'src/actions/suite/constants';
 import { Account, AccountKey } from '@suite-common/wallet-types';
 import {
     CoinjoinAccount,
-    RoundPhase,
     CoinjoinDebugSettings,
     CoinjoinConfig,
     CoinjoinClientInstance,
@@ -208,7 +207,7 @@ const updateSession = (
         sessionDeadline,
     };
 
-    if (phase === RoundPhase.Ended) {
+    if (phase === roundPhases.Ended) {
         delete account.session.roundPhase;
     }
 };
@@ -409,7 +408,7 @@ const updateSessionPhase = (
         }
         const previousSessionPhase = session.sessionPhaseQueue.at(-1) ?? 0;
         const roundPhase = getRoundPhaseFromSessionPhase(phase);
-        const isFirstRoundPhase = roundPhase === RoundPhase.InputRegistration;
+        const isFirstRoundPhase = roundPhase === roundPhases.InputRegistration;
 
         // Allow only subsequent session phases
         // or phases from the first round phase if they are not the same as current one.

@@ -20,7 +20,7 @@ import type { Account } from '../Account';
 import type { Alice } from '../Alice';
 import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
 import { CoinjoinTransactionData } from '../../types';
-import { SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
+import { sessionPhases, WabiSabiProtocolErrorCode } from '../../enums';
 
 const getTransactionData = (
     round: CoinjoinRound,
@@ -172,7 +172,7 @@ export const transactionSigning = async (
 
     if (!round.affiliateRequest) {
         logger.warn(`Missing affiliate request. Waiting for status`);
-        round.setSessionPhase(SessionPhase.AwaitingCoinjoinTransaction);
+        round.setSessionPhase(sessionPhases.AwaitingCoinjoinTransaction);
         round.transactionSignTries.push(Date.now());
         return round;
     }
@@ -182,7 +182,7 @@ export const transactionSigning = async (
     try {
         const inputsWithoutWitness = round.inputs.filter(input => !input.witness);
         if (inputsWithoutWitness.length > 0) {
-            round.setSessionPhase(SessionPhase.AwaitingCoinjoinTransaction);
+            round.setSessionPhase(sessionPhases.AwaitingCoinjoinTransaction);
             const transactionData = getTransactionData(round, options);
             const liquidityClues = await updateRawLiquidityClue(
                 round,
@@ -195,14 +195,14 @@ export const transactionSigning = async (
             return round;
         }
 
-        round.setSessionPhase(SessionPhase.SendingSignature);
+        round.setSessionPhase(sessionPhases.SendingSignature);
 
         await Promise.all(
             arrayShuffle(round.inputs).map(input => sendTxSignature(round, input, options)),
         );
 
         round.signedSuccessfully();
-        round.setSessionPhase(SessionPhase.AwaitingOtherSignatures);
+        round.setSessionPhase(sessionPhases.AwaitingOtherSignatures);
         logger.info(`Round ${round.id} signed successfully`);
     } catch (error) {
         // NOTE: if anything goes wrong in this process this Round will be corrupted for all the users
@@ -216,7 +216,7 @@ export const transactionSigning = async (
 
         const sendTime = Date.now() - sendProcessStart;
 
-        round.setSessionPhase(SessionPhase.SignatureFailed);
+        round.setSessionPhase(sessionPhases.SignatureFailed);
         logger.error(
             `Round signing failed. Resolved time ${resolvedTime}ms. Send time ${sendTime}ms. ${error.message}`,
         );

@@ -3,7 +3,7 @@ import * as middleware from '../middleware';
 import { readTimeSpan } from '../../utils/roundUtils';
 import type { Alice, AliceConfirmationInterval } from '../Alice';
 import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
-import { SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
+import { sessionPhases, WabiSabiProtocolErrorCode } from '../../enums';
 
 /**
  * usage in RoundPhase: 0, InputRegistration
@@ -188,7 +188,7 @@ export const connectionConfirmation = async (
     // try to confirm each input
     // failed inputs will be excluded from this round, successful will continue to phase: 2 (outputRegistration)
     options.logger.info(`connectionConfirmation: ~~${round.id}~~`);
-    round.setSessionPhase(SessionPhase.AwaitingConfirmation);
+    round.setSessionPhase(sessionPhases.AwaitingConfirmation);
 
     const { inputs } = round;
     await Promise.allSettled(
@@ -208,7 +208,7 @@ export const connectionConfirmation = async (
         }),
     );
 
-    round.setSessionPhase(SessionPhase.AwaitingOthersConfirmation);
+    round.setSessionPhase(sessionPhases.AwaitingOthersConfirmation);
 
     return round;
 };

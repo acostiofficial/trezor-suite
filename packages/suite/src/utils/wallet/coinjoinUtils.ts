@@ -23,6 +23,8 @@ import {
     CoinjoinStatusEvent,
     RegisterAccountParams,
     CoinjoinTransactionData,
+    sessionPhases,
+    roundPhases,
 } from '@trezor/coinjoin';
 
 export type CoinjoinBalanceBreakdown = {
@@ -308,19 +310,31 @@ export const getIsCoinjoinOutOfSync = (selectedAccount: SelectedAccountStatus) =
     }
 };
 
-const roundPhases = [
-    RoundPhase.InputRegistration,
-    RoundPhase.ConnectionConfirmation,
-    RoundPhase.OutputRegistration,
-    RoundPhase.TransactionSigning,
-    RoundPhase.Ended,
-];
+export const getRoundPhaseFromSessionPhase = (sessionPhase: SessionPhase) => {
+    const isValidRoundPhase = (result: number): result is RoundPhase =>
+        Object.values(roundPhases).some(value => value === result);
 
-export const getRoundPhaseFromSessionPhase = (sessionPhase: SessionPhase): RoundPhase =>
-    roundPhases[Number(String(sessionPhase)[0]) - 1];
+    const result = Number(String(sessionPhase)[0]) - 1;
 
-export const getFirstSessionPhaseFromRoundPhase = (roundPhase?: RoundPhase): SessionPhase =>
-    Number(`${(roundPhase || 0) + 1}01`);
+    if (!isValidRoundPhase(result)) {
+        throw new Error(`Invalid round phase value: ${result}`);
+    }
+
+    return result;
+};
+
+export const getFirstSessionPhaseFromRoundPhase = (roundPhase?: RoundPhase) => {
+    const isValidSessionPhase = (result: number): result is SessionPhase =>
+        Object.values(sessionPhases).some(value => value === result);
+
+    const result = Number(`${(roundPhase || 0) + 1}01`);
+
+    if (!isValidSessionPhase(result)) {
+        throw new Error(`Invalid session phase value: ${result}`);
+    }
+
+    return result;
+};
 
 export const getAccountProgressHandle = (account: Pick<Account, 'key'>) =>
     createHash('sha256').update(account.key).digest('hex').slice(0, 16);
