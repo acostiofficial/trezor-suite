@@ -961,7 +961,7 @@ const createInstance = [
         initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
-                type: SUITE.CREATE_DEVICE_INSTANCE,
+                type: deviceActions.createDeviceInstance.type,
                 payload: getSuiteDevice({ useEmptyPassphrase: false, instance: 1 }),
             },
         ],
@@ -992,7 +992,7 @@ const createInstance = [
         },
         actions: [
             {
-                type: SUITE.CREATE_DEVICE_INSTANCE,
+                type: deviceActions.createDeviceInstance.type,
                 payload: getSuiteDevice({ useEmptyPassphrase: false, instance: 1 }),
             },
         ],
@@ -1023,7 +1023,7 @@ const createInstance = [
         },
         actions: [
             {
-                type: SUITE.CREATE_DEVICE_INSTANCE,
+                type: deviceActions.createDeviceInstance.type,
                 payload: getSuiteDevice({ useEmptyPassphrase: false, instance: 2 }),
             },
         ],
@@ -1053,7 +1053,7 @@ const createInstance = [
         initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
-                type: SUITE.CREATE_DEVICE_INSTANCE,
+                type: deviceActions.createDeviceInstance.type,
                 payload: getSuiteDevice({
                     type: 'unacquired',
                 }),

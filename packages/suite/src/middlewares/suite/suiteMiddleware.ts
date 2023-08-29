@@ -8,6 +8,7 @@ import * as suiteActions from 'src/actions/suite/suiteActions';
 import { AppState, Action, Dispatch } from 'src/types/suite';
 import { handleProtocolRequest } from 'src/actions/suite/protocolActions';
 import { appChanged } from 'src/actions/suite/suiteActions';
+import { deviceActions } from 'src/actions/suite/deviceActions';
 
 const suite =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -26,6 +27,10 @@ const suite =
 
         // pass action to reducers
         next(action);
+
+        if (deviceActions.createDeviceInstance.match(action)) {
+            api.dispatch(suiteActions.selectDevice(action.payload));
+        }
 
         switch (action.type) {
             case SUITE.DESKTOP_HANDSHAKE:
@@ -50,9 +55,6 @@ const suite =
                 break;
             case SUITE.FORGET_DEVICE:
                 api.dispatch(suiteActions.handleDeviceDisconnect(action.payload));
-                break;
-            case SUITE.CREATE_DEVICE_INSTANCE:
-                api.dispatch(suiteActions.selectDevice(action.payload));
                 break;
             case SUITE.REQUEST_AUTH_CONFIRM:
                 api.dispatch(suiteActions.authConfirm());

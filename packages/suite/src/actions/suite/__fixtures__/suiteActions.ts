@@ -1016,7 +1016,7 @@ const createDeviceInstance = [
                 }),
             },
         },
-        result: SUITE.CREATE_DEVICE_INSTANCE,
+        result: deviceActions.createDeviceInstance.type,
     },
     {
         description: `without passphrase_protection and @trezor/connect error`,
@@ -1055,7 +1055,7 @@ const createDeviceInstance = [
                 error: 'applySettings error',
             },
         },
-        result: SUITE.CREATE_DEVICE_INSTANCE,
+        result: deviceActions.createDeviceInstance.type,
     },
 ];
 

@@ -45,7 +45,6 @@ export type SuiteAction =
     | { type: typeof SUITE.UPDATE_SELECTED_DEVICE; payload: TrezorDevice }
     | { type: typeof SUITE.AUTH_DEVICE; payload: TrezorDevice; state: string }
     | { type: typeof requestAuthConfirm.type }
-    | { type: typeof SUITE.CREATE_DEVICE_INSTANCE; payload: TrezorDevice }
     | { type: typeof SUITE.FORGET_DEVICE; payload: TrezorDevice }
     | {
           type: typeof SUITE.REMEMBER_DEVICE;
@@ -432,14 +431,13 @@ export const createDeviceInstance =
             dispatch(notificationsActions.addToast({ type: 'settings-applied' }));
         }
 
-        dispatch({
-            type: SUITE.CREATE_DEVICE_INSTANCE,
-            payload: {
+        dispatch(
+            deviceActions.createDeviceInstance({
                 ...device,
                 useEmptyPassphrase,
                 instance: deviceUtils.getNewInstanceNumber(devices, device),
-            },
-        });
+            }),
+        );
     };
 
 /**

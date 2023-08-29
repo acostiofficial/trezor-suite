@@ -6,7 +6,6 @@ export const SELECT_DEVICE = '@suite/select-device';
 export const UPDATE_SELECTED_DEVICE = '@suite/update-selected-device';
 export const AUTH_DEVICE = '@suite/auth-device';
 export const REQUEST_AUTH_CONFIRM = '@suite/request-auth-confirm';
-export const CREATE_DEVICE_INSTANCE = '@suite/create-device-instance';
 export const FORGET_DEVICE = '@suite/forget-device';
 export const REMEMBER_DEVICE = '@suite/remember-device';
 export const SET_LANGUAGE = '@suite/set-language';
