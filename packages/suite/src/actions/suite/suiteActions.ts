@@ -44,7 +44,6 @@ export type SuiteAction =
     | { type: typeof SUITE.SELECT_DEVICE; payload?: TrezorDevice }
     | { type: typeof SUITE.UPDATE_SELECTED_DEVICE; payload: TrezorDevice }
     | { type: typeof SUITE.AUTH_DEVICE; payload: TrezorDevice; state: string }
-    | { type: typeof SUITE.AUTH_FAILED; payload: TrezorDevice }
     | { type: typeof requestAuthConfirm.type }
     | { type: typeof SUITE.RECEIVE_AUTH_CONFIRM; payload: TrezorDevice; success: boolean }
     | { type: typeof SUITE.CREATE_DEVICE_INSTANCE; payload: TrezorDevice }
@@ -526,7 +525,7 @@ export const forgetDisconnectedDevices =
  */
 const actions = [
     SUITE.AUTH_DEVICE,
-    SUITE.AUTH_FAILED,
+    deviceActions.authFailed.type,
     setSelectedDevice.type,
     SUITE.RECEIVE_AUTH_CONFIRM,
     deviceActions.updatePassphraseMode.type,
@@ -653,7 +652,7 @@ export const authorizeDevice =
             return true;
         }
 
-        dispatch({ type: SUITE.AUTH_FAILED, payload: device });
+        dispatch(deviceActions.authFailed(device));
         dispatch(
             notificationsActions.addToast({ type: 'auth-failed', error: response.payload.error }),
         );

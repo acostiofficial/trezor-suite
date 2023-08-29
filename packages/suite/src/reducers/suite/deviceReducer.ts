@@ -428,12 +428,9 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, bui
         .addCase(deviceActions.updatePassphraseMode, (state, { payload }) => {
             changePassphraseMode(state, payload.device, payload.hidden, payload.alwaysOnDevice);
         })
-        .addMatcher(
-            action => action.type === SUITE.AUTH_FAILED,
-            (state, action) => {
-                authFailed(state, action.payload);
-            },
-        )
+        .addCase(deviceActions.authFailed, (state, { payload }) => {
+            authFailed(state, payload);
+        })
         .addMatcher(
             action => action.type === SUITE.RECEIVE_AUTH_CONFIRM,
             (state, action) => {

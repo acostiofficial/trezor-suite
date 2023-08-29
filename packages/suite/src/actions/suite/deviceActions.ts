@@ -22,10 +22,15 @@ const updatePassphraseMode = createAction(
     (payload: { device: TrezorDevice; hidden: boolean; alwaysOnDevice?: boolean }) => ({ payload }),
 );
 
+const authFailed = createAction(`${MODULE_PREFIX}/authFailed`, (payload: TrezorDevice) => ({
+    payload,
+}));
+
 export const deviceActions = {
     connectDevice,
     connectUnacquiredDevice,
     deviceChanged,
     deviceDisconnect,
     updatePassphraseMode,
+    authFailed,
 };
