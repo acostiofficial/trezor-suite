@@ -6,7 +6,7 @@ import { Network, networks } from '@suite-common/wallet-config';
 import { versionUtils } from '@trezor/utils';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
-import { STORAGE, METADATA } from 'src/actions/suite/constants';
+import { STORAGE } from 'src/actions/suite/constants';
 import * as deviceUtils from 'src/utils/suite/device';
 import type { TrezorDevice, AcquiredDevice, ButtonRequest } from 'src/types/suite';
 import { getStatus } from 'src/utils/suite/device';
@@ -404,14 +404,7 @@ const addButtonRequest = (
     draft.devices[index].buttonRequests.push(buttonRequest);
 };
 
-const setMetadata = (draft: State, state: string, metadata: TrezorDevice['metadata']) => {
-    const index = draft.devices.findIndex(d => d.state === state);
-    const device = draft.devices[index];
-    if (!device) return;
-    device.metadata = metadata;
-};
-
-export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, builder => {
+export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (builder, extra) => {
     builder
         .addCase(deviceActions.connectDevice, (state, { payload }) => {
             connectDevice(state, payload);
@@ -461,12 +454,7 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, bui
         .addCase(deviceActions.updateSelectedDevice, (state, { payload }) => {
             state.selectedDevice = payload;
         })
-        .addMatcher(
-            action => action.type === METADATA.SET_DEVICE_METADATA,
-            (state, action) => {
-                setMetadata(state, action.payload.deviceState, action.payload.metadata);
-            },
-        )
+        .addCase(extra.actionTypes.setDeviceMetadata, extra.reducers.setDeviceMetadataReducer)
         .addMatcher(
             action => action.type === STORAGE.LOAD,
             (state, action) => {
