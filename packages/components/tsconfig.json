@@ -13,6 +13,7 @@
         { "path": "../env-utils" },
         { "path": "../react-utils" },
         { "path": "../theme" },
-        { "path": "../utils" }
+        { "path": "../utils" },
+        { "path": "../../suite-common/icons" },
     ]
 }
