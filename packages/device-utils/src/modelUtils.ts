@@ -1,7 +1,27 @@
-import { DeviceModelInternal, models } from '@trezor/connect';
+import { Device, DeviceModelInternal, models } from '@trezor/connect';
 
 export const getDeviceDisplayName = (deviceModelInternal?: DeviceModelInternal) =>
     deviceModelInternal ? models[deviceModelInternal].name : 'Trezor';
+
+export const getDeviceUnitColor = (device?: Device) => {
+    const deviceModelInternal = device?.features?.internal_model;
+
+    const deviceUnitColor = device?.features?.unit_color?.toString();
+
+    if (!deviceModelInternal || !deviceUnitColor) {
+        return undefined;
+    }
+
+    const deviceInfo = models[deviceModelInternal];
+
+    const { colors } = deviceInfo;
+
+    if (Object.prototype.hasOwnProperty.call(colors, deviceUnitColor)) {
+        return (colors as Record<string, string>)[deviceUnitColor].toUpperCase();
+    }
+
+    return undefined;
+};
 
 export const pickByDeviceModel = <Type>(
     deviceModelInternal: DeviceModelInternal | undefined,
