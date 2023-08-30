@@ -27,7 +27,7 @@ export type ExtraDependencies = {
             timestamp: number;
         }>;
         cardanoFetchTrezorPools: SuiteCompatibleThunk<'tADA' | 'ADA'>;
-        initMetadata: SuiteCompatibleThunk<boolean>;
+        initMetadata: SuiteCompatibleThunk<undefined>;
         fetchAndSaveMetadata: SuiteCompatibleThunk<string>;
     };
     selectors: {

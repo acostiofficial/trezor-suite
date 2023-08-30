@@ -20,6 +20,9 @@ export const initialState: MetadataState = {
     selectedProvider: {
         labels: '',
     },
+    migration: {
+        status: 'idle',
+    },
 };
 
 type MetadataRootState = {
@@ -41,7 +44,9 @@ const metadataReducer = (state = initialState, action: Action): MetadataState =>
                 draft.providers.push(action.payload);
                 break;
             case METADATA.REMOVE_PROVIDER:
-                draft.providers = draft.providers.filter(p => p.type !== action.payload.type);
+                draft.providers = draft.providers.filter(
+                    p => p.clientId !== action.payload.clientId,
+                );
                 break;
             case METADATA.SET_SELECTED_PROVIDER:
                 draft.selectedProvider[action.payload.dataType] = action.payload.clientId;
@@ -69,6 +74,11 @@ const metadataReducer = (state = initialState, action: Action): MetadataState =>
 
                 break;
             }
+            case METADATA.SET_MIGRATION_STATUS:
+                draft.migration = {
+                    status: action.payload,
+                };
+                break;
             // no default
         }
     });
@@ -115,6 +125,14 @@ export const selectLabelingDataForAccount = (
     }
 
     return provider.data[metadataKeys.fileName] as AccountLabels;
+};
+
+export const selectAccountLabelForAccount = (
+    state: { metadata: MetadataState; wallet: { accounts: Account[] } },
+    accountKey: string,
+) => {
+    const labelingData = selectLabelingDataForAccount(state, accountKey);
+    return labelingData.accountLabel;
 };
 
 /**

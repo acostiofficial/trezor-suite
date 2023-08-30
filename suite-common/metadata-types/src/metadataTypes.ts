@@ -4,7 +4,9 @@ export interface LabelableEntityKeys {
 }
 
 export type DeviceEntityKeys = {
-    [Version in MetadataEncryptionVersion]?: LabelableEntityKeys & { key: string };
+    [Version in MetadataEncryptionVersion]?: LabelableEntityKeys & {
+        key: string; // metadata master key
+    };
 };
 
 export type AccountEntityKeys = {
@@ -161,7 +163,7 @@ export type Labels = AccountLabels | WalletLabels;
 
 export type DeviceMetadata =
     | {
-          status: 'disabled' | 'cancelled'; // user rejects "Enable labeling" on device
+          status: 'disabled';
       }
     | ({
           status: 'enabled';
@@ -205,7 +207,21 @@ export interface MetadataState {
     // information in reducer to make it easily accessible in UI.
     // field shall hold default value for which user may add metadata (address, txId, etc...);
     editing?: string;
+    /**
+     * Initiating is used in UI to display loader and disallow user to edit labels until init is finished
+     * which happens after discovery is finished.
+     * TODO: this could be improved, we only need to wait for all accounts to be loaded. once a single account
+     * is loaded and we have device master key we are able to add labels without interaction with device => we don't need to wait for discovery to finish
+     */
     initiating?: boolean;
+    /**
+     * WIP: added to show some more context in loader.
+     * todo: might not be needed
+     * todo: might be merged with "initiating" into a single field
+     */
+    migration: {
+        status: 'idle' | 'in-progress' | 'finished';
+    };
 }
 
 export type OAuthServerEnvironment = 'production' | 'staging' | 'localhost';

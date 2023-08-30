@@ -356,12 +356,6 @@ export const startDiscoveryThunk = createThunk(
             discovery.status === DiscoveryStatus.IDLE ||
             discovery.status > DiscoveryStatus.STOPPING
         ) {
-            // metadata are enabled in settings but metadata master key does not exist for this device
-            // try to generate device metadata master key if passphrase is not used
-            if (!authConfirm && metadataEnabled) {
-                await dispatch(initMetadata(false));
-            }
-
             dispatch({
                 type: startDiscovery.type,
                 payload: {
@@ -420,8 +414,8 @@ export const startDiscoveryThunk = createThunk(
 
             // if previous discovery status was running (typically after application start or when user added a new account)
             // trigger fetch metadata; necessary to load account labels
-            if (discovery.status === DiscoveryStatus.RUNNING) {
-                dispatch(fetchAndSaveMetadata(deviceState));
+            if (discovery.status === DiscoveryStatus.RUNNING && device.state) {
+                await dispatch(fetchAndSaveMetadata(device.state));
             }
 
             dispatch(
@@ -488,7 +482,7 @@ export const startDiscoveryThunk = createThunk(
                     }),
                 );
                 // try to generate device metadata master key
-                await dispatch(initMetadata(false));
+                await dispatch(initMetadata(undefined));
             }
             if (currentDiscovery.status === DiscoveryStatus.RUNNING) {
                 await dispatch(startDiscoveryThunk()); // try next index

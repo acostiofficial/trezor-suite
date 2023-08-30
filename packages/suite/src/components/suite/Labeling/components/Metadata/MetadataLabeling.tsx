@@ -244,8 +244,7 @@ export const MetadataLabeling = (props: Props) => {
             // is there something that needs to be initiated?
             !isLabelingAvailable
         ) {
-            // provide force=true argument (user wants to enable metadata)
-            dispatch(init(true));
+            dispatch(init());
         }
         dispatch(setEditing(props.payload.defaultValue));
     };
@@ -305,7 +304,11 @@ export const MetadataLabeling = (props: Props) => {
             <LabelContainer data-test={labelContainerDatatest}>
                 {props.defaultVisibleValue}
                 <ActionButton variant="tertiary" isDisabled isLoading>
-                    <Translation id="TR_LOADING" />
+                    {metadata.migration.status === 'in-progress' ? (
+                        'migrating!'
+                    ) : (
+                        <Translation id="TR_LOADING" />
+                    )}
                 </ActionButton>
             </LabelContainer>
         );

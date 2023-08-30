@@ -2,8 +2,16 @@
 
 import TrezorConnect from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
+import {
+    createDeferred,
+    promiseAllSequence,
+    getWeakRandomId,
+    getRandomNumberInRange,
+    arrayPartition,
+    cloneObject,
+} from '@trezor/utils';
+import { MetadataState } from '@suite-common/metadata-types';
 
-import { createDeferred, cloneObject } from '@trezor/utils';
 import { METADATA } from 'src/actions/suite/constants';
 import { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import {
@@ -41,6 +49,7 @@ export type MetadataAction =
     | { type: typeof METADATA.DISABLE }
     | { type: typeof METADATA.SET_EDITING; payload: string | undefined }
     | { type: typeof METADATA.SET_INITIATING; payload: boolean }
+    | { type: typeof METADATA.SET_MIGRATION_STATUS; payload: MetadataState['migration']['status'] }
     | {
           type: typeof METADATA.SET_DEVICE_METADATA;
           payload: { deviceState: string; metadata: DeviceMetadata };
@@ -509,7 +518,7 @@ const syncMetadataKeys =
         );
 
         accountsWithoutKeys.forEach(account => {
-            const accountWithMetadata = dispatch(setAccountMetadataKey(account));
+            const accountWithMetadata = dispatch(setAccountMetadataKey(account, encryptionVersion));
             dispatch(setAccountAdd(accountWithMetadata));
         });
         // note that devices are intentionally omitted here - device receives metadata
@@ -779,7 +788,8 @@ export const setDeviceMetadataKey =
         const { device } = getState().suite;
         if (!device || !device.state || !device.connected) return;
 
-        if (device.metadata.status === 'enabled') return;
+        // in case of migration device.metadata.status is already enabled
+        // if (device.metadata.status === 'enabled') return;
 
         const result = await TrezorConnect.cipherKeyValue({
             device: {
@@ -831,6 +841,7 @@ export const setDeviceMetadataKey =
                     },
                 },
             });
+            // TODO: THIS SHOULD BE CHANGED I BELIEVE
 
             // in effort to resolve https://github.com/trezor/trezor-suite/issues/2315
             // also turn of global metadata.enabled setting
@@ -858,85 +869,395 @@ export const addMetadata = (payload: MetadataAddPayload) => (dispatch: Dispatch)
  * consists of number of steps of which not all have to necessarily happen. For example
  * user may directly navigate to /settings, enable metadata (by invoking init), but his device
  * does not have state yet.
- * In this case, setDeviceMetadataKey method and those that follow
+ * In this case, setDeviceMetadataKey method (in case user requests v1 keys) and those that follow
  * are skipped and user will be asked again either after authorization process or when user
  * tries to add new label.
  */
-export const init =
-    (force = false) =>
-    async (dispatch: Dispatch, getState: GetState) => {
-        const { device } = getState().suite;
+export const init = () => async (dispatch: Dispatch, getState: GetState) => {
+    const { device } = getState().suite;
 
-        // 1. set metadata enabled globally
-        if (!getState().metadata.enabled) {
-            dispatch(enableMetadata());
-        }
+    // 1. set metadata enabled globally
+    if (!getState().metadata.enabled) {
+        dispatch(enableMetadata());
+    }
 
-        if (!device?.state) {
-            return false;
-        }
+    if (!device?.state) {
+        return false;
+    }
 
-        // 2. set device metadata key (master key). Sometimes, if state is not present
-        if (
-            device.metadata.status === 'disabled' ||
-            (device.metadata.status === 'cancelled' && force && device?.connected)
-        ) {
-            dispatch({ type: METADATA.SET_INITIATING, payload: true });
-            await dispatch(setDeviceMetadataKey());
-        }
+    dispatch({ type: METADATA.SET_INITIATING, payload: true });
 
-        // did user confirm labeling on device? or maybe device was not connected
-        // so suite does not have keys and needs to stop here
-        if (getState().suite.device?.metadata.status !== 'enabled') {
-            // if no, end here
+    let deviceMetadata: DeviceMetadata | undefined = device.metadata;
+    // 2. set device metadata key (master key).
+    if (deviceMetadata?.status !== 'enabled') {
+        await dispatch(setDeviceMetadataKey(METADATA.ENCRYPTION_VERSION));
+    }
+
+    // there was an async action which might have failed (user disconnected device).
+    // we don't have keys, we can'd do any labeling
+    deviceMetadata = getState().suite.device?.metadata;
+    if (
+        deviceMetadata?.status === 'disabled' ||
+        !deviceMetadata?.[METADATA.ENCRYPTION_VERSION]?.key
+    ) {
+        dispatch({ type: METADATA.SET_INITIATING, payload: false });
+        dispatch({ type: METADATA.SET_EDITING, payload: undefined });
+
+        return false;
+    }
+
+    // 3. we have master key. use it to derive account keys
+    dispatch(syncMetadataKeys(METADATA.ENCRYPTION_VERSION));
+
+    // 4. connect to provider
+    if (!selectSelectedProviderForLabels(getState())) {
+        const providerResult = await dispatch(initProvider());
+        if (!providerResult) {
             dispatch({ type: METADATA.SET_INITIATING, payload: false });
             dispatch({ type: METADATA.SET_EDITING, payload: undefined });
 
             return false;
         }
+    }
 
-        // if yes, add metadata keys to accounts
-        if (getState().metadata.initiating) {
-            dispatch(syncMetadataKeys());
+    // 5. migration
+    if (getState().metadata.migration.status !== 'in-progress') {
+        // todo: do something with statues
+        const migrationResult = await dispatch(handleEncryptionVersionMigration());
+        dispatch(setMigrationStatus('idle'));
+
+        // failed migration => labeling disabled
+        if (!migrationResult.success) {
+            dispatch({ type: METADATA.SET_INITIATING, payload: false });
+            dispatch({ type: METADATA.SET_EDITING, payload: undefined });
+            dispatch(
+                notificationsActions.addToast({ type: 'error', error: migrationResult.error! }),
+            );
+            return;
         }
+    }
 
-        // 3. connect to provider
-        if (
-            getState().suite.device?.metadata.status === 'enabled' &&
-            !getState().metadata.providers?.length
-        ) {
-            if (!getState().metadata.initiating) {
-                dispatch({ type: METADATA.SET_INITIATING, payload: true });
-            }
+    // 6. fetch metadata
+    await dispatch(fetchAndSaveMetadata(device.state));
 
-            const providerResult = await dispatch(initProvider());
-            if (!providerResult) {
-                dispatch({ type: METADATA.SET_INITIATING, payload: false });
-                dispatch({ type: METADATA.SET_EDITING, payload: undefined });
-
-                return false;
-            }
-        }
-        await dispatch(fetchAndSaveMetadata(device.state));
+    // now we may allow user to edit labels. everything is ready, local data is synced with provider
+    if (getState().metadata.initiating) {
         dispatch({ type: METADATA.SET_INITIATING, payload: false });
+    }
 
-        // 7. if interval for watching provider is not set, create it
-        if (device.state && !fetchIntervals[device.state]) {
-            // todo: possible race condition that has been around since always
-            // user is editing label and at that very moment update arrives. updates to specific entities should be probably discarded in such case?
-            fetchIntervals[device.state] = setInterval(() => {
-                const { device } = getState().suite;
-                if (!getState().suite.online || !device?.state) {
-                    return;
-                }
-                dispatch(fetchAndSaveMetadata(device.state));
-            }, METADATA.FETCH_INTERVAL);
-        }
+    // 7. if interval for watching provider is not set, create it
+    if (device.state && !fetchIntervals[device.state]) {
+        // todo: possible race condition, user is editing label and at that very moment update arrives. updates to specific entities should be probably discarded in such case?
+        fetchIntervals[device.state] = setInterval(() => {
+            const { device } = getState().suite;
+            if (!getState().suite.online || !device?.state) {
+                return;
+            }
+            dispatch(fetchAndSaveMetadata(device.state));
+        }, METADATA.FETCH_INTERVAL);
+    }
 
-        return true;
-    };
+    return true;
+};
 
 export const setEditing = (payload: string | undefined): MetadataAction => ({
     type: METADATA.SET_EDITING,
     payload,
 });
+
+export const getLabelableEntitiesDescriptors = () => (dispatch: Dispatch, getState: GetState) => {
+    const { device } = getState().suite;
+
+    if (!device?.state) return [];
+
+    const entitites = dispatch(getLabelableEntities(device.state));
+
+    return entitites
+        .map(entity => {
+            if ('key' in entity) return entity.key;
+            if ('state' in entity && entity.state) return entity.state;
+            throw new Error('entity without unique identifier');
+        })
+        .sort((a, b) => a.localeCompare(b));
+};
+
+/**
+ *
+ * @returns files in storage provider split into [[...current][...old]].
+ */
+const getMetadataFiles = () => async (dispatch: Dispatch, getState: GetState) => {
+    const providerInstance = dispatch(
+        getProviderInstance({
+            // todo: huh!
+            clientId: getState().metadata.providers[0].clientId,
+        }),
+    );
+
+    if (!providerInstance) {
+        throw new Error('no provider instance');
+    }
+
+    // fetch list of all files saved withing currently selected provider for labeling
+    const files = await providerInstance.getFilesList().then(response => {
+        if (!response.success) {
+            dispatch(
+                handleProviderError({
+                    error: response,
+                    action: ProviderErrorAction.LOAD,
+                    clientId: providerInstance.clientId,
+                }),
+            );
+            return;
+        }
+        // todo: imho [] should be default return, it should not be also nullable
+        return response?.payload || [];
+    });
+
+    // no files, fresh account, no metadata encryption version migration needed
+    if (!files?.length) {
+        return [[], []];
+    }
+
+    // todo: this is not future proof in case there is another encryption version
+    const [currentEncryptionFiles, oldEncryptionFiles] = arrayPartition(files, file =>
+        file.endsWith(`_v${METADATA.ENCRYPTION_VERSION}.mtdt`),
+    );
+
+    return [currentEncryptionFiles, oldEncryptionFiles];
+};
+
+const createMigrationPromise =
+    (
+        entity: LabelableEntity,
+        prevEncryptionVersion: MetadataEncryptionVersion,
+        fetchData: boolean,
+    ) =>
+    (dispatch: Dispatch, getState: GetState) =>
+    () =>
+        // eslint-disable-next-line no-async-promise-executor
+        new Promise(async resolve => {
+            const { device } = getState().suite;
+            if (!device?.state || device.metadata.status !== 'enabled') {
+                console.error('metadata migration: device unexpected state'); // or throw, or error? i never know
+                return;
+            }
+
+            try {
+                const prevData =
+                    fetchData &&
+                    (await dispatch(
+                        fetchMetadata({
+                            entity,
+                            encryptionVersion: prevEncryptionVersion,
+                            // tudu huh
+                            provider: getState().metadata.providers[0],
+                        }),
+                    ));
+
+                if (entity.type === 'device' && entity.status !== 'enabled') {
+                    console.error('meetadata migration: unexpected entity');
+                    return; // ts. should not happen
+                }
+
+                const nextKeys = entity[METADATA.ENCRYPTION_VERSION];
+
+                if (!nextKeys) {
+                    console.error('metadata migration: next keys or prev keys are missing');
+                    return; // should never happen
+                }
+
+                const dummy = { dummy: getWeakRandomId(getRandomNumberInRange(1, 100)) };
+
+                const defaultEntityData =
+                    entity.type === 'account'
+                        ? cloneObject(METADATA.DEFAULT_ACCOUNT_METADATA)
+                        : cloneObject(METADATA.DEFAULT_WALLET_METADATA);
+                const nextData =
+                    prevData && 'data' in prevData
+                        ? prevData.data
+                        : { ...defaultEntityData, ...dummy };
+
+                dispatch(
+                    setMetadata({
+                        ...nextKeys,
+                        data: nextData,
+                        // todo: huh huh
+                        provider: getState().metadata.providers[0]!,
+                    }),
+                );
+
+                await dispatch(
+                    encryptAndSaveMetadata({
+                        ...nextKeys,
+                        data: nextData,
+                        // todo: huh huh
+                        provider: getState().metadata.providers[0]!,
+                    }),
+                );
+            } catch (err) {
+                console.error('metadata migration failed');
+            } finally {
+                resolve(undefined);
+            }
+        });
+
+export const setMigrationStatus = (
+    payload: MetadataState['migration']['status'],
+): MetadataAction => ({
+    type: METADATA.SET_MIGRATION_STATUS,
+    payload,
+});
+
+/**
+ * Check whether encryption version migration is needed and if yes execute it
+ */
+const handleEncryptionVersionMigration =
+    () =>
+    async (
+        dispatch: Dispatch,
+        getState: GetState,
+    ): Promise<{ success: boolean; error?: string }> => {
+        // 1. select lower encryption version
+        const prevEncryptionVersion = (METADATA.ENCRYPTION_VERSION -
+            1) as MetadataEncryptionVersion;
+        if (prevEncryptionVersion < 1) {
+            return {
+                success: false,
+                error: `metadata migration: can not migrate to version ${prevEncryptionVersion}`,
+            };
+        }
+
+        // 2. in general, metadata related actions are per device as everything is encrypted by device.metadata[version].key
+        let { device } = getState().suite;
+        if (!device?.state || device.metadata.status !== 'enabled') {
+            return { success: false, error: 'metadata migration: device unexpected state' };
+        }
+
+        // 3. fetch list of all files saved withing currently selected provider for labeling. based on file suffix we are
+        //    able to determine which files are associated with which encryption version
+        const [currentEncryptionFiles, oldEncryptionFiles] = await dispatch(getMetadataFiles());
+        console.log(
+            'currentEncryptionFiles, oldEncryptionFiles',
+            currentEncryptionFiles.length,
+            oldEncryptionFiles.length,
+        );
+
+        // 4. if there are no old files, there is nothing to migrate
+        if (!oldEncryptionFiles.length) {
+            return { success: true };
+        }
+
+        // 5. there are old files, but also all labelable entities currently known to suite have some record in currentEncryptionFiles.
+        //    this means that they have already been migrated or dummy file was created
+        const everyEntityHasNewFile = dispatch(getLabelableEntities(device.state)).every(entity => {
+            if (entity.type === 'device' && entity.status === 'disabled') return; // ts.
+
+            const nextKeys = entity[METADATA.ENCRYPTION_VERSION];
+
+            if (!nextKeys) {
+                // todo: should never happend but happend once during testing.
+                throw new Error('metadata migration: next keys are missing');
+            }
+            return currentEncryptionFiles.find(file => file === nextKeys.fileName);
+        });
+
+        if (everyEntityHasNewFile) {
+            return { success: true };
+        }
+
+        // todo: consider renaming v1 files to _v1 files. optimazation in case I do migration on btc, then turn off btc
+        // and  turn on ltc
+
+        // 6. now we know that migration is needed. set a flag to prevent multiple migrations at once
+        dispatch(setMigrationStatus('in-progress'));
+
+        // 7. sync metadata keys for prev encryption version.
+        //    NOTE: result of this operation is saved for device and account encryption keys are computed from it. This means that we can add new accounts at any point of time later without calling this again
+        if (!device.metadata[prevEncryptionVersion]) {
+            await dispatch(setDeviceMetadataKey(prevEncryptionVersion));
+        }
+        device = getState().suite.device;
+        if (
+            device?.metadata.status !== 'enabled' ||
+            !device?.metadata[prevEncryptionVersion]?.key
+        ) {
+            return { success: false, error: 'metadata migration: cancelled' };
+        }
+
+        dispatch(syncMetadataKeys(prevEncryptionVersion));
+
+        if (!device?.state) {
+            // this should never happen
+            return { success: false, error: 'metadata migration: device not authorized' };
+        }
+
+        // 8. get labelable entitites again (there was async operation in between)
+        const allEntities = dispatch(getLabelableEntities(device.state));
+
+        // 9. split labelable entities into 2 groups:
+        //    - entitiesToMigrate: don't have new file && have old file
+        //    - entititiesToCreateDummies: don't have new file && don't have old file
+
+        const entitiesToMigrate: LabelableEntity[] = [];
+        const entititiesToCreateDummies: LabelableEntity[] = [];
+        allEntities.forEach(entity => {
+            if (entity.type === 'device' && entity.status === 'disabled') return; // ts.
+
+            const prevKeys = entity[(METADATA.ENCRYPTION_VERSION - 1) as MetadataEncryptionVersion];
+
+            if (!prevKeys) {
+                console.error('metadata migration: prev keys are missing');
+                return; // should never happen
+            }
+            const nextKeys = entity[METADATA.ENCRYPTION_VERSION];
+
+            if (!nextKeys) {
+                console.error('metadata migration: next keys are missing');
+                return; // should never happen
+            }
+
+            const oldFileExists = oldEncryptionFiles.find(file => file === prevKeys.fileName);
+            const newFileExists = currentEncryptionFiles.find(file => file === nextKeys.fileName);
+
+            if (newFileExists) {
+                return; // already migrated
+            }
+            if (!oldFileExists) {
+                entititiesToCreateDummies.push(entity);
+                return; // there is nothing to migrate,
+            }
+
+            entitiesToMigrate.push(entity);
+        });
+
+        console.log('entitiesToMigrate', entitiesToMigrate);
+        console.log('entititiesToCreateDummies', entititiesToCreateDummies);
+
+        // 10. now all data is ready. we know what operations should be carried out. dummy files will be created, old files will be migrated and their content will be filled into local state
+
+        // NOTE: I understand that this is not the right layer to rate limit access to provider API. It should be handled in provider service itself but
+        // I don't have free hands to do it now. So I am running all requests in series as a workaround now. Correct solution would be
+        // implementing provider.batchWrite and do batching if possible and if not, use single requests with some rate limiting
+
+        // NOTE2: If application exits in the process of running this, no hardship should happen. Migration will be left unfinished meaning that it will
+        // prompt user next time again for the remaining 'labelableEntitites'
+
+        // todo: handle error from Promise.allSequence. it throws right?
+        await promiseAllSequence([
+            ...entitiesToMigrate.map(entity => {
+                const promise = dispatch(
+                    createMigrationPromise(entity, prevEncryptionVersion, true),
+                );
+                return () => promise();
+            }),
+            ...entititiesToCreateDummies.map(entity => {
+                const promise = dispatch(
+                    createMigrationPromise(entity, prevEncryptionVersion, false),
+                );
+                return () => promise();
+            }),
+        ]);
+
+        dispatch(setMigrationStatus('finished'));
+        return { success: true };
+    };
