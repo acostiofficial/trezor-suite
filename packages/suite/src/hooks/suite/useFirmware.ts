@@ -2,6 +2,7 @@ import { useDispatch } from 'react-redux';
 
 import {
     checkFirmwareAuthenticity,
+    checkDeviceAuthenticity,
     firmwareCustom,
     firmwareUpdate,
     selectFirmware,
@@ -27,6 +28,7 @@ export const useFirmware = () => {
         firmwareUpdate,
         firmwareCustom,
         checkFirmwareAuthenticity,
+        checkDeviceAuthenticity,
     });
 
     return {
