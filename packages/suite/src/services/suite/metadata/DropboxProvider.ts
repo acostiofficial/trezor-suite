@@ -192,6 +192,20 @@ class DropboxProvider extends AbstractMetadataProvider {
         }
     }
 
+    async renameFile(from: string, to: string) {
+        try {
+            const response = await this.client.filesMoveV2({
+                from_path: `/${from}`,
+                to_path: `/${to}`,
+            });
+
+            console.log('rename response', response);
+            return this.ok(undefined);
+        } catch (error) {
+            return this.handleProviderError(error);
+        }
+    }
+
     async getProviderDetails() {
         const token = this.auth.getRefreshToken();
         if (!token) return this.error('AUTH_ERROR', 'token is missing');
