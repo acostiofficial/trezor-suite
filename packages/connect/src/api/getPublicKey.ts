@@ -113,6 +113,11 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
     }
 
     async noBackupConfirmation() {
+        // Do not show warning modal when the public key is not requested by user.
+        // E.g. it is accessed during creation of a coinjoin account.
+        if (!this.params.some(batch => batch.show_display)) {
+            return true;
+        }
         // wait for popup window
         await this.getPopupPromise().promise;
         // initialize user response promise
