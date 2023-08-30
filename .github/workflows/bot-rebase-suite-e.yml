@@ -2,7 +2,7 @@ name: "[Bot] rebase suite-e branch on develop"
 
 on:
   schedule:
-    - cron: "0 15 * * *" # for testing
+    - cron: "30 15 * * *" # for testing
 
 jobs:
   rebase:
