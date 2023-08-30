@@ -1015,15 +1015,20 @@ const getMetadataFiles = () => async (dispatch: Dispatch, getState: GetState) =>
 
     // no files, fresh account, no metadata encryption version migration needed
     if (!files?.length) {
-        return [[], []];
+        return [[], [], []];
     }
 
     // todo: this is not future proof in case there is another encryption version
-    const [currentEncryptionFiles, oldEncryptionFiles] = arrayPartition(files, file =>
+    const [currentEncryptionFiles, restFiles] = arrayPartition(files, file =>
         file.endsWith(`_v${METADATA.ENCRYPTION_VERSION}.mtdt`),
     );
 
-    return [currentEncryptionFiles, oldEncryptionFiles];
+    const [renamedOldEncryptionFiles, oldEncryptionFiles] = arrayPartition(restFiles, file =>
+        file.endsWith(`_v${METADATA.ENCRYPTION_VERSION - 1}.mtdt`),
+    );
+
+    // todo: actually I don't need to return 'renamedOldEncryptionFiles' here
+    return [currentEncryptionFiles, oldEncryptionFiles, renamedOldEncryptionFiles];
 };
 
 const createMigrationPromise =
@@ -1062,11 +1067,16 @@ const createMigrationPromise =
                 const nextKeys = entity[METADATA.ENCRYPTION_VERSION];
 
                 if (!nextKeys) {
-                    console.error('metadata migration: next keys or prev keys are missing');
+                    console.error('metadata migration: next keys are missing');
                     return; // should never happen
                 }
 
                 const dummy = { dummy: getWeakRandomId(getRandomNumberInRange(1, 100)) };
+                const prevKeys = entity[prevEncryptionVersion];
+                if (!prevKeys) {
+                    console.error('metadata migration: prev keys are missing');
+                    return; // should never happen
+                }
 
                 const defaultEntityData =
                     entity.type === 'account'
@@ -1077,6 +1087,15 @@ const createMigrationPromise =
                         ? prevData.data
                         : { ...defaultEntityData, ...dummy };
 
+                const providerInstance = dispatch(
+                    getProviderInstance({ clientId: getState().metadata.providers[0]!.clientId }),
+                );
+
+                if (!providerInstance) {
+                    // provider should always be set here
+                    return false;
+                }
+
                 dispatch(
                     setMetadata({
                         ...nextKeys,
@@ -1086,6 +1105,7 @@ const createMigrationPromise =
                     }),
                 );
 
+                // todo: this could run in parallel with rename, ratelimiting should happen elsehwere (in provider)
                 await dispatch(
                     encryptAndSaveMetadata({
                         ...nextKeys,
@@ -1094,6 +1114,13 @@ const createMigrationPromise =
                         provider: getState().metadata.providers[0]!,
                     }),
                 );
+
+                if (fetchData) {
+                    await providerInstance.renameFile(
+                        prevKeys.fileName,
+                        prevKeys.fileName.replace('.mtdt', '_v1.mtdt'),
+                    );
+                }
             } catch (err) {
                 console.error('metadata migration failed');
             } finally {
@@ -1135,15 +1162,18 @@ const handleEncryptionVersionMigration =
 
         // 3. fetch list of all files saved withing currently selected provider for labeling. based on file suffix we are
         //    able to determine which files are associated with which encryption version
-        const [currentEncryptionFiles, oldEncryptionFiles] = await dispatch(getMetadataFiles());
+        const [currentEncryptionFiles, oldEncryptionFiles, renamedOldEncryptionFiles] =
+            await dispatch(getMetadataFiles());
         console.log(
             'currentEncryptionFiles, oldEncryptionFiles',
+            'renamedOldEncryptionFiles',
             currentEncryptionFiles.length,
             oldEncryptionFiles.length,
+            renamedOldEncryptionFiles.length,
         );
 
-        // 4. if there are no old files, there is nothing to migrate
-        if (!oldEncryptionFiles.length) {
+        // 4. there are no old files (either labeling was never used before, old old files were renamed to file_v1.mdtd)
+        if (oldEncryptionFiles.length === 0) {
             return { success: true };
         }
 
@@ -1164,9 +1194,6 @@ const handleEncryptionVersionMigration =
         if (everyEntityHasNewFile) {
             return { success: true };
         }
-
-        // todo: consider renaming v1 files to _v1 files. optimazation in case I do migration on btc, then turn off btc
-        // and  turn on ltc
 
         // 6. now we know that migration is needed. set a flag to prevent multiple migrations at once
         dispatch(setMigrationStatus('in-progress'));
@@ -1203,7 +1230,7 @@ const handleEncryptionVersionMigration =
         allEntities.forEach(entity => {
             if (entity.type === 'device' && entity.status === 'disabled') return; // ts.
 
-            const prevKeys = entity[(METADATA.ENCRYPTION_VERSION - 1) as MetadataEncryptionVersion];
+            const prevKeys = entity[prevEncryptionVersion];
 
             if (!prevKeys) {
                 console.error('metadata migration: prev keys are missing');
@@ -1222,6 +1249,7 @@ const handleEncryptionVersionMigration =
             if (newFileExists) {
                 return; // already migrated
             }
+
             if (!oldFileExists) {
                 entititiesToCreateDummies.push(entity);
                 return; // there is nothing to migrate,
