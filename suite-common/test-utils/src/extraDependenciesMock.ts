@@ -104,6 +104,7 @@ export const extraDependenciesMock: ExtraDependencies = {
         storageLoadDiscovery: mockReducer('storageLoadDiscovery'),
         addButtonRequestFirmware: mockReducer('addButtonRequestFirmware'),
         setDeviceMetadataReducer: mockReducer('setDeviceMetadataReducer'),
+        storageLoadDevices: mockReducer('storageLoadDevices'),
     },
     utils: {
         saveAs: (data, fileName) =>

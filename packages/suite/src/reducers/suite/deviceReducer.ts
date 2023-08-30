@@ -6,7 +6,6 @@ import { Network, networks } from '@suite-common/wallet-config';
 import { versionUtils } from '@trezor/utils';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
-import { STORAGE } from 'src/actions/suite/constants';
 import * as deviceUtils from 'src/utils/suite/device';
 import type { TrezorDevice, AcquiredDevice, ButtonRequest } from 'src/types/suite';
 import { getStatus } from 'src/utils/suite/device';
@@ -455,12 +454,7 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
             state.selectedDevice = payload;
         })
         .addCase(extra.actionTypes.setDeviceMetadata, extra.reducers.setDeviceMetadataReducer)
-        .addMatcher(
-            action => action.type === STORAGE.LOAD,
-            (state, action) => {
-                state.devices = action.payload.devices;
-            },
-        );
+        .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadDevices);
 });
 
 export const selectDevices = (state: DeviceRootState) => state.device?.devices;

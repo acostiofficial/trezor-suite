@@ -134,6 +134,9 @@ export const extraDependencies: ExtraDependencies = {
             if (!device) return;
             device.metadata = metadata;
         },
+        storageLoadDevices: (state, { payload }: StorageLoadAction) => {
+            state.devices = payload.devices;
+        },
     },
     utils: {
         saveAs: (data, fileName) => saveAs(data, fileName),
