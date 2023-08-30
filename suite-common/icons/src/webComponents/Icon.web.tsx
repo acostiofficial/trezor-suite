@@ -3,9 +3,8 @@ import { ReactSVG } from 'react-svg';
 
 import styled, { useTheme } from 'styled-components';
 
-import { Color } from '@trezor/theme';
-
-import { IconName, icons } from '../icons';
+import { icons } from '../icons';
+import { IconProps, iconSizes } from '../config';
 
 const SVG = styled(ReactSVG)`
     display: flex;
@@ -19,24 +18,9 @@ const SVG = styled(ReactSVG)`
     }
 `;
 
-type IconProps = {
-    name: IconName;
-    size?: IconSize;
-    customSize?: number;
-    color?: Color;
+type WebIconProps = IconProps & {
     className?: string;
 };
-
-const iconSizes = {
-    extraSmall: 8,
-    small: 12,
-    medium: 16,
-    mediumLarge: 20,
-    large: 24,
-    extraLarge: 32,
-} as const;
-
-type IconSize = keyof typeof iconSizes;
 
 export const Icon = ({
     name,
@@ -44,7 +28,7 @@ export const Icon = ({
     size = 'large',
     color = 'iconDefault',
     className,
-}: IconProps) => {
+}: WebIconProps) => {
     const theme = useTheme();
 
     const iconSize = customSize || iconSizes[size];

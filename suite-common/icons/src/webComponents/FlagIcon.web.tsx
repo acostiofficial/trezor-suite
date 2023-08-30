@@ -1,17 +1,6 @@
 import React from 'react';
 
-import { FlagIconName } from '../icons';
-
-type FlagIconProps = {
-    name: FlagIconName;
-    size?: FlagIconSize;
-};
-
-const flagIconSizes = {
-    small: 30,
-} as const;
-
-type FlagIconSize = keyof typeof flagIconSizes;
+import { FlagIconProps } from '../config';
 
 // This will be used for web in the future
 export const FlagIcon: React.FC<FlagIconProps> = () => null;
