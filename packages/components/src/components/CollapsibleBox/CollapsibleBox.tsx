@@ -74,15 +74,13 @@ const StyledIcon = styled(Icon)<{ isCollapsed?: boolean }>`
 
 const Content = styled.div<{
     variant: CollapsibleBoxProps['variant'];
-    $noContentPadding?: boolean;
 }>`
     display: flex;
     flex-direction: column;
-    padding: ${({ $noContentPadding, variant }) =>
-        !$noContentPadding &&
-        (variant === 'small'
+    padding: ${({ variant }) =>
+        variant === 'small'
             ? `${spacingsPx.lg} ${spacingsPx.md}`
-            : `${spacingsPx.xl} ${spacingsPx.md}`)};
+            : `${spacingsPx.xl} ${spacingsPx.md}`};
     border-top: 1px solid ${({ theme }) => theme.borderOnElevation1};
     overflow: hidden;
 `;
@@ -91,22 +89,14 @@ const Collapser = styled(motion.div)`
     overflow: hidden;
 `;
 
-export interface CollapsibleBoxProps extends React.HtmlHTMLAttributes<HTMLDivElement> {
+export interface CollapsibleBoxProps {
     heading?: React.ReactNode;
     subHeading?: React.ReactNode;
     variant: 'small' | 'large'; // TODO: reevaluate variants
     iconLabel?: React.ReactNode;
-    children?: React.ReactNode;
-    noContentPadding?: boolean;
-    opened?: boolean;
+    isOpened?: boolean;
     onCollapse?: () => void;
-    headingButton?: ({
-        collapsed,
-        animatedIcon,
-    }: {
-        collapsed: boolean;
-        animatedIcon: boolean;
-    }) => React.ReactNode;
+    children?: React.ReactNode;
 }
 
 type CollapsibleBoxSubcomponents = {
@@ -121,25 +111,21 @@ const CollapsibleBox: React.FC<CollapsibleBoxProps> & CollapsibleBoxSubcomponent
     subHeading,
     iconLabel,
     children,
-    noContentPadding,
     variant = 'small',
-    opened = false,
+    isOpened = false,
     onCollapse,
-    headingButton,
     ...rest
 }: CollapsibleBoxProps) => {
-    const [collapsed, setCollapsed] = useState(!opened);
-    const [animatedIcon, setAnimatedIcon] = useState(false);
+    const [isCollapsed, setIsCollapsed] = useState(!isOpened);
 
     useEffect(() => {
-        setCollapsed(!opened);
-    }, [opened]);
+        setIsCollapsed(!isOpened);
+    }, [isOpened]);
 
     const handleHeaderClick = useCallback(() => {
         onCollapse?.();
-        setCollapsed(!collapsed);
-        setAnimatedIcon(true);
-    }, [collapsed, onCollapse]);
+        setIsCollapsed(!isCollapsed);
+    }, [isCollapsed, onCollapse]);
 
     return (
         <Wrapper variant={variant} {...rest}>
@@ -149,27 +135,21 @@ const CollapsibleBox: React.FC<CollapsibleBoxProps> & CollapsibleBoxSubcomponent
                     <SubHeading>{subHeading}</SubHeading>
                 </div>
 
-                {headingButton ? (
-                    headingButton({ collapsed, animatedIcon })
-                ) : (
-                    <IconWrapper>
-                        {iconLabel && <IconLabel>{iconLabel}</IconLabel>}
+                <IconWrapper>
+                    {iconLabel && <IconLabel>{iconLabel}</IconLabel>}
 
-                        <StyledIcon isCollapsed={collapsed} name="caretCircleDown" size="medium" />
-                    </IconWrapper>
-                )}
+                    <StyledIcon isCollapsed={isCollapsed} name="caretCircleDown" size="medium" />
+                </IconWrapper>
             </Header>
 
             <Collapser
                 initial={false} // Prevents animation on mount when expanded === false
                 variants={animationVariants}
-                animate={!collapsed ? 'expanded' : 'closed'}
+                animate={!isCollapsed ? 'expanded' : 'closed'}
                 transition={{ duration: ANIMATION_DURATION, ease: motionEasing.transition }}
                 data-test="@collapsible-box/body"
             >
-                <Content variant={variant} $noContentPadding={noContentPadding}>
-                    {children}
-                </Content>
+                <Content variant={variant}>{children}</Content>
             </Collapser>
         </Wrapper>
     );
