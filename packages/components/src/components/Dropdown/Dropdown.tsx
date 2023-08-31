@@ -218,7 +218,7 @@ export interface GroupedMenuItems {
     label?: React.ReactNode;
 }
 
-interface MenuItemProps {
+export interface MenuItemProps {
     item: DropdownMenuItem;
 }
 
@@ -227,7 +227,7 @@ interface MasterLink {
     icon: IconProps['icon'];
     callback?: () => void;
 }
-interface MenuProps {
+export interface MenuProps {
     alignMenu?: 'left' | 'right' | 'top-left' | 'top-right';
     coords?: Coords;
     menuSize?: Coords;
@@ -238,38 +238,33 @@ interface MenuProps {
     borderRadius?: number;
     minWidth?: number;
     masterLink?: MasterLink;
+    className?: string;
 }
 
-type DropdownProps = MenuProps &
-    Omit<React.ButtonHTMLAttributes<HTMLDivElement>, 'disabled'> & {
-        children?: React.ReactElement<any>;
-        absolutePosition?: boolean;
-        items: GroupedMenuItems[];
-        components?: {
-            DropdownMenuItem?: React.ComponentType<MenuItemProps>;
-            DropdownMenu?: React.ComponentType<MenuProps>;
-        };
-        offset?: number;
-        isDisabled?: boolean;
-        appendTo?: HTMLElement;
-        hoverContent?: React.ReactNode;
-        onToggle?: (isToggled: boolean) => void;
-    };
+export type DropdownProps = MenuProps & {
+    children?: React.ReactElement<any>;
+    absolutePosition?: boolean;
+    items: GroupedMenuItems[];
+    offset?: number;
+    isDisabled?: boolean;
+    appendTo?: HTMLElement;
+    hoverContent?: React.ReactNode;
+    onToggle?: (isToggled: boolean) => void;
+};
 
-interface DropdownRef {
+export interface DropdownRef {
     close: () => void;
     open: () => void;
 }
 
 type Coords = [number, number] | undefined;
 
-const Dropdown = forwardRef(
+export const Dropdown = forwardRef(
     (
         {
             children,
             className,
             items,
-            components,
             isDisabled,
             absolutePosition,
             alignMenu = 'left',
@@ -292,8 +287,6 @@ const Dropdown = forwardRef(
         const [menuSize, setMenuSize] = useState<Coords>(undefined);
         const menuRef = useRef<HTMLUListElement>(null);
         const toggleRef = useRef<any>(null);
-        const MenuComponent = components?.DropdownMenu ?? Menu;
-        const MenuItemComponent = components?.DropdownMenuItem ?? MenuItem;
 
         const visibleItems = items.map(group => ({
             ...group,
@@ -407,7 +400,7 @@ const Dropdown = forwardRef(
         };
 
         const menu = (
-            <MenuComponent
+            <Menu
                 ref={menuRef}
                 alignMenu={alignMenu}
                 menuSize={menuSize}
@@ -441,7 +434,7 @@ const Dropdown = forwardRef(
                     <React.Fragment key={group.key}>
                         {group.label && <Group>{group.label}</Group>}
                         {group.options.map(item => (
-                            <MenuItemComponent
+                            <MenuItem
                                 onClick={e => {
                                     e.stopPropagation();
                                     onMenuItemClick(item);
@@ -461,11 +454,11 @@ const Dropdown = forwardRef(
                                         />
                                     </IconRight>
                                 )}
-                            </MenuItemComponent>
+                            </MenuItem>
                         ))}
                     </React.Fragment>
                 ))}
-            </MenuComponent>
+            </Menu>
         );
 
         const portalMenu = absolutePosition && appendTo ? createPortal(menu, appendTo) : menu;
@@ -478,12 +471,3 @@ const Dropdown = forwardRef(
         );
     },
 );
-
-Dropdown.displayName = 'Dropdown';
-export type {
-    DropdownRef,
-    DropdownProps,
-    MenuItemProps as DropdownMenuItemProps,
-    MenuProps as DropdownMenuProps,
-};
-export { Dropdown };
