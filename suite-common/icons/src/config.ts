@@ -20,7 +20,7 @@ export const iconSizes = {
     extraLarge: 32,
 } as const;
 
-type IconSize = keyof typeof iconSizes;
+export type IconSize = keyof typeof iconSizes;
 
 export interface FlagIconProps {
     name: FlagIconName;
