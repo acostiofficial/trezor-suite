@@ -333,10 +333,6 @@ export const saveMetadata = () => async (_dispatch: Dispatch, getState: GetState
             providers: metadata.providers,
             enabled: metadata.enabled,
             selectedProvider: metadata.selectedProvider,
-            // todo: do I need to save these?
-            migration: {
-                status: 'idle',
-            },
             entities: metadata.entities,
         },
         'state',
