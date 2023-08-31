@@ -767,6 +767,7 @@ const encryptAndSaveMetadata =
                 );
                 return false;
             }
+            return true;
         } catch (err) {
             const error = providerInstance.error('OTHER_ERROR', err.message);
             dispatch(
@@ -1113,8 +1114,7 @@ const createMigrationPromise =
                     }),
                 );
 
-                // todo: this could run in parallel with rename, ratelimiting should happen elsehwere (in provider)
-                await dispatch(
+                const saveResult = await dispatch(
                     encryptAndSaveMetadata({
                         ...nextKeys,
                         data: nextData,
@@ -1123,7 +1123,8 @@ const createMigrationPromise =
                     }),
                 );
 
-                if (fetchData) {
+                if (fetchData && saveResult) {
+                    // rename only if next version was saved correctly
                     await providerInstance.renameFile(
                         prevKeys.fileName,
                         prevKeys.fileName.replace('.mtdt', '_v1.mtdt'),
