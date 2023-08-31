@@ -11,6 +11,7 @@ import type { PROTO } from '../constants';
 
 type Params = PROTO.GetPublicKey & {
     coinInfo?: BitcoinNetworkInfo;
+    suppressBackupWarning?: boolean;
     unlockPath?: PROTO.UnlockPath;
 };
 
@@ -41,6 +42,7 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
                 { name: 'ignoreXpubMagic', type: 'boolean' },
                 { name: 'ecdsaCurveName', type: 'boolean' },
                 { name: 'unlockPath', type: 'object' },
+                { name: 'suppressBackupWarning', type: 'boolean' },
             ]);
 
             if (batch.unlockPath) {
@@ -76,6 +78,7 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
                 ecdsa_curve_name: batch.ecdsaCurveName,
                 coinInfo,
                 unlockPath: batch.unlockPath,
+                suppress_backup_warning: batch.suppressBackupWarning,
             };
         });
     }
@@ -113,9 +116,7 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
     }
 
     async noBackupConfirmation() {
-        // Do not show warning modal when the public key is not requested by user.
-        // E.g. it is accessed during creation of a coinjoin account.
-        if (!this.params.some(batch => batch.show_display)) {
+        if (this.params.some(batch => batch.suppressBackupWarning)) {
             return true;
         }
         // wait for popup window
