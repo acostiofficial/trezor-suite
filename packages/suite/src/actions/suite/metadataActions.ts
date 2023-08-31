@@ -49,7 +49,6 @@ export type MetadataAction =
     | { type: typeof METADATA.DISABLE }
     | { type: typeof METADATA.SET_EDITING; payload: string | undefined }
     | { type: typeof METADATA.SET_INITIATING; payload: boolean }
-    | { type: typeof METADATA.SET_MIGRATION_STATUS; payload: MetadataState['migration']['status'] }
     | { type: typeof METADATA.SET_ENTITIES_DESCRIPTORS; payload: MetadataState['entities'] }
     | {
           type: typeof METADATA.SET_DEVICE_METADATA;
@@ -923,20 +922,14 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     }
 
     // 5. migration
-    if (getState().metadata.migration.status !== 'in-progress') {
-        // todo: do something with statues
-        const migrationResult = await dispatch(handleEncryptionVersionMigration());
-        dispatch(setMigrationStatus('idle'));
+    const migrationResult = await dispatch(handleEncryptionVersionMigration());
 
-        // failed migration => labeling disabled
-        if (!migrationResult.success) {
-            dispatch({ type: METADATA.SET_INITIATING, payload: false });
-            dispatch({ type: METADATA.SET_EDITING, payload: undefined });
-            dispatch(
-                notificationsActions.addToast({ type: 'error', error: migrationResult.error! }),
-            );
-            return;
-        }
+    // failed migration => labeling disabled
+    if (!migrationResult.success) {
+        dispatch({ type: METADATA.SET_INITIATING, payload: false });
+        dispatch({ type: METADATA.SET_EDITING, payload: undefined });
+        dispatch(notificationsActions.addToast({ type: 'error', error: migrationResult.error! }));
+        return;
     }
 
     // 6. fetch metadata
@@ -1136,13 +1129,6 @@ const createMigrationPromise =
             }
         });
 
-export const setMigrationStatus = (
-    payload: MetadataState['migration']['status'],
-): MetadataAction => ({
-    type: METADATA.SET_MIGRATION_STATUS,
-    payload,
-});
-
 /**
  * Check whether encryption version migration is needed and if yes execute it
  */
@@ -1212,9 +1198,6 @@ const handleEncryptionVersionMigration =
         if (everyEntityHasNewFile) {
             return { success: true };
         }
-
-        // 6. now we know that migration is needed. set a flag to prevent multiple migrations at once
-        dispatch(setMigrationStatus('in-progress'));
 
         // 7. sync metadata keys for prev encryption version.
         //    NOTE: result of this operation is saved for device and account encryption keys are computed from it. This means that we can add new accounts at any point of time later without calling this again
@@ -1304,6 +1287,5 @@ const handleEncryptionVersionMigration =
             }),
         ]);
 
-        dispatch(setMigrationStatus('finished'));
         return { success: true };
     };

@@ -216,14 +216,7 @@ export interface MetadataState {
      * is loaded and we have device master key we are able to add labels without interaction with device => we don't need to wait for discovery to finish
      */
     initiating?: boolean;
-    /**
-     * WIP: added to show some more context in loader.
-     * todo: might not be needed
-     * todo: might be merged with "initiating" into a single field
-     */
-    migration: {
-        status: 'idle' | 'in-progress' | 'finished';
-    };
+
     /**
      * entitites represent state of labelable entities in suite known to metadata module.
      * this is used to track changes in labelable entities and trigger metadata init (and metadata migration) when needed.

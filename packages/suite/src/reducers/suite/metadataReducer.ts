@@ -20,9 +20,6 @@ export const initialState: MetadataState = {
     selectedProvider: {
         labels: '',
     },
-    migration: {
-        status: 'idle',
-    },
     entities: [],
 };
 
@@ -75,11 +72,6 @@ const metadataReducer = (state = initialState, action: Action): MetadataState =>
 
                 break;
             }
-            case METADATA.SET_MIGRATION_STATUS:
-                draft.migration = {
-                    status: action.payload,
-                };
-                break;
             case METADATA.SET_ENTITIES_DESCRIPTORS:
                 draft.entities = action.payload;
                 break;

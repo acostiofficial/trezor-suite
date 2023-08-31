@@ -17,7 +17,6 @@ export const SET_EDITING = '@metadata/set-editing';
 export const SET_INITIATING = '@metadata/set-initiating';
 export const SET_DATA = '@metadata/set-data';
 export const SET_SELECTED_PROVIDER = '@metadata/set-selected-provider';
-export const SET_MIGRATION_STATUS = '@metadata/set-migration-status';
 export const SET_ENTITIES_DESCRIPTORS = '@metadata/set-entities';
 
 export const FORMAT_VERSION = '1.0.0';

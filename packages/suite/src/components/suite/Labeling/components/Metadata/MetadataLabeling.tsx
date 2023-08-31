@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 
-import { Button, Icon, useTheme } from '@trezor/components';
+import { Button, Icon, Tooltip, useTheme } from '@trezor/components';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { addMetadata, init, setEditing } from 'src/actions/suite/metadataActions';
 import { MetadataAddPayload } from 'src/types/suite/metadata';
@@ -304,11 +304,7 @@ export const MetadataLabeling = (props: Props) => {
             <LabelContainer data-test={labelContainerDatatest}>
                 {props.defaultVisibleValue}
                 <ActionButton variant="tertiary" isDisabled isLoading>
-                    {metadata.migration.status === 'in-progress' ? (
-                        'migrating!'
-                    ) : (
-                        <Translation id="TR_LOADING" />
-                    )}
+                    <Translation id="TR_LOADING" />
                 </ActionButton>
             </LabelContainer>
         );
