@@ -224,6 +224,11 @@ export interface MetadataState {
     migration: {
         status: 'idle' | 'in-progress' | 'finished';
     };
+    /**
+     * entitites represent state of labelable entities in suite known to metadata module.
+     * this is used to track changes in labelable entities and trigger metadata init (and metadata migration) when needed.
+     */
+    entities: string[];
 }
 
 export type OAuthServerEnvironment = 'production' | 'staging' | 'localhost';

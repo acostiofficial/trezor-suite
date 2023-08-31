@@ -50,6 +50,7 @@ export type MetadataAction =
     | { type: typeof METADATA.SET_EDITING; payload: string | undefined }
     | { type: typeof METADATA.SET_INITIATING; payload: boolean }
     | { type: typeof METADATA.SET_MIGRATION_STATUS; payload: MetadataState['migration']['status'] }
+    | { type: typeof METADATA.SET_ENTITIES_DESCRIPTORS; payload: MetadataState['entities'] }
     | {
           type: typeof METADATA.SET_DEVICE_METADATA;
           payload: { deviceState: string; metadata: DeviceMetadata };
@@ -979,6 +980,13 @@ export const getLabelableEntitiesDescriptors = () => (dispatch: Dispatch, getSta
             throw new Error('entity without unique identifier');
         })
         .sort((a, b) => a.localeCompare(b));
+};
+
+export const setEntititesDescriptors = (descriptors: string[]) => (dispatch: Dispatch) => {
+    dispatch({
+        type: METADATA.SET_ENTITIES_DESCRIPTORS,
+        payload: descriptors,
+    });
 };
 
 /**

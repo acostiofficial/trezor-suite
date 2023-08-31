@@ -23,6 +23,7 @@ export const initialState: MetadataState = {
     migration: {
         status: 'idle',
     },
+    entities: [],
 };
 
 type MetadataRootState = {
@@ -78,6 +79,9 @@ const metadataReducer = (state = initialState, action: Action): MetadataState =>
                 draft.migration = {
                     status: action.payload,
                 };
+                break;
+            case METADATA.SET_ENTITIES_DESCRIPTORS:
+                draft.entities = action.payload;
                 break;
             // no default
         }

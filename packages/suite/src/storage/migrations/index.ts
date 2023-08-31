@@ -692,6 +692,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                     migration: {
                         status: 'idle',
                     },
+                    entitites: [],
                 };
                 return updatedMetadata;
             });
