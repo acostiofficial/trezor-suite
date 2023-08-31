@@ -122,21 +122,13 @@ class GoogleProvider extends AbstractMetadataProvider {
         try {
             const id = await GoogleClient.getIdByName(from, true);
 
-            // todo: would be nice not to have to download it here. I could pass it from outside but I don't want to. this is implementation
-            // detail of renaming.
-            const getRes = await this.getFileContent(from);
-            if (!getRes.success || !getRes.payload) {
-                throw new Error('failed to rename file');
-            }
-
-            await GoogleClient.update(
+            await GoogleClient.updateMetadata(
                 {
                     body: {
                         name: to,
                         mimeType: 'text/plain;charset=UTF-8',
                     },
                 },
-                getRes.payload.toString('hex'),
                 id,
             );
 
