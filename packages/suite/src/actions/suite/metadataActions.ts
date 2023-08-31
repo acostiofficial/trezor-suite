@@ -1036,7 +1036,6 @@ const getMetadataFiles = () => async (dispatch: Dispatch, getState: GetState) =>
         file.endsWith(`_v${METADATA.ENCRYPTION_VERSION - 1}.mtdt`),
     );
 
-    // todo: actually I don't need to return 'renamedOldEncryptionFiles' here
     return [currentEncryptionFiles, oldEncryptionFiles, renamedOldEncryptionFiles];
 };
 
@@ -1182,7 +1181,17 @@ const handleEncryptionVersionMigration =
         );
 
         // 4. there are no old files (either labeling was never used before, old old files were renamed to file_v1.mdtd)
-        if (oldEncryptionFiles.length === 0) {
+        // also note, that we take into account only those oldEncryption files which do not have their renamed version concurrently existinging in renamedOldEncryptionFiles
+        // this could happen in a very rare edgecase:
+        // 1. user does migration in updated suite which already has encryption v2, this renames old encryption file
+        // 2. user goes to old suite, creates a label, old encryption file is created. now old renamed and old exist together
+        // 3. => this means that suite is trying to "enable labeling" forever but it never actually carries out migration because it stops on later
+        //       condition "everyEntityHasNewFile"
+        if (
+            oldEncryptionFiles.filter(
+                file => !renamedOldEncryptionFiles.includes(`${file}_v1.mtdt`),
+            ).length === 0
+        ) {
             return { success: true };
         }
 
