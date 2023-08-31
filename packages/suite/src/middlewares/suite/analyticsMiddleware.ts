@@ -1,6 +1,7 @@
 import { MiddlewareAPI } from 'redux';
 import BigNumber from 'bignumber.js';
 
+import { getPhysicalDeviceCount } from '@suite-common/suite-utils';
 import { discoveryActions } from '@suite-common/wallet-core';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { TRANSPORT, DEVICE } from '@trezor/connect';
@@ -16,7 +17,6 @@ import { analyticsActions } from '@suite-common/analytics';
 
 import { SUITE, ROUTER } from 'src/actions/suite/constants';
 import { COINJOIN } from 'src/actions/wallet/constants';
-import { getPhysicalDeviceCount } from 'src/utils/suite/device';
 import { getSuiteReadyPayload, redactTransactionIdFromAnchor } from 'src/utils/suite/analytics';
 import type { AppState, Action, Dispatch } from 'src/types/suite';
 import {

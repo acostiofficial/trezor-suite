@@ -1,3 +1,5 @@
+import * as deviceUtils from '@suite-common/suite-utils';
+import { getStatus } from '@suite-common/suite-utils';
 import { Device, Features } from '@trezor/connect';
 import { DiscoveryRootState, selectDiscoveryByDeviceState } from '@suite-common/wallet-core';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
@@ -5,10 +7,8 @@ import { getFirmwareVersion } from '@trezor/device-utils';
 import { Network, networks } from '@suite-common/wallet-config';
 import { versionUtils } from '@trezor/utils';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { TrezorDevice, AcquiredDevice, ButtonRequest } from '@suite-common/suite-types';
 
-import * as deviceUtils from 'src/utils/suite/device';
-import type { TrezorDevice, AcquiredDevice, ButtonRequest } from 'src/types/suite';
-import { getStatus } from 'src/utils/suite/device';
 import { deviceActions } from 'src/actions/suite/deviceActions';
 
 export type State = { devices: TrezorDevice[]; selectedDevice?: TrezorDevice };

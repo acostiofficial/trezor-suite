@@ -1,6 +1,7 @@
 import { MiddlewareAPI } from 'redux';
 import { isAnyOf } from '@reduxjs/toolkit';
 
+import { isDeviceRemembered } from '@suite-common/suite-utils';
 import {
     firmwareActions,
     discoveryActions,
@@ -23,7 +24,6 @@ import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';
 import * as storageActions from 'src/actions/suite/storageActions';
 import { SUITE, METADATA, STORAGE } from 'src/actions/suite/constants';
 import * as metadataActions from 'src/actions/suite/metadataActions';
-import { isDeviceRemembered } from 'src/utils/suite/device';
 import { serializeDiscovery } from 'src/utils/suite/storage';
 import type { AppState, Action as SuiteAction, Dispatch } from 'src/types/suite';
 import type { WalletAction } from 'src/types/wallet';

@@ -1,5 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
+import * as deviceUtils from '@suite-common/suite-utils';
+import { sortByTimestamp } from '@suite-common/suite-utils';
 import { checkFirmwareAuthenticity, selectFirmware } from '@suite-common/wallet-core';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getCustomBackends } from '@suite-common/wallet-utils';
@@ -9,9 +11,7 @@ import TrezorConnect, { Device, DEVICE } from '@trezor/connect';
 
 import { TorStatus } from 'src/types/suite';
 import * as comparisonUtils from 'src/utils/suite/comparisonUtils';
-import * as deviceUtils from 'src/utils/suite/device';
 import { isOnionUrl } from 'src/utils/suite/tor';
-import { sortByTimestamp } from 'src/utils/suite/device';
 import * as modalActions from 'src/actions/suite/modalActions';
 import type { Locale } from 'src/config/suite/languages';
 import type {

@@ -2,6 +2,7 @@ import React from 'react';
 
 import styled from 'styled-components';
 
+import { getCoinUnavailabilityMessage } from '@suite-common/suite-utils';
 import { Tooltip } from '@trezor/components';
 import {
     getDeviceDisplayName,
@@ -14,7 +15,6 @@ import { Coin, Translation } from 'src/components/suite';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import type { Network } from 'src/types/wallet';
 import { selectSupportedNetworks } from 'src/reducers/suite/deviceReducer';
-import { getCoinUnavailabilityMessage } from 'src/utils/suite/device';
 
 const Wrapper = styled.div`
     width: 100%;

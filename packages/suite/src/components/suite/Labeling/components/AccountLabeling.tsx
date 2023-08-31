@@ -1,8 +1,8 @@
 import React from 'react';
 
+import { isSelectedDevice } from '@suite-common/suite-utils';
 import { findAccountDevice } from '@suite-common/wallet-utils';
 
-import { isSelectedDevice } from 'src/utils/suite/device';
 import { AccountLabel } from 'src/components/suite';
 import { Account as WalletAccount } from 'src/types/wallet';
 import { useSelector } from 'src/hooks/suite';

@@ -1,8 +1,8 @@
+import * as deviceUtils from '@suite-common/suite-utils';
 import TrezorConnect from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
-import * as deviceUtils from 'src/utils/suite/device';
 import * as modalActions from 'src/actions/suite/modalActions';
 import * as routerActions from 'src/actions/suite/routerActions';
 import { Dispatch, GetState } from 'src/types/suite';
