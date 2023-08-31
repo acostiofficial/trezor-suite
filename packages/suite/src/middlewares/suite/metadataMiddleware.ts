@@ -12,6 +12,8 @@ const metadata =
             action.payload = api.dispatch(metadataActions.setAccountMetadataKey(action.payload));
         }
 
+        const prevState = api.getState().metadata.entities || [];
+
         // pass action
         next(action);
 
@@ -22,17 +24,15 @@ const metadata =
                 const { device } = api.getState().suite;
 
                 if (api.getState().metadata.enabled && device?.state) {
-                    const prevState = api.getState().metadata.entities;
                     const nextState = api.dispatch(
                         metadataActions.getLabelableEntitiesDescriptors(),
                     );
-
                     if (prevState.join('') !== nextState.join('')) {
                         api.dispatch(metadataActions.init());
-                        api.dispatch(metadataActions.setEntititesDescriptors(nextState));
                     } else {
                         console.log('states are equal!');
                     }
+                    api.dispatch(metadataActions.setEntititesDescriptors(nextState));
                 }
                 break;
             }
